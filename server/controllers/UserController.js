@@ -15,6 +15,7 @@ module.exports.register = async (req, res) => {
   });
 
   var user = new User(_.pick(req.body, ['email', 'password']));
+  user.profile.fullName = req.body.fullName;
   user.save()
   .then(() => {
     res.send({
