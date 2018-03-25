@@ -1,44 +1,42 @@
-const _ = require('lodash');
 const mongoose = require('mongoose');
-User = mongoose.model('User');
+const _ = require('lodash');
+  moment = require('moment'),
+  User = mongoose.model('User');
 
-//POST /register
-module.exports.register = async (req, res) => {
+module.exports.createUser = async (req, res)=>{
+  console.log('test');
+  var body = _.pick(req.body, ['username', 'password', 'email']);
+  var user = new User(body);
 
-  //check if email is already in use
-  User.findOne({email: req.body.email}).then((todo) => {
-    if (todo) {
-      return res.status(400).send({
-        message: "email already in use"
-      });
-    }
+  user.save().then(() => {
+    return user.generateAuthToken();
+
+  }).then((token) => {
+    res.header('x-auth', token).send({data:user});
+  }).catch((e) => {
+    console.log(e);
+    res.status(400).send(e);
   });
+}
 
-  var user = new User(_.pick(req.body, ['email', 'password']));
-  user.profile.fullName = req.body.fullName;
-  user.save()
-  .then(() => {
-    res.send({
-      user
+module.exports.loginUser = async (req, res) => {
+  var body = _.pick(req.body, ['username', 'password', 'email']);
+
+  User.findByCredentials(body.email, body.password).then((user) => {
+    return user.generateAuthToken().then((token) => {
+      console.log("logged in");
+      res.header('x-auth', token).send({data:user});
     });
-  })
-  .catch((err) => {
+  }).catch((e) => {
+    console.log(body);
     res.status(400).send();
   });
 };
 
-//POST /login
-module.exports.login = async (req, res) => {
-  User.findOne({email: req.body.email}).then((user) => {
-    if (!user) {
-      return res.status(404).send({
-        message: 'Email not found'
-      });
-    }
-    (user.password === req.body.password) ? res.send({user})
-    : res.status(400).send({message: 'Incorrect password'});
-
-  }).catch((err) => {
-    res.status(400).send();
-  })
+module.exports.deleteUser = async (req,res)=>{
+  req.user.removeToken(req.token).then(()=>{
+      res.status(200).send();
+  },()=>{
+      res.status(400).send();
+  });
 };
