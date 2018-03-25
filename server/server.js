@@ -8,6 +8,8 @@ var {mongoose} = require('./db/mongoose');
 var User = require('./models/user');
 var userController = require('./controllers/userController');
 
+var Announcement = require('./models/Announcement');
+var announcementsCtlr = require('./controllers/AnnouncementController');
 
 var app = express();
 
@@ -16,6 +18,11 @@ app.use(bodyParser.json());
 app.post('/register', asyncMiddleware(userController.register));
 app.post('/login', asyncMiddleware(userController.login));
 
+// Announcements
+// Anyone can get
+app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
+// [TODO] Only Admins can post
+app.post('/announcements', asyncMiddleware(announcementsCtlr.postAnnouncement));
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
