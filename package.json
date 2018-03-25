@@ -1,0 +1,17 @@
+{
+  "name": "riseup-api",
+  "version": "1.0.0",
+  "description": "\"API for RiseUp Connect\"",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.11"
+  }
+}
