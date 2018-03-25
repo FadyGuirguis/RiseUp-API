@@ -15,8 +15,8 @@ var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/register', asyncMiddleware(userController.register));
-app.post('/login', asyncMiddleware(userController.login));
+app.post('/register', asyncMiddleware(userController.createUser));
+app.post('/login', asyncMiddleware(userController.loginUser));
 
 // Announcements
 // Anyone can get
