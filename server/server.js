@@ -7,6 +7,8 @@ var asyncMiddleware = require('express-async-handler');
 var {mongoose} = require('./db/mongoose');
 var User = require('./models/user');
 var userController = require('./controllers/userController');
+var Tag = require('./models/tag');
+var tagController = require('./controllers/tagController');
 
 
 var app = express();
@@ -15,6 +17,9 @@ app.use(bodyParser.json());
 
 app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
+app.post('/tag', tagController.addTag);
+app.get('/tag', tagController.getAllTags);
+app.delete('/tag', tagController.removeTag);
 
 
 app.listen(3000, () => {
