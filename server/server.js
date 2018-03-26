@@ -22,9 +22,7 @@ app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
 
 // Announcements
-// Anyone can get
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
-// Only Admins can post
 app.post('/announcements', authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
 
 app.listen(3000, () => {

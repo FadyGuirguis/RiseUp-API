@@ -10,7 +10,7 @@ module.exports.getAllAnnouncements = async (req, res) => {
             announcements: anns
         });
     }).catch((err) => {
-        res.status(500).send({ err });
+        res.status(500).send({ error: err });
     });
 
 };
@@ -30,7 +30,7 @@ module.exports.postAnnouncement = async (req, res) => {
             announcement
         });
     }).catch((err) => {
-        res.status(500).send({ err });
+        res.status(500).send({ error: err });
     });
 
 };
