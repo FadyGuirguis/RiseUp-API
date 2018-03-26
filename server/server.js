@@ -17,9 +17,9 @@ app.use(bodyParser.json());
 
 app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
-app.post('/tag', tagController.addTag);
-app.get('/tag', tagController.getAllTags);
-app.delete('/tag', tagController.removeTag);
+app.post('/tag',asyncMiddleware(tagController.addTag));
+app.get('/tags', asyncMiddleware(tagController.getAllTags));
+app.delete('/tag', asyncMiddleware(tagController.removeTag));
 
 
 app.listen(3000, () => {

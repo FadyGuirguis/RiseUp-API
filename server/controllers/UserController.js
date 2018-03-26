@@ -5,7 +5,9 @@ const _ = require('lodash');
 
 module.exports.createUser = async (req, res)=>{
   console.log('test');
-  var body = _.pick(req.body, ['username', 'password', 'email']);
+  var body = _.pick(req.body.user, ['email', 'password']);
+  body.profile = {};
+  body.profile.fullName = req.body.user.profile.fullName;
   var user = new User(body);
 
   user.save().then(() => {
