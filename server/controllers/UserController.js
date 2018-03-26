@@ -16,8 +16,7 @@ module.exports.createUser = async (req, res)=>{
   }).then((token) => {
     res.header('x-auth', token).send({user});
   }).catch((e) => {
-    console.log(e);
-    res.status(400).send(e);
+    res.status(500).send(e);
   });
 }
 
@@ -30,15 +29,6 @@ module.exports.loginUser = async (req, res) => {
       res.header('x-auth', token).send({user});
     });
   }).catch((e) => {
-    console.log(body);
-    res.status(400).send();
-  });
-};
-
-module.exports.deleteUser = async (req,res)=>{
-  req.user.removeToken(req.token).then(()=>{
-      res.status(200).send();
-  },()=>{
-      res.status(400).send();
+    res.status(500).send();
   });
 };

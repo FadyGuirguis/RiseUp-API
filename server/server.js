@@ -20,16 +20,14 @@ var app = express();
 
 app.use(bodyParser.json());
 
+// User
 app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
-app.post('/tag',asyncMiddleware(tagController.addTag));
-app.get('/tags', asyncMiddleware(tagController.getAllTags));
-app.delete('/tag', asyncMiddleware(tagController.removeTag));
 
 // Tags
 app.post('/tag', authModule.authAdmin,asyncMiddleware(tagController.addTag));
-app.get('/tags', asyncMiddleware(tagController.getAllTags));
-app.delete('/tag', asyncMiddleware(tagController.removeTag));
+app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));
+app.delete('/tag', authModule.authAdmin, asyncMiddleware(tagController.removeTag));
 
 // Announcements
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
