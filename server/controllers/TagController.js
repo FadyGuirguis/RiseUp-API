@@ -3,7 +3,7 @@ const Tag = mongoose.model('Tag');
 
 module.exports.addTag = async(req, res) => {
   var tag = new Tag ({
-    tag: req.body.tag.tag;
+    tag: req.body.tag.tag
   })
 
   tag.save().then((doc) => {
