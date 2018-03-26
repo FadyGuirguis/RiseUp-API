@@ -8,6 +8,8 @@ var asyncMiddleware = require('express-async-handler');
 var {mongoose} = require('./db/mongoose');
 var User = require('./models/user');
 var userController = require('./controllers/userController');
+var Tag = require('./models/tag');
+var tagController = require('./controllers/tagController');
 
 var Announcement = require('./models/Announcement');
 var announcementsCtlr = require('./controllers/AnnouncementController');
@@ -20,6 +22,11 @@ app.use(bodyParser.json());
 
 app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
+
+// Tags
+app.post('/tag', authModule.authAdmin,asyncMiddleware(tagController.addTag));
+app.get('/tags', asyncMiddleware(tagController.getAllTags));
+app.delete('/tag', asyncMiddleware(tagController.removeTag));
 
 // Announcements
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));

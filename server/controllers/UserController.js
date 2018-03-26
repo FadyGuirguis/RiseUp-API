@@ -5,14 +5,16 @@ const _ = require('lodash');
 
 module.exports.createUser = async (req, res)=>{
   console.log('test');
-  var body = _.pick(req.body, ['username', 'password', 'email']);
+  var body = _.pick(req.body.user, ['email', 'password']);
+  body.profile = {};
+  body.profile.fullName = req.body.user.profile.fullName;
   var user = new User(body);
 
   user.save().then(() => {
     return user.generateAuthToken();
 
   }).then((token) => {
-    res.header('x-auth', token).send({data:user});
+    res.header('x-auth', token).send({user});
   }).catch((e) => {
     console.log(e);
     res.status(400).send(e);
@@ -20,12 +22,12 @@ module.exports.createUser = async (req, res)=>{
 }
 
 module.exports.loginUser = async (req, res) => {
-  var body = _.pick(req.body, ['username', 'password', 'email']);
+  var body = _.pick(req.body, ['email', 'password']);
 
   User.findByCredentials(body.email, body.password).then((user) => {
     return user.generateAuthToken().then((token) => {
       console.log("logged in");
-      res.header('x-auth', token).send({data:user});
+      res.header('x-auth', token).send({user});
     });
   }).catch((e) => {
     console.log(body);
