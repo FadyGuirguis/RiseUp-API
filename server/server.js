@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 // User
 app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
-
+app.patch('/update', asyncMiddleware(userController.editProfile));
 // Tags
 app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
 app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));

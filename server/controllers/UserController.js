@@ -32,3 +32,30 @@ module.exports.loginUser = async (req, res) => {
     res.status(500).send();
   });
 };
+
+module.export.editProfile = async (req, res) => {
+  if(req.body.user) {
+      var user = req.user;
+    if(req.body.user.profile) {
+      if(req.body.user.profile.fullName) {
+        user.profile.fullName = req.body.user.profile.fullName;
+      }
+      else if (req.body.user.profile.description) {
+        user.profile.description = req.body.user.profile.description;
+      }
+      else if (req.body.user.profile.interests) {
+          user.profile.interests = req.body.user.profile.interests;
+      }
+      else if (req.body.user.profile.expertIn) {
+        user.profile.expertIn = req.body.user.profile.expertIn;
+      }
+    }
+  }
+
+  user.save().then((updatedUser) => {
+    res.send({ updatedUser });
+  }).catch((e) => {
+    res.status(500).send(e);
+  });
+
+}
