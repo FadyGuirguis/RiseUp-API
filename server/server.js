@@ -33,7 +33,7 @@ app.delete('/tag', authModule.authAdmin, asyncMiddleware(tagController.removeTag
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
 app.post('/announcements', authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
+
+app.listen(process.env.PORT || 3000, () => {
   console.log(`Server running on port ${port}`);
 });
