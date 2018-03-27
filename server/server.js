@@ -10,8 +10,8 @@ var User = require('./models/user');
 var Tag = require('./models/tag');
 var Announcement = require('./models/Announcement');
 
-var userController = require('./controllers/userController');
-var tagController = require('./controllers/tagController');
+var userController = require('./controllers/UserController');
+var tagController = require('./controllers/TagController');
 var announcementsCtlr = require('./controllers/AnnouncementController');
 
 var authModule = require('./middleware/authenticate');
