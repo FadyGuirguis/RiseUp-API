@@ -18,13 +18,13 @@ module.exports.getAllAnnouncements = async (req, res) => {
 // POST /announcements
 module.exports.postAnnouncement = async (req, res) => {
 
-    if(!req.body.title)
+    if(!req.body.announcement.title)
         res.status(400).send('Announcement title is required');
-    if(!req.body.description)
+    if(!req.body.announcement.description)
         res.status(400).send('Announcement description is required');
 
     var announcement = new Announcement(_.pick(req.body, ['title', 'description']));
-    
+
     announcement.save().then(() => {
         res.send({
             announcement

@@ -2,12 +2,15 @@ const mongoose = require('mongoose');
 const Tag = mongoose.model('Tag');
 
 module.exports.addTag = async(req, res) => {
+  if(!req.body.tag || !reg.body.tag.tag)
+      res.status(400).send('Announcement title is required');
+
   var tag = new Tag ({
     tag: req.body.tag.tag
   })
 
-  tag.save().then((doc) => {
-    res.send(doc);
+  tag.save().then((tag) => {
+    res.send({tag});
   }, (e) => {
     res.status(500).send(e);
   })

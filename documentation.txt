@@ -1,0 +1,91 @@
+API link: https://quiet-beyond-16034.herokuapp.com
+--------------------------------------------------
+POST /register
+input:
+body: {
+  user: {
+    email: ,
+    password: ,
+    profile: {
+      fullName:
+    }
+  }
+}
+response:
+body: {
+ user: all user info
+}
+header: {
+  x-auth: the token
+}
+--------------------------------------------------
+POST /login
+input:
+body: {
+  email: ,
+  password:
+}
+response:
+body: {
+ user: all user info
+}
+header: {
+  x-auth: the token
+}
+--------------------------------------------------
+Needless to say, you need to include the token in the request header for all
+the coming requests
+--------------------------------------------------
+GET /announcements
+response:
+body: {
+  announcements: all announcements
+}
+this could be modified to get the latest announcement only if you think that is
+more practical
+--------------------------------------------------
+POST /announcements
+input:
+body: {
+  announcement: {
+    title: ,
+    description:
+  }
+}
+response
+body: {
+  announcement:
+}
+response will have status 400 if title or description were not supplied
+--------------------------------------------------
+GET /tags
+response:
+body: {
+  tags: all tags
+}
+--------------------------------------------------
+POST /tag
+input:
+body: {
+  tag: {
+    tag:
+  }
+}
+response:
+body: {
+  tag:
+}
+response will have status 400 if tag was not supplied
+--------------------------------------------------
+DELETE /tag
+input:
+body: {
+  tag: {
+    _id:
+  }
+}
+response:
+body: {
+  tag:
+}
+--------------------------------------------------
