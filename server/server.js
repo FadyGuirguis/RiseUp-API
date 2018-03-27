@@ -25,15 +25,16 @@ app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
 
 // Tags
-app.post('/tag', authModule.authAdmin,asyncMiddleware(tagController.addTag));
+app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
 app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));
-app.delete('/tag', authModule.authAdmin, asyncMiddleware(tagController.removeTag));
+app.delete('/tag', authModule.authenticate, authModule.authAdmin, asyncMiddleware(tagController.removeTag));
 
 // Announcements
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
-app.post('/announcements', authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
+app.post('/announcements', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
 
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server running`);
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });

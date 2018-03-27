@@ -21,48 +21,32 @@ var authenticate = (req, res, next) => {
     });
 }
 
-// Authenticate & Authorize Expert
+// Authorize Expert
 var authExpert = (req, res, next) => {
 
-    var token = req.header('x-auth');
-    
-    User.findByToken(token).then((user) => {
+    var user = req.user;
 
-        if(!user)
-            return Promise.reject();
+    if(!user)
+        return Promise.reject();
 
-        req.user = user;
-        req.token = token;
-
-        if(user.roles.indexOf('expert') == -1)
-            res.status(403).send({ msg: 'You are not an Expert user.' });
-
+    if(user.roles.indexOf('expert') == -1)
+        res.status(403).send({ msg: 'You are not an Expert user.' });
+    else
         next();
-    }).catch((e) => {
-        res.status(403).send();
-    });
 }
 
-// Authenticate & Authorize Admin
+// Authorize Admin
 var authAdmin = (req, res, next) => {
 
-    var token = req.header('x-auth');
-    
-    User.findByToken(token).then((user) => {
+    var user = req.user;
 
-        if(!user)
-            return Promise.reject();
+    if(!user)
+        return Promise.reject();
 
-        req.user = user;
-        req.token = token;
-
-        if(user.roles.indexOf('admin') == -1)
-            res.status(403).send({ msg: 'You are not an Admin.' });
-
+    if(user.roles.indexOf('admin') == -1)
+        res.status(403).send({ msg: 'You are not an Admin.' });
+    else
         next();
-    }).catch((e) => {
-        res.status(403).send();
-    });
 }
 
 module.exports = {authenticate, authExpert, authAdmin};
