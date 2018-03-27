@@ -35,5 +35,5 @@ app.post('/announcements', authModule.authAdmin, asyncMiddleware(announcementsCt
 
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server running`);
 });
