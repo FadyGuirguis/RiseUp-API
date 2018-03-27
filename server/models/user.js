@@ -30,7 +30,7 @@ const UserSchema = mongoose.Schema({
       default: ''
     },
     interests: [{tag:String}],
-    acievements: {
+    achievements: {
       type:String,
       default: ''
     },

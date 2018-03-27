@@ -33,6 +33,8 @@ app.delete('/tag', authModule.authenticate, authModule.authAdmin, asyncMiddlewar
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
 app.post('/announcements', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
 
+// TODO: Edit profile details
+app.patch('/profile/edit/fullname', authModule.authenticate, asyncMiddleware(userController.editMyFullName));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

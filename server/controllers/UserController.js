@@ -32,3 +32,18 @@ module.exports.loginUser = async (req, res) => {
     res.status(500).send();
   });
 };
+
+module.exports.editMyFullName = async (req, res) => {
+
+  var newName = req.body.profile.fullName;
+  var thisUser = req.user;
+
+  thisUser.profile.fullName = newName;
+
+  thisUser.save().then((updatedUser) => {
+    res.send({ updatedUser });
+  }).catch((err) => {
+    res.status(500).send({ error: err });
+  });
+
+};
