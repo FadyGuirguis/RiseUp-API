@@ -16,7 +16,10 @@ const UserSchema = mongoose.Schema({
     required: true,
     min: 6
   },
-  roles: [String],
+  roles:{
+    type: [String],
+    default: ['user']
+  },
   profile: {
     fullName: {
       type: String,
