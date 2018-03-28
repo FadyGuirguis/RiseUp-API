@@ -33,6 +33,23 @@ module.exports.loginUser = async (req, res) => {
   });
 };
 
+module.exports.editMyFullName = async (req, res) => {
+
+  if(!req.body.profile.fullName)
+    res.status(400).send({ msg: 'No name is provided.' });
+
+  var thisUser = req.user;
+
+  thisUser.profile.fullName = req.body.profile.fullName;
+
+  thisUser.save().then((updatedUser) => {
+    res.send({ updatedUser });
+  }).catch((err) => {
+    res.status(500).send({ error: err });
+  });
+
+};
+
 // module.export.editProfile = async (req, res) => {
 //   var user;
 //   var id;

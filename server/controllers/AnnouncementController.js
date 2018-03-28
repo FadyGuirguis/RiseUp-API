@@ -32,13 +32,13 @@ module.exports.postAnnouncement = async (req, res) => {
     }).catch((err) => {
         res.status(500).send({ error: err });
     });
-
 };
 
+// DELETE /announcements/:id
 module.exports.deleteAnnouncement = async (req, res) => {
-  Announcement.findByIdAndRemove(req.params.id).then((announcement) => {
-    res.send({announcement});
-  }).catch((err) => {
-      res.status(500).send({ error: err });
-  });
+    Announcement.findByIdAndRemove(req.params.id).then((announcement) => {
+        res.send({announcement});
+    }).catch((err) => {
+        res.status(500).send({ error: err });
+    });
 };

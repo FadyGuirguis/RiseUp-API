@@ -24,6 +24,7 @@ app.use(bodyParser.json());
 app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
 //app.patch('/update', asyncMiddleware(userController.editProfile));
+
 // Tags
 app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
 app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));
@@ -31,9 +32,11 @@ app.delete('/tag', authModule.authenticate, authModule.authAdmin, asyncMiddlewar
 
 // Announcements
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
-app.post('/announcement', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
-app.delete('/announcement/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.deleteAnnouncement));
+app.post('/announcements', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
+app.delete('/announcements/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.deleteAnnouncement));
 
+// TODO: Edit profile details
+app.patch('/profile/edit/fullname', authModule.authenticate, asyncMiddleware(userController.editMyFullName));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
