@@ -44,7 +44,7 @@ body: {
 this could be modified to get the latest announcement only if you think that is
 more practical
 --------------------------------------------------
-POST /announcements
+POST /announcement
 input:
 body: {
   announcement: {

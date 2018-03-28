@@ -23,9 +23,9 @@ module.exports.postAnnouncement = async (req, res) => {
     if(!req.body.announcement.description)
         res.status(400).send('Announcement description is required');
 
-    var announcement = new Announcement(_.pick(req.body, ['title', 'description']));
+    var announcement = new Announcement(_.pick(req.body.announcement, ['title', 'description']));
 
-    announcement.save().then(() => {
+    announcement.save().then((announcement) => {
         res.send({
             announcement
         });

@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 // User
 app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
-app.patch('/update', asyncMiddleware(userController.editProfile));
+//app.patch('/update', asyncMiddleware(userController.editProfile));
 // Tags
 app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
 app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));
@@ -31,7 +31,7 @@ app.delete('/tag', authModule.authenticate, authModule.authAdmin, asyncMiddlewar
 
 // Announcements
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
-app.post('/announcements', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
+app.post('/announcement', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
 
 
 const port = process.env.PORT || 3000;
