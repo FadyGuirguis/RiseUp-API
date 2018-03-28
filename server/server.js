@@ -26,9 +26,9 @@ app.post('/login', asyncMiddleware(userController.loginUser));
 app.patch('/editProfile', authModule.authenticate, asyncMiddleware(userController.editProfile));
 app.patch('/changePassword',  authModule.authenticate, asyncMiddleware(userController.changePassword));
 // Tags
-app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
+app.post('/tags', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
 app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));
-app.delete('/tag/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(tagController.removeTag));
+app.delete('/tags/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(tagController.removeTag));
 
 // Announcements
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));

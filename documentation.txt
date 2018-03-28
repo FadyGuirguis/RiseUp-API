@@ -44,7 +44,7 @@ body: {
 this could be modified to get the latest announcement only if you think that is
 more practical
 --------------------------------------------------
-POST /announcement
+POST /announcements
 input:
 body: {
   announcement: {
@@ -64,7 +64,7 @@ body: {
   tags: all tags
 }
 --------------------------------------------------
-POST /tag
+POST /tags
 input:
 body: {
   tag: {
@@ -77,15 +77,46 @@ body: {
 }
 response will have status 400 if tag was not supplied
 --------------------------------------------------
-DELETE /tag
-input:
-body: {
-  tag: {
-    _id:
-  }
-}
+DELETE /tags/:id
+
 response:
 body: {
   tag:
+}
+--------------------------------------------------
+DELETE /announcements/:id
+
+response:
+body: {
+  announcement:
+}
+--------------------------------------------------
+PATCH /changePassword
+
+input:
+body: {
+ user: {
+  password:
+ }
+}
+response: {
+body: {
+  updatedUser:
+ }
+}
+--------------------------------------------------
+PATCH /editProfile
+
+input:
+body: {
+ user: {
+  profile:
+   fullName/description/achievements/interests:
+ }
+}
+response: {
+body: {
+  updatedUser:
+ }
 }
 --------------------------------------------------

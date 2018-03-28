@@ -64,8 +64,8 @@ module.exports.editProfile = async (req, res) => {
     if (req.body.user && req.body.user.password) {
       User.findById(req.user._id).then((user) => {
         user.password = req.body.user.password;
-        user.save().then((updateUser) => {
-          res.send({updateUser});
+        user.save().then((updatedUser) => {
+          res.send({updatedUser});
         }).catch((err) => {
           res.status(500).send();
         });
