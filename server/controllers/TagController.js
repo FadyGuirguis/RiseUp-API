@@ -25,7 +25,20 @@ module.exports.getAllTags = async(req, res) => {
 }
 
 module.exports.removeTag = async(req, res) => {
-  Tag.findByIdAndRemove(req.body.tag._id).then((tag) => {
+  Tag.findByIdAndRemove(req.params.id).then((tag) => {
+    console.log(tag.tag);
+    Tag.update( {
+
+    }, {
+      $pullAll: {
+        profile: {
+          interests: [tag.tag],
+          expertIn: [tag.tag]
+        }
+       }
+     } );
+
+
     res.send({tag});
   }, (e) => {
     res.status(500).send(e);
