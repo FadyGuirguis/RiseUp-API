@@ -34,3 +34,11 @@ module.exports.postAnnouncement = async (req, res) => {
     });
 
 };
+
+module.exports.deleteAnnouncement = async (req, res) => {
+  Announcement.findByIdAndRemove(req.params.id).then((announcement) => {
+    res.send({announcement});
+  }).catch((err) => {
+      res.status(500).send({ error: err });
+  });
+};

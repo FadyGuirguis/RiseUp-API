@@ -32,6 +32,7 @@ app.delete('/tag', authModule.authenticate, authModule.authAdmin, asyncMiddlewar
 // Announcements
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
 app.post('/announcement', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
+app.delete('/announcement/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.deleteAnnouncement));
 
 
 const port = process.env.PORT || 3000;
