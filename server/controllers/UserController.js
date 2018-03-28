@@ -23,9 +23,12 @@ module.exports.createUser = async (req, res)=>{
 module.exports.loginUser = async (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
 
- 
+
 
   User.findByCredentials(body.email, body.password).then((user) => {
+    if (!user) {
+      return res.status(404).send();
+    }
     return user.generateAuthToken().then((token) => {
       console.log("logged in");
       res.header('x-auth', token).send({user});
@@ -34,60 +37,6 @@ module.exports.loginUser = async (req, res) => {
     res.status(500).send();
   });
 };
-
-module.exports.editMyFullName = async (req, res) => {
-
-  if(!req.body.profile.fullName)
-    res.status(400).send({ msg: 'No name is provided.' });
-
-  var thisUser = req.user;
-
-  thisUser.profile.fullName = req.body.profile.fullName;
-
-  thisUser.save().then((updatedUser) => {
-    res.send({ updatedUser });
-  }).catch((err) => {
-    res.status(500).send({ error: err });
-  });
-
-};
-
-// module.export.editProfile = async (req, res) => {
-//   var user;
-//   var id;
-//   var edited;
-//   if(req.body.user) {
-//       user = req.user;
-//       id = req.user._id;
-//     if(req.body.user.profile) {
-//       if(req.body.user.profile.fullName) {
-//         user.profile.fullName = req.body.user.profile.fullName;
-//         edited = user.profile.fullName;
-//       }
-//       else if (req.body.user.profile.description) {
-//         user.profile.description = req.body.user.profile.description;
-//         edited = user.profile.description;
-//       }
-//       else if (req.body.user.profile.interests) {
-//           user.profile.interests = req.body.user.profile.interests;
-//           edited = user.profile.interests;
-//       }
-//       else if (req.body.user.profile.expertIn) {
-//         user.profile.expertIn = req.body.user.profile.expertIn;
-//         edited = user.profile.expertIn;
-//       }
-//     }
-//   }
-//
-//   user.findByIdAndUpdate(id, {$set: edited}, {new: true}).then((updatedUser) => {
-//     if(!updatedUser) {
-//       return res.status(404).send();
-//     }
-//     res.send({updatedUser});
-//   }).catch((e) => {
-//     res.status(500).send();
-//   })
-//   }
 
 module.exports.editProfile = async (req, res) => {
  var id = req.user._id;
@@ -109,4 +58,18 @@ module.exports.editProfile = async (req, res) => {
   }).catch((e) => {
     res.status(500).send();
   })
+  }
+
+  module.exports.changePassword = async (req, res) => {
+    if (req.body.user && req.body.user.password) {
+      User.findById(req.user._id).then((user) => {
+        user.password = req.body.user.password;
+        user.save().then((updateUser) => {
+          res.send({updateUser});
+        }).catch((err) => {
+          res.status(500).send();
+        });
+      });
+    }
+
   }
