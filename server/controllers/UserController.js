@@ -61,14 +61,22 @@ module.exports.editProfile = async (req, res) => {
   }
 
   module.exports.changePassword = async (req, res) => {
-    if (req.body.user && req.body.user.password) {
-      User.findById(req.user._id).then((user) => {
-        user.password = req.body.user.password;
+    if (req.body.user && req.body.user.oldPassword && req.body.user.newPassword) {
+      User.findByCredentials(req.user.email, req.body.user.oldPassword).then((user) => {
+        user.password = req.body.user.newPassword;
         user.save().then((updatedUser) => {
           res.send({updatedUser});
         }).catch((err) => {
           res.status(500).send();
         });
+      }).catch((err) => {
+        res.status(400).send({
+          errMsg: "IncorrectPassword"
+        });
+      });
+    } else {
+      res.status(400).send({
+        errMsg: "Incomplete information"
       });
     }
 

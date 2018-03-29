@@ -96,7 +96,8 @@ POST /changePassword
 input:
 body: {
  user: {
-  password:
+  oldPassword: ,
+  newPassword:
  }
 }
 response: {
@@ -104,6 +105,7 @@ body: {
   updatedUser:
  }
 }
+res will have status 400 if oldPassword is wrong
 --------------------------------------------------
 POST /editProfile
 
