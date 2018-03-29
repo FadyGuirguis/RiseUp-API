@@ -25,6 +25,7 @@ app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
 app.post('/editProfile', authModule.authenticate, asyncMiddleware(userController.editProfile));
 app.post('/changePassword',  authModule.authenticate, asyncMiddleware(userController.changePassword));
+app.post('/logout', authModule.authenticate, asyncMiddleware(userController.logout));
 // Tags
 app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
 app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));

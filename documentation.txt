@@ -120,3 +120,6 @@ body: {
  }
 }
 --------------------------------------------------
+POST /logout
+just pass the token in the header and it will be deleted
+--------------------------------------------------

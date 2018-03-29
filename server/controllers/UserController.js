@@ -73,3 +73,16 @@ module.exports.editProfile = async (req, res) => {
     }
 
   }
+
+  module.exports.logout = async (req, res) => {
+    User.findByToken(req.token).then((user) => {
+      user.tokens = _.remove(user.tokens, (currentToken) => {
+        return currentToken.token !== req.token;
+      });
+      user.save();
+      res.send();
+
+    }).catch((err) => {
+      res.status(500).send();
+    });
+  }
