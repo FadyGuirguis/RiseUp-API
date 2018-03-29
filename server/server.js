@@ -26,14 +26,14 @@ app.post('/login', asyncMiddleware(userController.loginUser));
 app.post('/editProfile', authModule.authenticate, asyncMiddleware(userController.editProfile));
 app.post('/changePassword',  authModule.authenticate, asyncMiddleware(userController.changePassword));
 // Tags
-app.post('/tags', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
+app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
 app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));
-app.delete('/tags/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(tagController.removeTag));
+app.delete('/tag/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(tagController.removeTag));
 
 // Announcements
 app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements));
-app.post('/announcements', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
-app.delete('/announcements/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.deleteAnnouncement));
+app.post('/announcement', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
+app.delete('/announcement/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.deleteAnnouncement));
 
 
 
