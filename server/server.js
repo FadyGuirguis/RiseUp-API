@@ -23,8 +23,8 @@ app.use(bodyParser.json());
 // User
 app.post('/register', asyncMiddleware(userController.createUser));
 app.post('/login', asyncMiddleware(userController.loginUser));
-app.patch('/editProfile', authModule.authenticate, asyncMiddleware(userController.editProfile));
-app.patch('/changePassword',  authModule.authenticate, asyncMiddleware(userController.changePassword));
+app.post('/editProfile', authModule.authenticate, asyncMiddleware(userController.editProfile));
+app.post('/changePassword',  authModule.authenticate, asyncMiddleware(userController.changePassword));
 // Tags
 app.post('/tags', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
 app.get('/tags', authModule.authenticate, asyncMiddleware(tagController.getAllTags));
