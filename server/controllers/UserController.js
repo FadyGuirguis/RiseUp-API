@@ -48,7 +48,7 @@ module.exports.editProfile = async (req, res) => {
     } else if (req.body.user.profile.interests && _.isArray(req.body.user.profile.interests)) {
       user.profile.interests = req.body.user.profile.interests;
     }
-  } else if (req.body.user.profile.expertIn && _.isArray(req.body.user.profile.expertIn)) {
+    else if (req.body.user.profile.expertIn && _.isArray(req.body.user.profile.expertIn)) {
     user.profile.expertIn = req.body.user.profile.expertIn;
   }
 
