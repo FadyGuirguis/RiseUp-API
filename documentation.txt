@@ -113,7 +113,7 @@ input:
 body: {
  user: {
   profile:
-   fullName/description/achievements/interests:
+   fullName/description/achievements/interests/expertIn:
  }
 }
 response: {
