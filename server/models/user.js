@@ -29,12 +29,12 @@ const UserSchema = mongoose.Schema({
       type: String,
       default: ''
     },
-    interests: [String],
+    interests: [String], //array of tags
     achievements: {
       type:String,
       default: ''
     },
-    expertIn: [String],
+    expertIn: [String],  //array of tags
     rating: {
       rating: {
         type: Number,
