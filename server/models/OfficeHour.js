@@ -27,12 +27,14 @@ const OfficeHourSchema = mongoose.Schema({
       required: true
     }
   },
+  createdOn: Date,
   suggestedSlots: {
-    type: [{time: Date}],
-    required: true
+    slots: [Date],
+    createdOn: Date
   },
   choosenSlot: {
-    type: {time:Date}
+    slot: Date,
+    createdOn: Date
   },
   title: {
     type: String,

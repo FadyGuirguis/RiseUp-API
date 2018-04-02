@@ -6,10 +6,8 @@ OfficeHour = mongoose.model('OfficeHour');
 module.exports.insertOfficeHour = async (req, res) => {
   var officeHour = req.body.officeHour;
   officeHour.user._id = new ObjectId();
-  //officeHour.expert._id = new ObjectId();
-  officeHour.suggestedSlots = [{
-    time: new Date()
-  }]
+  officeHour.expert._id = new ObjectId();
+  officeHour.createdOn = new Date();
   officeHour = new OfficeHour(officeHour);
   officeHour.save().then((officeHour) => {
     res.send({officeHour});
