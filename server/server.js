@@ -39,6 +39,9 @@ app.delete('/announcement/:id', authModule.authenticate, authModule.authAdmin, a
 
 // Office OfficeHour
 app.post('/officeHour', asyncMiddleware(OfficeHoursController.insertOfficeHour));
+app.get('/officeHours',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHours));
+app.get('/officeHour/:id',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHour));
+
 
 
 const port = process.env.PORT || 3000;
