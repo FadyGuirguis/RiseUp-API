@@ -50,7 +50,8 @@ const OfficeHourSchema = mongoose.Schema({
   },
   status: {
     type: String
-  }
+  },
+  lastModified: Date
 });
 
 mongoose.model('OfficeHour', OfficeHourSchema);

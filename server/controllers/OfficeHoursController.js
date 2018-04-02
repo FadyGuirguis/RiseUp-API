@@ -27,7 +27,7 @@ module.exports.getOfficeHours = async (req, res) => {
         'expert._id': id
       }
     ]
-  }).select('user expert title status')
+  }).select('user expert title status lastModified')
     .then((officeHours) => {
       res.send({officeHours});
     })
