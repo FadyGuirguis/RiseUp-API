@@ -155,3 +155,13 @@ body: {
 pass an empty array when initializing the component and the user's
 interest will be automatically used
 --------------------------------------------------
+POST /officeHour
+input:
+body: {
+  experts: [],
+  title:
+  description:
+}
+response:
+status 200 success
+status 400 missing info or incorrect number of experts
