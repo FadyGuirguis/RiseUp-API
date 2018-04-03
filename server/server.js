@@ -56,6 +56,7 @@ app.post('/acceptRequest/:id', authModule.authenticate, authModule.authAdmin, as
 app.post('/suspendExpert/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.suspendExpert));
 
 // Reviews
+app.post('/reviews', authModule.authenticate, asyncMiddleware(reviewsController.postReview));
 app.get('/reviews/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(reviewsController.getReviewsOnUser));
 
 const port = process.env.PORT || 3000;
