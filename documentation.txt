@@ -165,3 +165,25 @@ body: {
 response:
 status 200 success
 status 400 missing info or incorrect number of experts
+--------------------------------------------------
+POST /reviews
+input:
+body: {
+  review: {
+    rating: Number,
+    description: String,
+    reviewer: { _id, name },
+    reviewed: { _id, name },
+    officeHour: Id
+  }
+}
+response:
+body: { review: Review object that was added to DB }
+--------------------------------------------------
+GET /reviews/:id
+[Admins only] Gets all reviews on user of that id
+response:
+body: {
+  reviews: []
+}
+--------------------------------------------------
