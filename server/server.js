@@ -10,11 +10,14 @@ var User = require('./models/user');
 var Tag = require('./models/tag');
 var Announcement = require('./models/Announcement');
 var OfficeHour = require('./models/OfficeHour');
+var Request = require('./models/request');
 
 var userController = require('./controllers/UserController');
 var tagController = require('./controllers/TagController');
 var announcementsCtlr = require('./controllers/AnnouncementController');
 var OfficeHoursController = require('./controllers/OfficeHoursController');
+var requestController = require('./controllers/RequestController');
+
 var authModule = require('./middleware/authenticate');
 
 var app = express();
@@ -43,6 +46,12 @@ app.get('/officeHours',  authModule.authenticate, asyncMiddleware(OfficeHoursCon
 app.get('/officeHour/:id',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHour));
 app.post('/searchExperts', authModule.authenticate, asyncMiddleware(OfficeHoursController.getExperts));
 
+//Requests
+app.post('/request', authModule.authenticate, asyncMiddleware(requestController.addRequest));
+app.get('/requests', authModule.authenticate, authModule.authAdmin,asyncMiddleware(requestController.getAllRequests));
+app.post('/rejectRequest', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.rejectRequest));
+app.post('/acceptRequest', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.acceptRequest));
+app.post('/suspendExpert', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.suspendExpert));
 
 
 const port = process.env.PORT || 3000;
