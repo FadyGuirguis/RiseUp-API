@@ -49,9 +49,9 @@ app.post('/searchExperts', authModule.authenticate, asyncMiddleware(OfficeHoursC
 //Requests
 app.post('/request', authModule.authenticate, asyncMiddleware(requestController.addRequest));
 app.get('/requests', authModule.authenticate, authModule.authAdmin,asyncMiddleware(requestController.getAllRequests));
-app.post('/rejectRequest', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.rejectRequest));
-app.post('/acceptRequest', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.acceptRequest));
-app.post('/suspendExpert', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.suspendExpert));
+app.post('/rejectRequest/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.rejectRequest));
+app.post('/acceptRequest/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.acceptRequest));
+app.post('/suspendExpert/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.suspendExpert));
 
 
 const port = process.env.PORT || 3000;
