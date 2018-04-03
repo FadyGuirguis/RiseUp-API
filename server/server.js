@@ -48,6 +48,7 @@ app.get('/officeHours',  authModule.authenticate, asyncMiddleware(OfficeHoursCon
 app.get('/officeHour/:id',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHour));
 app.post('/searchExperts', authModule.authenticate, asyncMiddleware(OfficeHoursController.getExperts));
 app.post('/officeHour', authModule.authenticate, asyncMiddleware(OfficeHoursController.saveOfficeHour));
+app.post('/createOfficeHour', authModule.authenticate, asyncMiddleware(reviewsController.createOfficeHour));
 
 //Requests
 app.post('/request', authModule.authenticate, asyncMiddleware(requestController.addRequest));
