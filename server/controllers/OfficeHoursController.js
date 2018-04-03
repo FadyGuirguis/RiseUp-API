@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const {ObjectId} = require('mongodb');
 OfficeHour = mongoose.model('OfficeHour');
+User = mongoose.model('User');
 
 module.exports.insertOfficeHour = async (req, res) => {
   var officeHour = req.body.officeHour;
@@ -45,5 +46,33 @@ module.exports.getOfficeHour = async (req, res) => {
 
   }).catch((err) => {
     res.status(500).send();
+  })
+};
+
+module.exports.getExperts = async (req, res) => {
+  var tags = req.body.tags;
+  var interests = (req.body.tags.length == 0) ? req.user.profile.interests : [];
+  console.log(tags);
+  User.find({
+    roles: {
+      $in: ['expert']
+    },
+    $or: [
+      {
+        'profile.expertIn': {
+          $all: tags
+        }
+      },
+      {
+        'profile.expertIn': {
+          $in: interests
+        }
+      }
+    ]
+  }).select('profile.fullName')
+  .then((experts) => {
+    res.send({experts});
+  }).catch((err) => {
+    res.status(500).send(err);
   })
 };

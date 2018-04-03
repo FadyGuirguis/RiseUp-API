@@ -30,16 +30,6 @@ module.exports.getAllTags = async(req, res) => {
 //remove from tags collection 3shan ana msh fahem ezay shaghala!
 module.exports.removeTag = async(req, res) => {
 
-  // console.log(req.body);
-
-  // Tag.findByIdAndRemove(req.params.id).then((tag) => {
-  //   console.log(tag.tag);
-  //
-  //   res.send({tag});
-  // }, (e) => {
-  //   res.status(500).send(e);
-  // });
-
   var user = new User();
 
   //remove programming with the tag itself
@@ -57,8 +47,6 @@ module.exports.removeTag = async(req, res) => {
 
     }
   });
-//  console.log(result);
-  //db.getCollection('users').update({}, {$pull: {"profile.interests" : {$in: ["guitar"]}}}, {multi:true});
 
 
 

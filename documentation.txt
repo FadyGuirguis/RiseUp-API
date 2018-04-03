@@ -143,3 +143,15 @@ response:
 Response with status 404 will be returned if you try to access
 an office hour unrelated to you
 --------------------------------------------------
+POST /searchExperts
+input:
+body: {
+  tags: array of strings
+}
+response:
+body: {
+  experts: array of experts with _id and profile.fullName only
+}
+pass an empty array when initializing the component and the user's
+interest will be automatically used
+--------------------------------------------------

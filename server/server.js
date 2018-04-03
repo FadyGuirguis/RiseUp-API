@@ -41,6 +41,7 @@ app.delete('/announcement/:id', authModule.authenticate, authModule.authAdmin, a
 app.post('/officeHour', asyncMiddleware(OfficeHoursController.insertOfficeHour));
 app.get('/officeHours',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHours));
 app.get('/officeHour/:id',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHour));
+app.post('/searchExperts', authModule.authenticate, asyncMiddleware(OfficeHoursController.getExperts));
 
 
 
