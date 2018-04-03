@@ -125,3 +125,21 @@ body: {
 POST /logout
 just pass the token in the header and it will be deleted
 --------------------------------------------------
+GET /OfficeHours
+response:
+{
+  body: {
+    officeHours: []
+  }
+}
+--------------------------------------------------
+GET /OfficeHour/:id
+response:
+{
+  body: {
+    officeHour: []
+  }
+}
+Response with status 404 will be returned if you try to access
+an office hour unrelated to you
+--------------------------------------------------
