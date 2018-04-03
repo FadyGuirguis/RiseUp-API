@@ -155,9 +155,20 @@ body: {
 pass an empty array when initializing the component and the user's
 interest will be automatically used
 --------------------------------------------------
+POST /officeHour
+input:
+body: {
+  experts: [],
+  title:
+  description:
+}
+response:
+status 200 success
+status 400 missing info or incorrect number of experts
+--------------------------------------------------
 POST /request
 request: {
-  description: must be entered otherwise response will have status 400
+  description: must be provided otherwise response will have status 400
 }
 --------------------------------------------------
 GET /requests

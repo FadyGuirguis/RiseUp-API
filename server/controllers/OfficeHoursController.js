@@ -69,10 +69,45 @@ module.exports.getExperts = async (req, res) => {
         }
       }
     ]
-  }).select('profile.fullName')
+  }).select('profile.fullName profile.rating, profile.achievements')
   .then((experts) => {
     res.send({experts});
   }).catch((err) => {
     res.status(500).send(err);
   })
+};
+
+module.exports.saveOfficeHour = async (req, res) => {
+  var experts = req.body.experts;
+  if (experts.length > 3 || experts.length == 0) {
+    res.status(400).send({err: 'You have to select between 1 and 3 experts'});
+  }
+  if (!req.body.title || !req.body.description) {
+    res.status(400).send({err: 'You have to supply a title and description'});
+  }
+  body = {
+    user: {
+      _id: req.user._id,
+      name: req.user.profile.fullName,
+    },
+    title: req.body.title,
+    description: req.body.description,
+    createdOn: new Date(),
+    lastModified: new Date(),
+    status: 'pending'
+  }
+  var officeHours = []
+  for (var expert of experts) {
+    body.expert = {
+      _id: expert._id,
+      name: expert.profile.fullName
+    }
+    officeHours.push(new OfficeHour(body));
+  }
+  OfficeHour.insertMany(officeHours).then((officeHours) => {
+    res.send();
+  }).catch((err) => {
+    res.status(500).send({});
+  })
+
 };
