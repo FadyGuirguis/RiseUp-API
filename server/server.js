@@ -9,10 +9,12 @@ var {mongoose} = require('./db/mongoose');
 var User = require('./models/user');
 var Tag = require('./models/tag');
 var Announcement = require('./models/Announcement');
+var Request = require('./models/request');
 
 var userController = require('./controllers/UserController');
 var tagController = require('./controllers/TagController');
 var announcementsCtlr = require('./controllers/AnnouncementController');
+var requestController = require('./controllers/RequestController');
 
 var authModule = require('./middleware/authenticate');
 
@@ -36,6 +38,11 @@ app.get('/announcements', asyncMiddleware(announcementsCtlr.getAllAnnouncements)
 app.post('/announcement', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.postAnnouncement));
 app.delete('/announcement/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.deleteAnnouncement));
 
+//Requests
+app.post('/request', authModule.authenticate, asyncMiddleware(requestController.addRequest));
+app.get('/requests', authModule.authenticate, authModule.authAdmin,asyncMiddleware(requestController.getAllRequests));
+app.post('/rejectRequest', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.rejectRequest));
+app.post('/acceptRequest', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.acceptRequest));
 
 
 const port = process.env.PORT || 3000;
