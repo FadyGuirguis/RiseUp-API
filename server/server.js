@@ -50,6 +50,7 @@ app.post('/request', authModule.authenticate, asyncMiddleware(requestController.
 app.get('/requests', authModule.authenticate, authModule.authAdmin,asyncMiddleware(requestController.getAllRequests));
 app.post('/rejectRequest', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.rejectRequest));
 app.post('/acceptRequest', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.acceptRequest));
+app.post('/suspendExpert', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.suspendExpert));
 
 
 const port = process.env.PORT || 3000;

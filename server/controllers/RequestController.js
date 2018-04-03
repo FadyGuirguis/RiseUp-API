@@ -45,7 +45,7 @@ module.exports.rejectRequest = async (req, res) => {
 
     Request.findByIdAndUpdate(id, {$set: request}, {new: true}).then((request) => {
       if(! request) {
-        res.status(404).send('Request is not found');
+        res.status(404).send();
       }
       else {
         res.status(200).send({request});
@@ -84,4 +84,35 @@ module.exports.acceptRequest = async (req, res) => {
       res.status(500).send(e);
     })
   }
+}
+
+module.exports.suspendExpert = async(req, res) => {
+  if(! req.body.user) {
+    res.status(404).send('User was not sent');
+  }
+  else if(! req.body.user._id) {
+      res.status(404).send('id of user must be sent');
+  }
+  else {
+    var id = req.body.user._id;
+    User.find({_id: id}).then((Suser) => {
+       if(! Suser) {
+         return res.status(404).send();
+       }
+       var user = Suser[0];
+       var roles = user.roles;
+       var newRoles = roles.filter((role) => role !== 'expert');
+       user.roles = newRoles;
+       return User.findByIdAndUpdate(id, {$set: user}, {new: true}).then((updatedUser) => {
+         if(! updatedUser) {
+           res.status(404).send();
+         }
+         else {
+           res.status(200).send({updatedUser});
+         }
+       }, (e) => {
+         res.status(500).send();
+       })
+      })
+   }
 }
