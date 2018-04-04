@@ -122,10 +122,10 @@ module.exports.editProfile = async (req, res) => {
         }
         else{
           if(result.length != 0){ //found an item
-              res.status(200).send(result);
+              res.status(200).send({result});
           }
           else {
-              res.status(404).send(result);
+              res.status(404).send({result});
           }
         }
 
@@ -141,16 +141,16 @@ module.exports.editProfile = async (req, res) => {
      //select what you want, seperate by white space
      query.select("email roles profile.fullName profile.description profile.rating profile.interests profile.expertIn");
 
-        query.exec(function(error, result){
+        query.exec(function(error, user){
          if (error){
            res.status(500).send(error); //something wrong happended
          }
          else{
-           if(result.length != 0){ //found an item
-               res.status(200).send(result);
+           if(user.length != 0){ //found an item
+               res.status(200).send({user: user[0]});
            }
            else {
-               res.status(404).send(result);
+               res.status(404).send();
            }
          }
 

@@ -203,4 +203,20 @@ ID of the request must be added to the URL otherwise response will have status 4
 --------------------------------------------------
 POST /suspendExpert/:id
 ID of the expert must be added to the URL otherwise response will have status 404
-
+--------------------------------------------------
+POST /searchByName
+input:
+body: {
+  name:
+}
+response:
+body: {
+  result: []
+}
+status 404 if no matches found
+--------------------------------------------------
+GET /user/:id
+response: {
+  user:
+}
+-------------------------------------------------
