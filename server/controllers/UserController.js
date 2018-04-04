@@ -98,3 +98,61 @@ module.exports.editProfile = async (req, res) => {
       res.status(500).send();
     });
   }
+
+
+
+
+//search users by name,
+//msh exact name, like!,
+//example: there's Daniel Ashraf and Daniel Erian in the database,
+//I search for Daniel, yegeeli Daniel Ashraf w Daniel Erian
+
+//db.getCollection('users').find({"profile.fullName": {'$regex': 'tEst', '$options': 'i'}})
+
+
+  module.exports.searchByName = async (req, res) => {
+    console.log(req.body.name);
+
+    var query = mongoose.model('User').find({"profile.fullName": {'$regex': req.body.name, '$options': 'i'}});
+    query.select("profile.fullName _id");
+
+       query.exec(function(error, result){
+        if (error){
+          res.status(500).send(error); //something wrong happended
+        }
+        else{
+          if(result.length != 0){ //found an item
+              res.status(200).send(result);
+          }
+          else {
+              res.status(404).send(result);
+          }
+        }
+
+      });
+  }
+
+  ///user/:id
+  module.exports.getUserByID = async (req, res) => {
+    console.log(req.params.id);
+
+     var query = mongoose.model('User').find({"_id":  req.params.id});
+
+     //select what you want, seperate by white space
+     query.select("email roles profile.fullName profile.description profile.rating profile.interests profile.expertIn");
+
+        query.exec(function(error, result){
+         if (error){
+           res.status(500).send(error); //something wrong happended
+         }
+         else{
+           if(result.length != 0){ //found an item
+               res.status(200).send(result);
+           }
+           else {
+               res.status(404).send(result);
+           }
+         }
+
+       });
+  }

@@ -187,3 +187,20 @@ body: {
   reviews: []
 }
 --------------------------------------------------
+POST /request
+request: {
+  description: must be provided otherwise response will have status 400
+}
+--------------------------------------------------
+GET /requests
+Nothing required just an admin must be logged-in to view requests
+--------------------------------------------------
+POST /rejectRequest/:id
+ID of the request must be added to the URL otherwise response will have status 404
+--------------------------------------------------
+POST /acceptRequest/:id
+ID of the request must be added to the URL otherwise response will have status 404
+--------------------------------------------------
+POST /suspendExpert/:id
+ID of the expert must be added to the URL otherwise response will have status 404
+
