@@ -220,3 +220,23 @@ response: {
   user:
 }
 -------------------------------------------------
+POST /acceptOfficeHour
+input:
+body: {
+  officeHour:
+}
+pass the officeHour object you have but fill suggestedSlots.slots first with
+an array of Dates
+response:
+body: {
+  officeHour:
+}
+status 400 will be returned with a message (body.err) if there was a problem
+with the data
+-------------------------------------------------
+POST /rejectOfficeHour/:id
+response:
+body: {
+  officeHour:
+}
+-------------------------------------------------

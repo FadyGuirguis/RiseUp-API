@@ -53,6 +53,8 @@ app.get('/officeHours',  authModule.authenticate, asyncMiddleware(OfficeHoursCon
 app.get('/officeHour/:id',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHour));
 app.post('/searchExperts', authModule.authenticate, asyncMiddleware(OfficeHoursController.getExperts));
 app.post('/officeHour', authModule.authenticate, asyncMiddleware(OfficeHoursController.saveOfficeHour));
+app.post('/acceptOfficeHour',  authModule.authenticate, authModule.authExpert, asyncMiddleware(OfficeHoursController.acceptOfficeHour));
+app.post('/rejectOfficeHour/:id',  authModule.authenticate, authModule.authExpert, asyncMiddleware(OfficeHoursController.rejectOfficeHour));
 
 //Requests
 app.post('/request', authModule.authenticate, asyncMiddleware(requestController.addRequest));
@@ -64,6 +66,7 @@ app.post('/suspendExpert/:id', authModule.authenticate, authModule.authAdmin, as
 // Reviews
 app.post('/reviews', authModule.authenticate, asyncMiddleware(reviewsController.postReview));
 app.get('/reviews/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(reviewsController.getReviewsOnUser));
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

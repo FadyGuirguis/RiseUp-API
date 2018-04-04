@@ -111,3 +111,44 @@ module.exports.saveOfficeHour = async (req, res) => {
   })
 
 };
+
+module.exports.acceptOfficeHour = async (req, res) => {
+  if (!req.body.officeHour)
+    return res.status(400).send({err: "Office Hour wasn't recieved"});
+  if (!req.body.officeHour.suggestedSlots || !req.body.officeHour.suggestedSlots.slots)
+    return res.status(400).send({err: "Suggested slots were not recieved"});
+  if (req.body.officeHour.suggestedSlots.slots.length > 3
+      || req.body.officeHour.suggestedSlots.slots.length == 0)
+    return res.status(400).send({err: "You need to select between 1 and 3 slots"});
+  if (req.body.officeHour.status != 'pending')
+    return res.status(400).send({err: "This office hour has already been replied to"});
+
+  OfficeHour.findByIdAndUpdate(req.body.officeHour._id, {
+    $set: {
+      'suggestedSlots.slots': req.body.officeHour.suggestedSlots.slots,
+      'suggestedSlots.createdOn': new Date(),
+      lastModified: new Date(),
+      status: 'accepted'
+    }
+  },  {new: true}).then((officeHour) => {
+    res.send({officeHour});
+  }).catch((err) => {
+    res.status(500).send({err});
+  })
+
+};
+
+module.exports.rejectOfficeHour = async (req, res) => {
+  var id = req.params.id;
+  OfficeHour.findByIdAndUpdate(id, {
+    $set: {
+      status: 'rejected',
+      lastModified: new Date()
+    }
+  }, {new:true}).then((officeHour) => {
+    res.send({officeHour});
+  }).catch((err) => {
+    res.status(500).send({err});
+  });
+
+};
