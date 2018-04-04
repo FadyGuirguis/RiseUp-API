@@ -11,12 +11,14 @@ var Tag = require('./models/tag');
 var Announcement = require('./models/Announcement');
 var OfficeHour = require('./models/OfficeHour');
 var Request = require('./models/request');
+var Review = require('./models/Review');
 
 var userController = require('./controllers/UserController');
 var tagController = require('./controllers/TagController');
 var announcementsCtlr = require('./controllers/AnnouncementController');
 var OfficeHoursController = require('./controllers/OfficeHoursController');
 var requestController = require('./controllers/RequestController');
+var reviewsController = require('./controllers/ReviewController');
 
 var authModule = require('./middleware/authenticate');
 
@@ -59,6 +61,9 @@ app.post('/rejectRequest/:id', authModule.authenticate, authModule.authAdmin, as
 app.post('/acceptRequest/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.acceptRequest));
 app.post('/suspendExpert/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(requestController.suspendExpert));
 
+// Reviews
+app.post('/reviews', authModule.authenticate, asyncMiddleware(reviewsController.postReview));
+app.get('/reviews/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(reviewsController.getReviewsOnUser));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
