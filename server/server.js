@@ -46,10 +46,11 @@ app.post('/announcement', authModule.authenticate, authModule.authAdmin, asyncMi
 app.delete('/announcement/:id', authModule.authenticate, authModule.authAdmin, asyncMiddleware(announcementsCtlr.deleteAnnouncement));
 
 // Office OfficeHour
-app.post('/officeHour', asyncMiddleware(OfficeHoursController.insertOfficeHour));
+//app.post('/officeHour', asyncMiddleware(OfficeHoursController.insertOfficeHour));
 app.get('/officeHours',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHours));
 app.get('/officeHour/:id',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHour));
 app.post('/searchExperts', authModule.authenticate, asyncMiddleware(OfficeHoursController.getExperts));
+app.post('/officeHour', authModule.authenticate, asyncMiddleware(OfficeHoursController.saveOfficeHour));
 
 //Requests
 app.post('/request', authModule.authenticate, asyncMiddleware(requestController.addRequest));

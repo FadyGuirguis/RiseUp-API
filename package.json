@@ -20,6 +20,7 @@
     "moment": "^2.21.0",
     "mongodb": "^3.0.5",
     "mongoose": "^5.0.11",
+    "nodemailer": "^4.6.4",
     "nodemon": "^1.17.3"
   }
 }
