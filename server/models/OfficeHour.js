@@ -32,7 +32,7 @@ const OfficeHourSchema = mongoose.Schema({
     slots: [Date],
     createdOn: Date
   },
-  choosenSlot: {
+  chosenSlot: {
     slot: Date,
     createdOn: Date
   },

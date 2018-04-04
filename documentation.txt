@@ -240,3 +240,17 @@ body: {
   officeHour:
 }
 -------------------------------------------------
+POST /confirmOfficeHour
+input:
+body: {
+  officeHour:
+}
+pass the officeHour object you have but fill chosenSlot.slot first with
+a date
+response:
+body: {
+  officeHour:
+}
+status 400 will be returned with a message (body.err) if there was a problem
+with the data
+-------------------------------------------------

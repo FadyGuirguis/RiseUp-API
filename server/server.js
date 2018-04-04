@@ -55,6 +55,7 @@ app.post('/searchExperts', authModule.authenticate, asyncMiddleware(OfficeHoursC
 app.post('/officeHour', authModule.authenticate, asyncMiddleware(OfficeHoursController.saveOfficeHour));
 app.post('/acceptOfficeHour',  authModule.authenticate, authModule.authExpert, asyncMiddleware(OfficeHoursController.acceptOfficeHour));
 app.post('/rejectOfficeHour/:id',  authModule.authenticate, authModule.authExpert, asyncMiddleware(OfficeHoursController.rejectOfficeHour));
+app.post('/confirmOfficeHour',  authModule.authenticate, asyncMiddleware(OfficeHoursController.confirmOfficeHour));
 
 //Requests
 app.post('/request', authModule.authenticate, asyncMiddleware(requestController.addRequest));
