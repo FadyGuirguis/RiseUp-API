@@ -17,7 +17,7 @@ module.exports.getReviewsOnUser = async (req, res) => {
 };
 
 module.exports.postReview = async (req, res) => {
-
+    
     if(!req.body.review)
         res.status(400).send('No review');
 
@@ -45,7 +45,7 @@ module.exports.postReview = async (req, res) => {
     });
 
     var reviewToSave = new Review();
-    reviewToSave.reviewer = req.body.review.reviewer;
+    reviewToSave.reviewer = req.user._id;
     reviewToSave.reviewed = req.body.review.reviewed;
     reviewToSave.officeHours = req.body.review.officeHours;
     reviewToSave.description = req.body.review.description;
