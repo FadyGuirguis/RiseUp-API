@@ -4,19 +4,6 @@ const {ObjectId} = require('mongodb');
 OfficeHour = mongoose.model('OfficeHour');
 User = mongoose.model('User');
 
-module.exports.insertOfficeHour = async (req, res) => {
-  var officeHour = req.body.officeHour;
-  officeHour.user._id = new ObjectId();
-  officeHour.expert._id = new ObjectId();
-  officeHour.createdOn = new Date();
-  officeHour = new OfficeHour(officeHour);
-  officeHour.save().then((officeHour) => {
-    res.send({officeHour});
-  }).catch((err) => {
-    res.status(500).send({err});
-  })
-};
-
 module.exports.getOfficeHours = async (req, res) => {
   var id = req.user._id;
   OfficeHour.find({
@@ -50,6 +37,8 @@ module.exports.getOfficeHour = async (req, res) => {
 };
 
 module.exports.getExperts = async (req, res) => {
+  if (!req.body.tags)
+    return res.status(400).send({err: 'tags not recieved'});
   var tags = req.body.tags;
   var interests = (req.body.tags.length == 0) ? req.user.profile.interests : [];
   console.log(tags);
@@ -120,22 +109,26 @@ module.exports.acceptOfficeHour = async (req, res) => {
   if (req.body.officeHour.suggestedSlots.slots.length > 3
       || req.body.officeHour.suggestedSlots.slots.length == 0)
     return res.status(400).send({err: "You need to select between 1 and 3 slots"});
-  if (req.body.officeHour.status != 'pending')
-    return res.status(400).send({err: "This office hour has already been replied to"});
 
-  OfficeHour.findByIdAndUpdate(req.body.officeHour._id, {
-    $set: {
-      'suggestedSlots.slots': req.body.officeHour.suggestedSlots.slots,
-      'suggestedSlots.createdOn': new Date(),
-      lastModified: new Date(),
-      status: 'accepted'
-    }
-  },  {new: true}).then((officeHour) => {
+  OfficeHour.find({
+    _id: req.body.officeHour._id,
+    'expert._id': req.user._id
+  }).then((officeHours) => {
+    if (officeHours.length == 0)
+      return res.status(401).send({err: "This request has not been sent to you"});
+    var officeHour = officeHours[0];
+    if (officeHour.status != 'pending')
+      return res.status(400).send({err: "This office hour has already been replied to"});
+    officeHour.suggestedSlots.slots =  req.body.officeHour.suggestedSlots.slots;
+    officeHour.suggestedSlots.createdOn = new Date();
+    officeHour.lastModified = new Date();
+    officeHour.status = 'accepted';
+    return officeHour.save();
+  }).then((officeHour) => {
     res.send({officeHour});
   }).catch((err) => {
     res.status(500).send({err});
-  })
-
+  });
 };
 
 module.exports.rejectOfficeHour = async (req, res) => {
@@ -178,3 +171,46 @@ module.exports.confirmOfficeHour = async (req, res) => {
 
 
 };
+
+// module.exports.confirmOfficeHour = async (req, res) => {
+//   if (!req.body.officeHour)
+//     return res.status(400).send({err: "Office Hour wasn't recieved"});
+//   if (!req.body.officeHour.chosenSlot || !req.body.officeHour.chosenSlot.slot)
+//     return res.status(400).send({err: "Chosen slot was not recieved"});
+//
+//
+//     OfficeHour.find({
+//       _id: req.body.officeHour._id,
+//       'user._id': req.user._id
+//     }).then((officeHours) => {
+//       if (officeHours.length == 0)
+//         return res.status(401).send({err: "This request is not yours"});
+//
+//       var officeHour = officeHours[0];
+//
+//       if (officeHour.status != 'accepted')
+//         return res.status(400).send({err: "This office has not been accepted"});
+//       console.log('----------------');
+//       console.log(officeHour.suggestedSlots.slots);
+//       console.log('----------------');
+//       console.log(req.body.officeHour.chosenSlot.slot);
+//       console.log('----------------');
+//       for (var date of officeHour.suggestedSlots.slots)
+//         if (date == req.body.officeHour.chosenSlot.slot){
+//           console.log(date);
+//           console.log(req.body.officeHour.chosenSlot.slot);
+//             console.log("Caroline Emad");
+//         }
+//
+//
+//
+//
+//
+//     }).then((officeHour) => {
+//       res.send({officeHour});
+//     }).catch((err) => {
+//       res.status(500).send({err});
+//     });
+//
+//
+// };
