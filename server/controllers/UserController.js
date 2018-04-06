@@ -113,7 +113,14 @@ module.exports.editProfile = async (req, res) => {
   module.exports.searchByName = async (req, res) => {
     console.log(req.body.name);
 
-    var query = mongoose.model('User').find({"profile.fullName": {'$regex': req.body.name, '$options': 'i'}});
+    var query = mongoose.model('User').find({
+      _id: {
+        $ne: req.user._id
+      },
+      "profile.fullName": {
+        '$regex': req.body.name, '$options': 'i'
+      }
+    });
     query.select("profile.fullName _id");
 
        query.exec(function(error, result){

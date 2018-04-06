@@ -47,6 +47,9 @@ module.exports.getExperts = async (req, res) => {
   var interests = (req.body.tags.length == 0) ? req.user.profile.interests : [];
   console.log(tags);
   User.find({
+    _id: {
+      $ne: req.user._id
+    },
     roles: {
       $in: ['expert']
     },
@@ -137,21 +140,6 @@ module.exports.acceptOfficeHour = async (req, res) => {
   });
 };
 
-// module.exports.rejectOfficeHour = async (req, res) => {
-//   var id = req.params.id;
-//   OfficeHour.findByIdAndUpdate(id, {
-//     $set: {
-//       status: 'rejected',
-//       lastModified: new Date()
-//     }
-//   }, {new:true}).then((officeHour) => {
-//     res.send({officeHour});
-//   }).catch((err) => {
-//     res.status(400).send({err});
-//   });
-//
-// };
-
 module.exports.rejectOfficeHour = async (req, res) => {
   var id = req.params.id;
   OfficeHour.find({
@@ -173,32 +161,6 @@ module.exports.rejectOfficeHour = async (req, res) => {
   });
 
 };
-
-// module.exports.confirmOfficeHour = async (req, res) => {
-//   if (!req.body.officeHour)
-//     return res.status(400).send({err: "Office Hour wasn't recieved"});
-//   if (!req.body.officeHour.chosenSlot || !req.body.officeHour.chosenSlot.slot)
-//     return res.status(400).send({err: "Chosen slot was not recieved"});
-//   if (req.body.officeHour.suggestedSlots.slots.indexOf(req.body.officeHour.chosenSlot.slot) == -1)
-//     return res.status(400).send({err: "The time slot you selected was not suggested by the expert"});
-//   if (req.body.officeHour.status != 'accepted')
-//     return res.status(400).send({err: "This office hour hasn't been accepted"});
-//
-//     OfficeHour.findByIdAndUpdate(req.body.officeHour._id, {
-//       $set: {
-//         'chosenSlot.slot': req.body.officeHour.chosenSlot.slot,
-//         'chosenSlot.createdOn': new Date(),
-//         lastModified: new Date(),
-//         status: 'confirmed'
-//       }
-//     },  {new: true}).then((officeHour) => {
-//       res.send({officeHour});
-//     }).catch((err) => {
-//       res.status(500).send({err});
-//     })
-//
-//
-// };
 
 module.exports.confirmOfficeHour = async (req, res) => {
   if (!req.body.officeHour)
