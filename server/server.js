@@ -32,9 +32,7 @@ app.post('/login', asyncMiddleware(userController.loginUser));
 app.post('/editProfile', authModule.authenticate, asyncMiddleware(userController.editProfile));
 app.post('/changePassword',  authModule.authenticate, asyncMiddleware(userController.changePassword));
 app.post('/logout', authModule.authenticate, asyncMiddleware(userController.logout));
-//app.post('/searchByName', authModule.authenticate, asyncMiddleware(userController.searchByName));
 app.post('/searchByName', asyncMiddleware(userController.searchByName));
-//app.post('/searchByName', authModule.authenticate, asyncMiddleware(userController.searchByName));
 app.get('/user/:id', asyncMiddleware(userController.getUserByID));
 
 // Tags
@@ -52,9 +50,9 @@ app.get('/officeHours',  authModule.authenticate, asyncMiddleware(OfficeHoursCon
 app.get('/officeHour/:id',  authModule.authenticate, asyncMiddleware(OfficeHoursController.getOfficeHour));
 app.post('/searchExperts', authModule.authenticate, asyncMiddleware(OfficeHoursController.getExperts));
 app.post('/officeHour', authModule.authenticate, asyncMiddleware(OfficeHoursController.saveOfficeHour));
-app.post('/acceptOfficeHour',  authModule.authenticate, authModule.authExpert, asyncMiddleware(OfficeHoursController.acceptOfficeHour));
+app.post('/acceptOfficeHour/:id',  authModule.authenticate, authModule.authExpert, asyncMiddleware(OfficeHoursController.acceptOfficeHour));
 app.post('/rejectOfficeHour/:id',  authModule.authenticate, authModule.authExpert, asyncMiddleware(OfficeHoursController.rejectOfficeHour));
-app.post('/confirmOfficeHour',  authModule.authenticate, asyncMiddleware(OfficeHoursController.confirmOfficeHour));
+app.post('/confirmOfficeHour/:id',  authModule.authenticate, asyncMiddleware(OfficeHoursController.confirmOfficeHour));
 
 //Requests
 app.post('/request', authModule.authenticate, asyncMiddleware(requestController.addRequest));
