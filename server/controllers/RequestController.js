@@ -44,7 +44,7 @@ module.exports.addRequest = async (req, res) => {
   var id = req.user.id;
 
   Request.find({'user._id': id}).then((request) => {
-    if(request) {
+    if(request[0]) {
       if(request[0].status === 'Pending') {
         return res.status(400).send('You already have a pending request');
       }
