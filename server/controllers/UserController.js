@@ -139,7 +139,7 @@ module.exports.editProfile = async (req, res) => {
      var query = mongoose.model('User').find({"_id":  req.params.id});
 
      //select what you want, seperate by white space
-     query.select("email roles profile.fullName profile.description profile.rating profile.interests profile.expertIn");
+     query.select("email roles profile.fullName profile.description profile.rating profile.interests profile.expertIn profile.achievements");
 
         query.exec(function(error, user){
          if (error){

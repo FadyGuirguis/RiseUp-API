@@ -166,15 +166,12 @@ response:
 status 200 success
 status 400 missing info or incorrect number of experts
 --------------------------------------------------
-POST /reviews
+POST /review/:id (id of officehour)
 input:
 body: {
   review: {
     rating: Number,
-    description: String,
-    reviewer: { _id, name },
-    reviewed: { _id, name },
-    officeHour: Id
+    description: String
   }
 }
 response:
@@ -220,7 +217,7 @@ response: {
   user:
 }
 -------------------------------------------------
-POST /acceptOfficeHour
+POST /acceptOfficeHour/:id
 input:
 body: {
   officeHour:
@@ -240,7 +237,7 @@ body: {
   officeHour:
 }
 -------------------------------------------------
-POST /confirmOfficeHour
+POST /confirmOfficeHour/:id
 input:
 body: {
   officeHour:

@@ -62,7 +62,7 @@ module.exports.getExperts = async (req, res) => {
         }
       }
     ]
-  }).select('profile.fullName profile.rating, profile.achievements')
+  }).select('profile.fullName profile.rating profile.achievements')
   .then((experts) => {
     res.send({experts});
   }).catch((err) => {
