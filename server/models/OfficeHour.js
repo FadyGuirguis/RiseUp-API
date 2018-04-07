@@ -27,6 +27,14 @@ const OfficeHourSchema = mongoose.Schema({
       required: true
     }
   },
+  isUserReviewed: {
+    type: Boolean,
+    default: false
+  },
+  isExpertReviewed: {
+    type: Boolean,
+    default: false
+  },
   createdOn: Date,
   suggestedSlots: {
     slots: [Date],

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const {ObjectId} = require('mongodb');
 Review = mongoose.model('Review');
 OfficeHour = mongoose.model('OfficeHour');
+User = mongoose.model('User');
 
 module.exports.getReviewsOnUser = async (req, res) => {
 
@@ -17,44 +18,69 @@ module.exports.getReviewsOnUser = async (req, res) => {
 };
 
 module.exports.postReview = async (req, res) => {
-    
+
     if(!req.body.review)
-        res.status(400).send('No review');
+        return res.status(400).send({err: 'No review'});
 
     if(!req.body.review.rating)
-        res.status(400).send('Rating not specified');
+        return res.status(400).send({err: 'Rating not specified'});
 
-    if(!req.body.review.reviewer)
-        res.status(400).send('Reviewer not specified');
+    if(!req.body.review.description)
+        return res.status(400).send({err: 'Description not specified'});
 
-    if(!req.body.review.reviewed)
-        res.status(400).send('Reviewed user not specified');
+    if (!ObjectId.isValid(req.params.id))
+      return res.status(400).send({err: 'Invalid Office Hour id'});
 
-    if(!req.body.review.officeHours)
-        res.status(400).send('Office hours not specified');
-    
-    OfficeHour.findOne({ _id: req.body.review.officeHours }, (err, officeHour) => {
+    var officeHourId = req.params.id;
+    var body  = {
+      officeHours: req.params.id,
+      description: req.body.review.description,
+      rating: req.body.review.rating
+    }
 
-        if(!officeHour)
-            res.status(400).send('Office hours not found');
+    OfficeHour.findOne({_id: officeHourId}).then((officeHour) => {
 
-        // TODO: Make sure the reviewer is either the user or the expert
-        // TODO: Make sure the reviewed is either the user or the expert
-        // TODO: Make sure the reviewer and reviewed are not the same.
+      if (!officeHour)
+        return Promise.reject("Office hour not found");
 
-    });
+      if (officeHour.user._id.equals(req.user._id)) {
+        if (officeHour.isExpertReviewed == true)
+          return Promise.reject("You've already submitted a review");
+        officeHour.isExpertReviewed = true;
+        body.reviewer = officeHour.user;
+        body.reviewed = officeHour.expert;
+      }
+      else if (officeHour.expert._id.equals(req.user._id)) {
+        if (officeHour.isUserReviewed == true)
+          return Promise.reject("You've already submitted a review");
+        officeHour.isUserReviewed = true;
+        body.reviewer = officeHour.expert;
+        body.reviewed = officeHour.user;
+      }
+      else
+        return Promise.reject("This office hour is not related to you");
 
-    var reviewToSave = new Review();
-    reviewToSave.reviewer = req.user._id;
-    reviewToSave.reviewed = req.body.review.reviewed;
-    reviewToSave.officeHours = req.body.review.officeHours;
-    reviewToSave.description = req.body.review.description;
-    reviewToSave.rating = req.body.review.rating;
+      return officeHour.save();
 
-    reviewToSave.save().then((review) => {
-        res.send(review);
+    }).then((officeHour) => {
+
+      if (officeHour.user._id.equals(req.user._id))
+        return User.findOne({_id: officeHour.expert._id});
+      else
+        return User.findOne({_id: officeHour.user._id});
+
+    }).then((user) => {
+      var newRating = (user.profile.rating.rating * user.profile.rating.count + req.body.review.rating) / (user.profile.rating.count + 1);
+      user.profile.rating.rating = newRating;
+      user.profile.rating.count = user.profile.rating.count + 1;
+      return user.save();
+    }).then((user) => {
+      var review = new Review(body);
+      return review.save();
+    }).then((review) => {
+      res.send({review});
     }).catch((err) => {
-        res.status(500).send(err);
-    });
+      res.status(400).send({err});
+    })
 
 };

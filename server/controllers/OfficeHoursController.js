@@ -4,19 +4,6 @@ const {ObjectId} = require('mongodb');
 OfficeHour = mongoose.model('OfficeHour');
 User = mongoose.model('User');
 
-module.exports.insertOfficeHour = async (req, res) => {
-  var officeHour = req.body.officeHour;
-  officeHour.user._id = new ObjectId();
-  officeHour.expert._id = new ObjectId();
-  officeHour.createdOn = new Date();
-  officeHour = new OfficeHour(officeHour);
-  officeHour.save().then((officeHour) => {
-    res.send({officeHour});
-  }).catch((err) => {
-    res.status(500).send({err});
-  })
-};
-
 module.exports.getOfficeHours = async (req, res) => {
   var id = req.user._id;
   OfficeHour.find({
@@ -28,6 +15,10 @@ module.exports.getOfficeHours = async (req, res) => {
         'expert._id': id
       }
     ]
+  }, null, {
+    sort: {
+      lastModified: -1
+    }
   }).select('user expert title status lastModified')
     .then((officeHours) => {
       res.send({officeHours});
@@ -50,10 +41,15 @@ module.exports.getOfficeHour = async (req, res) => {
 };
 
 module.exports.getExperts = async (req, res) => {
+  if (!req.body.tags)
+    return res.status(400).send({err: 'tags not recieved'});
   var tags = req.body.tags;
   var interests = (req.body.tags.length == 0) ? req.user.profile.interests : [];
   console.log(tags);
   User.find({
+    _id: {
+      $ne: req.user._id
+    },
     roles: {
       $in: ['expert']
     },
@@ -69,7 +65,7 @@ module.exports.getExperts = async (req, res) => {
         }
       }
     ]
-  }).select('profile.fullName profile.rating, profile.achievements')
+  }).select('profile.fullName profile.rating profile.achievements')
   .then((experts) => {
     res.send({experts});
   }).catch((err) => {
@@ -120,35 +116,48 @@ module.exports.acceptOfficeHour = async (req, res) => {
   if (req.body.officeHour.suggestedSlots.slots.length > 3
       || req.body.officeHour.suggestedSlots.slots.length == 0)
     return res.status(400).send({err: "You need to select between 1 and 3 slots"});
-  if (req.body.officeHour.status != 'pending')
-    return res.status(400).send({err: "This office hour has already been replied to"});
 
-  OfficeHour.findByIdAndUpdate(req.body.officeHour._id, {
-    $set: {
-      'suggestedSlots.slots': req.body.officeHour.suggestedSlots.slots,
-      'suggestedSlots.createdOn': new Date(),
-      lastModified: new Date(),
-      status: 'accepted'
-    }
-  },  {new: true}).then((officeHour) => {
+  var id = req.params.id;
+
+  OfficeHour.find({
+    _id: id,
+    'expert._id': req.user._id
+  }).then((officeHours) => {
+    if (officeHours.length == 0)
+      return Promise.reject("This request has not been sent to you");
+    var officeHour = officeHours[0];
+    if (officeHour.status != 'pending')
+      return Promise.reject("This office hour has already been replied to");
+    officeHour.suggestedSlots.slots =  req.body.officeHour.suggestedSlots.slots;
+    officeHour.suggestedSlots.createdOn = new Date();
+    officeHour.lastModified = new Date();
+    officeHour.status = 'accepted';
+    return officeHour.save();
+  }).then((officeHour) => {
     res.send({officeHour});
   }).catch((err) => {
-    res.status(500).send({err});
-  })
-
+    res.status(400).send({err});
+  });
 };
 
 module.exports.rejectOfficeHour = async (req, res) => {
   var id = req.params.id;
-  OfficeHour.findByIdAndUpdate(id, {
-    $set: {
-      status: 'rejected',
-      lastModified: new Date()
-    }
-  }, {new:true}).then((officeHour) => {
+  OfficeHour.find({
+    _id: id,
+    'expert._id': req.user._id
+  }).then((officeHours) => {
+    if (officeHours.length == 0)
+      return Promise.reject("This request has not been sent to you");
+    var officeHour = officeHours[0];
+    if (officeHour.status != 'pending')
+      return Promise.reject("This office hour has already been replied to");
+    officeHour.lastModified = new Date();
+    officeHour.status = 'rejected';
+    return officeHour.save();
+  }).then((officeHour) => {
     res.send({officeHour});
   }).catch((err) => {
-    res.status(500).send({err});
+    res.status(400).send({err});
   });
 
 };
@@ -158,23 +167,38 @@ module.exports.confirmOfficeHour = async (req, res) => {
     return res.status(400).send({err: "Office Hour wasn't recieved"});
   if (!req.body.officeHour.chosenSlot || !req.body.officeHour.chosenSlot.slot)
     return res.status(400).send({err: "Chosen slot was not recieved"});
-  if (req.body.officeHour.suggestedSlots.slots.indexOf(req.body.officeHour.chosenSlot.slot) == -1)
-    return res.status(400).send({err: "The time slot you selected was not suggested by the expert"});
-  if (req.body.officeHour.status != 'accepted')
-    return res.status(400).send({err: "This office hour hasn't been accepted"});
 
-    OfficeHour.findByIdAndUpdate(req.body.officeHour._id, {
-      $set: {
-        'chosenSlot.slot': req.body.officeHour.chosenSlot.slot,
-        'chosenSlot.createdOn': new Date(),
-        lastModified: new Date(),
-        status: 'confirmed'
-      }
-    },  {new: true}).then((officeHour) => {
+  var id = req.params.id;
+
+    OfficeHour.find({
+      _id: id,
+      'user._id': req.user._id
+    }).then((officeHours) => {
+      if (officeHours.length == 0)
+        return Promise.reject("This request is not yours");
+
+      var officeHour = officeHours[0];
+      if (officeHour.status == 'confirmed')
+        return Promise.reject("You have already confirmed this office hour");
+      if (officeHour.status != 'accepted')
+        return Promise.reject("This office has not been accepted");
+
+      for (var slot of officeHour.suggestedSlots.slots)
+        if (slot.getTime() == new Date(req.body.officeHour.chosenSlot.slot).getTime()) {
+          officeHour.chosenSlot.slot = req.body.officeHour.chosenSlot.slot;
+          officeHour.chosenSlot.createdOn = new Date();
+          officeHour.lastModified = new Date();
+          officeHour.status = 'confirmed';
+          return officeHour.save();
+        }
+
+     return Promise.reject("This slot was not suggested by the expert");
+    }).then((officeHour) => {
       res.send({officeHour});
     }).catch((err) => {
-      res.status(500).send({err});
-    })
+      console.log(err);
+      res.status(400).send({err});
+    });
 
 
 };
