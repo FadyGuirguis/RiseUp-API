@@ -43,6 +43,10 @@ module.exports.getAllRequests = async (req, res) => {
 module.exports.addRequest = async (req, res) => {
   var id = req.user.id;
 
+  if(req.user.roles.includes('expert')) {
+    return res.status(400).send('You are already an expert');
+  }
+
   Request.find({'user._id': id}).then((request) => {
     if(request[0]) {
       if(request[0].status === 'Pending') {
@@ -53,40 +57,40 @@ module.exports.addRequest = async (req, res) => {
     if(!req.body.request) {
       return res.status(400).send('Request is required');
     }
-    else if(!req.body.request.description) {
+
+    if(!req.body.request.description) {
       return res.status(400).send('You must add description');
     }
-    else {
-      var request = new Request({
-        user: {
-          _id: req.user._id,
-          name : req.user.profile.fullName
-        },
-        description: req.body.request.description
-      })
 
-      request.save().then((request) => {
-        res.status(200).send({request});
-      }, (e) => {
-        res.status(500).send(e);
-      })
-    }
+    var request = new Request({
+      user: {
+        _id: req.user._id,
+        name : req.user.profile.fullName
+      },
+      description: req.body.request.description
+    })
+
+    request.save().then((request) => {
+      res.status(200).send({request});
+    }, (e) => {
+      res.status(500).send(e);
+    })
   })
 }
 
 module.exports.rejectRequest = async (req, res) => {
     var id = req.params.id;
+
     Request.find({_id: id}).then((oldRequest) => {
-      if(! oldRequest) {
-        return res.status(404).send();
+      if(! oldRequest[0]) {
+        res.status(404).send('There is no request available with such id');
       }
 
       if(oldRequest[0].status !== 'Pending') {
-          return res.status(400).send('This request is already evaluated');
+        return res.status(400).send('This request is already evaluated');
       }
 
       var request = oldRequest[0];
-      request.status = 'Rejected';
       var userID = request.user._id;
 
       return User.find({_id: userID});
@@ -100,11 +104,15 @@ module.exports.rejectRequest = async (req, res) => {
         }
       })
 
-      return Request.findByIdAndUpdate(id, {$set: request}, {new: true})
+      return Request.find({_id: id});
+    }).then((request) => {
+        var getRequest = request[0];
+        getRequest.status = 'Rejected';
+      return Request.findByIdAndUpdate(id, {$set: getRequest}, {new: true});
     }).then((newRequest) => {
-      res.status(200).send({newRequest});
+      return res.status(200).send({newRequest});
     }).catch((err) => {
-      res.status(500).send(err);
+      return res.status(500).send(err);
     })
 }
 
@@ -112,8 +120,8 @@ module.exports.acceptRequest = async (req, res) => {
   var id = req.params.id;
 
   Request.find({_id: id}).then((oldRequest) => {
-    if(! oldRequest) {
-      return res.status(404).send();
+    if(! oldRequest[0]) {
+      return res.status(404).send('There is no request available with such id');
     }
 
     if(oldRequest[0].status !== 'Pending') {
@@ -126,6 +134,7 @@ module.exports.acceptRequest = async (req, res) => {
     return Request.findByIdAndUpdate(id, {$set: request}, {new: true});
   }).then((newRequest) => {
     var userID = newRequest.user._id;
+
     return User.find({_id: userID});
   }).then((user) => {
     var getUser = user[0];
@@ -151,8 +160,8 @@ module.exports.suspendExpert = async(req, res) => {
   var id = req.params.id;
 
   User.find({_id: id}).then((user) => {
-    if(! user) {
-      return res.status(404).send();
+    if(! user[0]) {
+      return res.status(404).send('There is no expert available with such id');
     }
 
     if(! user[0].roles.includes('expert')) {
