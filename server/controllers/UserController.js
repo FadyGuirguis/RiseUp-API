@@ -113,7 +113,15 @@ module.exports.editProfile = async (req, res) => {
   module.exports.searchByName = async (req, res) => {
     console.log(req.body.name);
 
-    var query = mongoose.model('User').find({"profile.fullName": {'$regex': req.body.name, '$options': 'i'}});
+    var query = mongoose.model('User').find({
+      _id: {
+      $ne: req.user._id
+      },
+      "profile.fullName": {
+      '$regex': req.body.name, '$options': 'i'
+      }
+    });
+
     query.select("profile.fullName _id");
 
        query.exec(function(error, result){
@@ -139,7 +147,7 @@ module.exports.editProfile = async (req, res) => {
      var query = mongoose.model('User').find({"_id":  req.params.id});
 
      //select what you want, seperate by white space
-     query.select("email roles profile.fullName profile.description profile.rating profile.interests profile.expertIn");
+      query.select("email roles profile.fullName profile.description profile.rating profile.interests profile.expertIn profile.achievements");
 
         query.exec(function(error, user){
          if (error){
