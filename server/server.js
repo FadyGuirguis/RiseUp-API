@@ -6,6 +6,7 @@ var asyncMiddleware = require('express-async-handler');
 //local files
 var {mongoose} = require('./db/mongoose');
 
+//models
 var User = require('./models/user');
 var Tag = require('./models/tag');
 var Announcement = require('./models/Announcement');
@@ -13,6 +14,7 @@ var OfficeHour = require('./models/OfficeHour');
 var Request = require('./models/request');
 var Review = require('./models/Review');
 
+//controllers
 var userController = require('./controllers/UserController');
 var tagController = require('./controllers/TagController');
 var announcementsCtlr = require('./controllers/AnnouncementController');
