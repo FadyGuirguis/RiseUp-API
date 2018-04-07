@@ -33,7 +33,7 @@ var rejectOptions = (recipent) => {
 }
 
 module.exports.getAllRequests = async (req, res) => {
-    Request.find().then((requests) => {
+    Request.find({status: 'Pending'}).then((requests) => {
       res.status(200).send({requests});
     }, (e) => {
       res.status(500).send(e);
