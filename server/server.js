@@ -32,8 +32,8 @@ app.post('/login', asyncMiddleware(userController.loginUser));
 app.post('/editProfile', authModule.authenticate, asyncMiddleware(userController.editProfile));
 app.post('/changePassword',  authModule.authenticate, asyncMiddleware(userController.changePassword));
 app.post('/logout', authModule.authenticate, asyncMiddleware(userController.logout));
-app.post('/searchByName', asyncMiddleware(userController.searchByName));
-app.get('/user/:id', asyncMiddleware(userController.getUserByID));
+app.post('/searchByName',authModule.authenticate, asyncMiddleware(userController.searchByName));
+app.get('/user/:id',authModule.authenticate, asyncMiddleware(userController.getUserByID));
 
 // Tags
 app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
