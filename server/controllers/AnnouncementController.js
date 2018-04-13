@@ -16,7 +16,7 @@ module.exports.getAllAnnouncements = async (req, res) => {
 };
 
 // POST /announcements
-module.exports.postAnnouncement = async (req, res) => {
+module.exports.postAnnouncement = async (req, res) => {   //ADMIN
 
     if(!req.body.announcement.title)
         res.status(400).send('Announcement title is required');
@@ -35,7 +35,7 @@ module.exports.postAnnouncement = async (req, res) => {
 };
 
 // DELETE /announcements/:id
-module.exports.deleteAnnouncement = async (req, res) => {
+module.exports.deleteAnnouncement = async (req, res) => {  //ADMIN
     Announcement.findByIdAndRemove(req.params.id).then((announcement) => {
         res.send({announcement});
     }).catch((err) => {

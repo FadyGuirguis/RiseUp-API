@@ -3,7 +3,7 @@ const _ = require('lodash');
   moment = require('moment'),
   User = mongoose.model('User');
 
-module.exports.createUser = async (req, res)=>{
+module.exports.createUser = async (req, res)=>{  //zabat el error messages, from MODEL nafso
   console.log('test');
   var body = _.pick(req.body.user, ['email', 'password']);
   body.profile = {};
@@ -110,7 +110,7 @@ module.exports.editProfile = async (req, res) => {
 //db.getCollection('users').find({"profile.fullName": {'$regex': 'tEst', '$options': 'i'}})
 
 
-  module.exports.searchByName = async (req, res) => {
+  module.exports.searchByName = async (req, res) => {   //ALL
     console.log(req.body.name);
 
     var query = mongoose.model('User').find({
@@ -133,7 +133,7 @@ module.exports.editProfile = async (req, res) => {
               res.status(200).send({result});
           }
           else {
-              res.status(404).send({result});
+              res.status(200).send({result});
           }
         }
 

@@ -5,7 +5,7 @@ Review = mongoose.model('Review');
 OfficeHour = mongoose.model('OfficeHour');
 User = mongoose.model('User');
 
-module.exports.getReviewsOnUser = async (req, res) => {
+module.exports.getReviewsOnUser = async (req, res) => {   //ADMIN
 
     var userId = req.params.id;
 
@@ -25,7 +25,7 @@ module.exports.postReview = async (req, res) => {
     if(!req.body.review.rating)
         return res.status(400).send({err: 'Rating not specified'});
 
-    if(!req.body.review.description)
+    if(!req.body.review.description)   //MMKEN TETMESSE7
         return res.status(400).send({err: 'Description not specified'});
 
     if (!ObjectId.isValid(req.params.id))
