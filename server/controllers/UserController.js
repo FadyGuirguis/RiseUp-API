@@ -8,7 +8,11 @@ module.exports.createUser = async (req, res)=>{  //zabat el error messages, from
   var body = _.pick(req.body.user, ['email', 'password']);
   body.profile = {};
   body.profile.fullName = req.body.user.profile.fullName;
+<<<<<<< HEAD
 
+=======
+  console.log(body);
+>>>>>>> d59957b32b610bb8a9070ecd8528908ad7665601
   var user = new User(body);
 
   user.save().then(() => {
@@ -53,7 +57,7 @@ module.exports.editProfile = async (req, res) => {
     user.profile.expertIn = req.body.user.profile.expertIn;
   }
 
-}
+  }
   User.findByIdAndUpdate(id, {$set:  user }, {new: true}).then((updatedUser) => {
     if(!updatedUser) {
       return res.status(404).send();

@@ -52,9 +52,13 @@ module.exports.addRequest = async (req, res) => {  //zabat el status codes// mus
   }
 
   Request.find({'user._id': id}).then((request) => {
-    if(request[0]) {
-      if(request[0].status === 'Pending') {
-        return res.status(400).send('You already have a pending request');
+    if(request) {
+      var i;
+      for(i = 0; i < request.length; i++) {
+        if(request[i].status === 'Pending') {
+          return res.status(400).send('You already have a pending request');
+          break;
+        }
       }
     }
 

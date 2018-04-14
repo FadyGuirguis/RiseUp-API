@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha **/tests/*.test.js",
+    "test-watch": "nodemon --exec \"npm test\""
   },
   "author": "",
   "license": "ISC",
@@ -24,5 +25,11 @@
     "mongoose-validator": "^2.0.2",
     "nodemailer": "^4.6.4",
     "nodemon": "^1.17.3"
+  },
+  "devDependencies": {
+    "expect": "^22.4.3",
+    "mocha": "^5.1.0",
+    "rewire": "^4.0.0",
+    "supertest": "^3.0.0"
   }
 }
