@@ -4,8 +4,13 @@ const User = mongoose.model('User');
 
 module.exports.addTag = async(req, res) => {   //ADMIN - STATUS CODES
   if(req.user.roles.includes('admin')) {
-    if(!req.body.tag || !req.body.tag.tag)
-        res.status(400).send('Tag is required');
+    try{
+      if(typeof req.body.tag == 'undefined' || !req.body.tag || !req.body.tag.tag)
+          res.status(400).send('Tag is required');
+    }catch(error){
+      res.status(400).send('Tag is required')
+    }
+
 
     var tag = new Tag ({
       tag: req.body.tag.tag

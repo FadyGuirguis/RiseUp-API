@@ -18,10 +18,15 @@ module.exports.getAllAnnouncements = async (req, res) => {
 // POST /announcements
 module.exports.postAnnouncement = async (req, res) => {   //ADMIN
   if(req.user.roles.includes('admin')) {
-    if(!req.body.announcement.title)
-        res.status(400).send('Announcement title is required');
-    if(!req.body.announcement.description)
-        res.status(400).send('Announcement description is required');
+    try{
+      if(typeof req.body.announcement.title == 'undefined' || typeof req.body.announcement == 'undefined' || typeof req.body == 'undefined' )
+          res.status(400).send('Announcement title is required');
+      if(typeof req.body.announcement.description == 'undefined' || !req.body.announcement.description)
+          res.status(400).send('Announcement description is required');
+    }catch(error){
+      res.status(400).send("JSON body format is not correct!");
+    }
+
 
     var announcement = new Announcement(_.pick(req.body.announcement, ['title', 'description']));
 
