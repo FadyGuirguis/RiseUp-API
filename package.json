@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "test": "mocha **/tests/*.test.js",
+    "test": "mocha **/tests/*.test.js --timeout 10000",
     "test-watch": "nodemon --exec \"npm test\""
   },
   "author": "",
