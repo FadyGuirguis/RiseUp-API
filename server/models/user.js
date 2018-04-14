@@ -8,7 +8,7 @@ var validate = require('mongoose-validator');
 var emailValidator = [
   validate({
     validator: 'isEmail',
-    message: 'not a valid emails',
+    message: 'not a valid email',
   })
 ];
 

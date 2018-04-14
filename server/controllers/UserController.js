@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
-  moment = require('moment'),
-  User = mongoose.model('User');
+moment = require('moment'),
+User = mongoose.model('User');
 
 module.exports.createUser = async (req, res)=>{  //zabat el error messages, from MODEL nafso
 
@@ -63,40 +63,40 @@ module.exports.editProfile = async (req, res) => {
   })
   }
 
-  module.exports.changePassword = async (req, res) => {
-    if (req.body.user && req.body.user.oldPassword && req.body.user.newPassword) {
-      User.findByCredentials(req.user.email, req.body.user.oldPassword).then((user) => {
-        user.password = req.body.user.newPassword;
-        user.save().then((updatedUser) => {
-          res.send({updatedUser});
-        }).catch((err) => {
-          res.status(500).send();
-        });
+module.exports.changePassword = async (req, res) => {
+  if (req.body.user && req.body.user.oldPassword && req.body.user.newPassword) {
+    User.findByCredentials(req.user.email, req.body.user.oldPassword).then((user) => {
+      user.password = req.body.user.newPassword;
+      user.save().then((updatedUser) => {
+        res.send({updatedUser});
       }).catch((err) => {
-        res.status(400).send({
-          errMsg: "IncorrectPassword"
-        });
+        res.status(500).send();
       });
-    } else {
-      res.status(400).send({
-        errMsg: "Incomplete information"
-      });
-    }
-
-  }
-
-  module.exports.logout = async (req, res) => {
-    User.findByToken(req.token).then((user) => {
-      user.tokens = _.remove(user.tokens, (currentToken) => {
-        return currentToken.token !== req.token;
-      });
-      user.save();
-      res.send();
-
     }).catch((err) => {
-      res.status(500).send();
+      res.status(400).send({
+        errMsg: "IncorrectPassword"
+      });
+    });
+  } else {
+    res.status(400).send({
+      errMsg: "Incomplete information"
     });
   }
+
+}
+
+module.exports.logout = async (req, res) => {
+  User.findByToken(req.token).then((user) => {
+    user.tokens = _.remove(user.tokens, (currentToken) => {
+      return currentToken.token !== req.token;
+    });
+    user.save();
+    res.send();
+
+  }).catch((err) => {
+    res.status(500).send();
+  });
+}
 
 
 
