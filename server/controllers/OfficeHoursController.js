@@ -4,7 +4,7 @@ const {ObjectId} = require('mongodb');
 OfficeHour = mongoose.model('OfficeHour');
 User = mongoose.model('User');
 
-module.exports.getOfficeHours = async (req, res) => {
+module.exports.getOfficeHours = async (req, res) => {   //USER OR EXPERT
   var id = req.user._id;
   OfficeHour.find({
     $or: [
@@ -28,7 +28,7 @@ module.exports.getOfficeHours = async (req, res) => {
     });
 };
 
-module.exports.getOfficeHour = async (req, res) => {
+module.exports.getOfficeHour = async (req, res) => {   //USER OR EXPERT
   var id = req.params.id;
   OfficeHour.findOne({_id:id}).then((officeHour) => {
     if (officeHour.user._id.equals(req.user._id) || officeHour.expert._id.equals(req.user._id))
@@ -40,7 +40,7 @@ module.exports.getOfficeHour = async (req, res) => {
   })
 };
 
-module.exports.getExperts = async (req, res) => {
+module.exports.getExperts = async (req, res) => {    //ALL
   if (!req.body.tags)
     return res.status(400).send({err: 'tags not recieved'});
   var tags = req.body.tags;
@@ -73,7 +73,7 @@ module.exports.getExperts = async (req, res) => {
   })
 };
 
-module.exports.saveOfficeHour = async (req, res) => {
+module.exports.saveOfficeHour = async (req, res) => {   //user  .include user
   var experts = req.body.experts;
   if (experts.length > 3 || experts.length == 0) {
     res.status(400).send({err: 'You have to select between 1 and 3 experts'});
@@ -108,7 +108,7 @@ module.exports.saveOfficeHour = async (req, res) => {
 
 };
 
-module.exports.acceptOfficeHour = async (req, res) => {
+module.exports.acceptOfficeHour = async (req, res) => {  //EXPERT - DONE
   if (!req.body.officeHour)
     return res.status(400).send({err: "Office Hour wasn't recieved"});
   if (!req.body.officeHour.suggestedSlots || !req.body.officeHour.suggestedSlots.slots)
@@ -140,7 +140,7 @@ module.exports.acceptOfficeHour = async (req, res) => {
   });
 };
 
-module.exports.rejectOfficeHour = async (req, res) => {
+module.exports.rejectOfficeHour = async (req, res) => {   //DONE
   var id = req.params.id;
   OfficeHour.find({
     _id: id,
@@ -162,7 +162,7 @@ module.exports.rejectOfficeHour = async (req, res) => {
 
 };
 
-module.exports.confirmOfficeHour = async (req, res) => {
+module.exports.confirmOfficeHour = async (req, res) => {   //DONE
   if (!req.body.officeHour)
     return res.status(400).send({err: "Office Hour wasn't recieved"});
   if (!req.body.officeHour.chosenSlot || !req.body.officeHour.chosenSlot.slot)

@@ -32,7 +32,7 @@ var rejectOptions = (recipent) => {
   return options;
 }
 
-module.exports.getAllRequests = async (req, res) => {
+module.exports.getAllRequests = async (req, res) => {   //ADMIN
     Request.find({status: 'Pending'}).then((requests) => {
       res.status(200).send({requests});
     }, (e) => {
@@ -40,7 +40,7 @@ module.exports.getAllRequests = async (req, res) => {
     })
 }
 
-module.exports.addRequest = async (req, res) => {
+module.exports.addRequest = async (req, res) => {  //zabat el status codes// must be user ONLY!! W ARRAY OF SIZE ONE
   var id = req.user.id;
 
   if(req.user.roles.includes('expert')) {
@@ -48,9 +48,13 @@ module.exports.addRequest = async (req, res) => {
   }
 
   Request.find({'user._id': id}).then((request) => {
-    if(request[0]) {
-      if(request[0].status === 'Pending') {
-        return res.status(400).send('You already have a pending request');
+    if(request) {
+      var i;
+      for(i = 0; i < request.length; i++) {
+        if(request[i].status === 'Pending') {
+          return res.status(400).send('You already have a pending request');
+          break;
+        }
       }
     }
 
@@ -78,7 +82,7 @@ module.exports.addRequest = async (req, res) => {
   })
 }
 
-module.exports.rejectRequest = async (req, res) => {
+module.exports.rejectRequest = async (req, res) => {  //ADMIN
     var id = req.params.id;
 
     Request.find({_id: id}).then((oldRequest) => {
@@ -116,7 +120,7 @@ module.exports.rejectRequest = async (req, res) => {
     })
 }
 
-module.exports.acceptRequest = async (req, res) => {
+module.exports.acceptRequest = async (req, res) => { //ADMIN
   var id = req.params.id;
 
   Request.find({_id: id}).then((oldRequest) => {
@@ -156,7 +160,7 @@ module.exports.acceptRequest = async (req, res) => {
   })
 }
 
-module.exports.suspendExpert = async(req, res) => {
+module.exports.suspendExpert = async(req, res) => {   //ADMIN
   var id = req.params.id;
 
   User.find({_id: id}).then((user) => {

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Tag = mongoose.model('Tag');
 const User = mongoose.model('User');
 
-module.exports.addTag = async(req, res) => {
+module.exports.addTag = async(req, res) => {   //ADMIN - STATUS CODES
   if(!req.body.tag || !req.body.tag.tag)
       res.status(400).send('Tag is required');
 
@@ -17,7 +17,7 @@ module.exports.addTag = async(req, res) => {
   })
 }
 
-module.exports.getAllTags = async(req, res) => {
+module.exports.getAllTags = async(req, res) => {  //ALL
   Tag.find().then((tags) => {
     res.status(200).send({tags});
   }, (e) => {
@@ -28,7 +28,7 @@ module.exports.getAllTags = async(req, res) => {
 
 //replace programming with the tag itself
 //remove from tags collection 3shan ana msh fahem ezay shaghala!
-module.exports.removeTag = async(req, res) => {
+module.exports.removeTag = async(req, res) => {   //ADMIN  ... zbt el scenario
 
   var user = new User();
 
