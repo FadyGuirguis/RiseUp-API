@@ -5,9 +5,14 @@ User = mongoose.model('User');
 
 module.exports.createUser = async (req, res)=>{  //zabat el error messages, from MODEL nafso
 
-  var body = _.pick(req.body.user, ['email', 'password']);
-  body.profile = {};
-  body.profile.fullName = req.body.user.profile.fullName;
+  try{
+    var body = _.pick(req.body.user, ['email', 'password']);
+    body.profile = {};
+    body.profile.fullName = req.body.user.profile.fullName;
+  }catch(error){
+    res.status(400).send('Please enter an email or password');
+  }
+
   var user = new User(body);
 
   user.save().then(() => {
