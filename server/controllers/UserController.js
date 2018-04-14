@@ -28,18 +28,30 @@ module.exports.createUser = async (req, res)=>{  //zabat el error messages, from
 module.exports.loginUser = async (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
 
+  if(!body.email){
+    return res.status(400).send(); 
+  }
 
+  if(!body.password){
+    return res.status(400).send(); 
+  }
 
   User.findByCredentials(body.email, body.password).then((user) => {
     if (!user) {
       return res.status(404).send();
     }
     return user.generateAuthToken().then((token) => {
-      console.log("logged in");
       res.header('x-auth', token).send({user});
     });
   }).catch((e) => {
-    res.status(500).send();
+    if(e.message === 'email not found'){
+      res.status(404).send({msg : e.message});
+    }
+    if(e.message === 'password not correct'){
+      res.status(404).send({msg : e.message});
+    } else{
+      res.status(500).send();
+    }
   });
 };
 
@@ -115,7 +127,6 @@ module.exports.logout = async (req, res) => {
 
 
   module.exports.searchByName = async (req, res) => {   //ALL
-    console.log(req.body.name);
 
     var query = mongoose.model('User').find({
       _id: {
@@ -146,7 +157,6 @@ module.exports.logout = async (req, res) => {
 
   ///user/:id
   module.exports.getUserByID = async (req, res) => {
-    console.log(req.params.id);
 
      var query = mongoose.model('User').find({"_id":  req.params.id});
 

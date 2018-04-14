@@ -53,7 +53,6 @@ module.exports.getExperts = async (req, res) => {    //ALL
     return res.status(400).send({err: 'tags not recieved'});
   var tags = req.body.tags;
   var interests = (req.body.tags.length == 0) ? req.user.profile.interests : [];
-  console.log(tags);
   User.find({
     _id: {
       $ne: req.user._id
@@ -208,7 +207,6 @@ module.exports.confirmOfficeHour = async (req, res) => {   //DONE
     }).then((officeHour) => {
       res.send({officeHour});
     }).catch((err) => {
-      console.log(err);
       res.status(400).send({err});
     });
 
