@@ -4,6 +4,7 @@ const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 const beautifyUnique = require('mongoose-beautiful-unique-validation');
 var validate = require('mongoose-validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
 var emailValidator = [
   validate({
@@ -20,7 +21,7 @@ const UserSchema = mongoose.Schema({
     required: true,
     trim: true,
     lowercase: true,
-    unique: true,
+    unique: 'Email is already taken',
     validate: emailValidator
 
   },

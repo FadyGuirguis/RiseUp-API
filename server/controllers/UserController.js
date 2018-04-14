@@ -21,7 +21,19 @@ module.exports.createUser = async (req, res)=>{  //zabat el error messages, from
   }).then((token) => {
     res.header('x-auth', token).send({user});
   }).catch((e) => {
-    res.status(500).send(e);
+    if (e.name == 'ValidationError') {
+        if(typeof e.errors.email !== 'undefined'){
+            res.status(400).send(e.errors.email.message);
+        }else {
+          res.status(400).send(e);
+        }
+
+    }else {
+      res.status(400).send(e);
+    }
+
+
+
   });
 }
 
