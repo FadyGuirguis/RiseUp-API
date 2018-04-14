@@ -17,7 +17,7 @@ module.exports.getAllAnnouncements = async (req, res) => {
 
 // POST /announcements
 module.exports.postAnnouncement = async (req, res) => {   //ADMIN
-
+  if(req.user.roles.includes('admin')) {
     if(!req.body.announcement.title)
         res.status(400).send('Announcement title is required');
     if(!req.body.announcement.description)
@@ -32,13 +32,20 @@ module.exports.postAnnouncement = async (req, res) => {   //ADMIN
     }).catch((err) => {
         res.status(500).send({ error: err });
     });
+  }else{
+    res.status(401).send('You are not an admin');
+  }
 };
 
 // DELETE /announcements/:id
 module.exports.deleteAnnouncement = async (req, res) => {  //ADMIN
+  if(req.user.roles.includes('admin')) {
     Announcement.findByIdAndRemove(req.params.id).then((announcement) => {
         res.send({announcement});
     }).catch((err) => {
         res.status(500).send({ error: err });
     });
+  }else{
+    res.status(401).send('You are not an admin');
+  }
 };

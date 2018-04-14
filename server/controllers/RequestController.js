@@ -33,11 +33,15 @@ var rejectOptions = (recipent) => {
 }
 
 module.exports.getAllRequests = async (req, res) => {   //ADMIN
+  if(req.user.roles.includes('admin')) {
     Request.find({status: 'Pending'}).then((requests) => {
       res.status(200).send({requests});
     }, (e) => {
       res.status(500).send(e);
     })
+  }else{
+    res.status(401).send('You are not an admin');
+  }
 }
 
 module.exports.addRequest = async (req, res) => {  //zabat el status codes// must be user ONLY!! W ARRAY OF SIZE ONE
@@ -79,6 +83,7 @@ module.exports.addRequest = async (req, res) => {  //zabat el status codes// mus
 }
 
 module.exports.rejectRequest = async (req, res) => {  //ADMIN
+  if(req.user.roles.includes('admin')) {
     var id = req.params.id;
 
     Request.find({_id: id}).then((oldRequest) => {
@@ -114,9 +119,13 @@ module.exports.rejectRequest = async (req, res) => {  //ADMIN
     }).catch((err) => {
       return res.status(500).send(err);
     })
+  }else{
+    res.status(401).send('You are not an admin');
+  }
 }
 
 module.exports.acceptRequest = async (req, res) => { //ADMIN
+if(req.user.roles.includes('admin')) {
   var id = req.params.id;
 
   Request.find({_id: id}).then((oldRequest) => {
@@ -154,9 +163,13 @@ module.exports.acceptRequest = async (req, res) => { //ADMIN
   }).catch((err) => {
     res.status(500).send(err);
   })
+}else{
+  res.status(401).send('You are not an admin');
+}
 }
 
 module.exports.suspendExpert = async(req, res) => {   //ADMIN
+if(req.user.roles.includes('admin')) {
   var id = req.params.id;
 
   User.find({_id: id}).then((user) => {
@@ -179,4 +192,7 @@ module.exports.suspendExpert = async(req, res) => {   //ADMIN
   }).catch((err) => {
     res.status(500).send(err);
   })
+}else{
+  res.status(401).send('You are not an admin');
+}
 }

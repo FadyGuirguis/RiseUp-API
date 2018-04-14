@@ -6,7 +6,7 @@ OfficeHour = mongoose.model('OfficeHour');
 User = mongoose.model('User');
 
 module.exports.getReviewsOnUser = async (req, res) => {   //ADMIN
-
+  if(req.user.roles.includes('admin')) {
     var userId = req.params.id;
 
     Review.find({ 'reviewed._id': userId }).then((reviews) => {
@@ -14,7 +14,9 @@ module.exports.getReviewsOnUser = async (req, res) => {   //ADMIN
     }).catch((err) => {
         res.status(500).send(err);
     });
-
+}else{
+  res.status(401).send('You are not an admin');
+}
 };
 
 module.exports.postReview = async (req, res) => {

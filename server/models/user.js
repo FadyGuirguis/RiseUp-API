@@ -2,6 +2,17 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
+var validate = require('mongoose-validator');
+
+var emailValidator = [
+  validate({
+    validator: 'isEmail',
+    message: 'not a valid emails',
+  })
+];
+
+
 
 const UserSchema = mongoose.Schema({
   email: {
@@ -9,12 +20,14 @@ const UserSchema = mongoose.Schema({
     required: true,
     trim: true,
     lowercase: true,
-    unique : true
+    unique: true,
+    validate: emailValidator
+
   },
   password: {
     type: String,
     required: true,
-    min: 6
+    minlength: 6
   },
   roles:{
     type: [String],
@@ -23,7 +36,7 @@ const UserSchema = mongoose.Schema({
   profile: {
     fullName: {
       type: String,
-      default: ''
+      minlength: 2
     },
     description: {
       type: String,
@@ -58,6 +71,8 @@ const UserSchema = mongoose.Schema({
   }]
 
 });
+
+UserSchema.plugin(beautifyUnique);
 
 UserSchema.methods.generateAuthToken = function () {
   var user = this;

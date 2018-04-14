@@ -20,6 +20,8 @@
     "moment": "^2.21.0",
     "mongodb": "^3.0.5",
     "mongoose": "^5.0.11",
+    "mongoose-beautiful-unique-validation": "^7.1.1",
+    "mongoose-validator": "^2.0.2",
     "nodemailer": "^4.6.4",
     "nodemon": "^1.17.3"
   }

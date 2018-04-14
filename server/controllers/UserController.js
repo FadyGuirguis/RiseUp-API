@@ -4,11 +4,11 @@ const _ = require('lodash');
   User = mongoose.model('User');
 
 module.exports.createUser = async (req, res)=>{  //zabat el error messages, from MODEL nafso
-  console.log('test');
+
   var body = _.pick(req.body.user, ['email', 'password']);
   body.profile = {};
   body.profile.fullName = req.body.user.profile.fullName;
-console.log(body);
+
   var user = new User(body);
 
   user.save().then(() => {

@@ -5,30 +5,35 @@ OfficeHour = mongoose.model('OfficeHour');
 User = mongoose.model('User');
 
 module.exports.getOfficeHours = async (req, res) => {   //USER OR EXPERT
-  var id = req.user._id;
-  OfficeHour.find({
-    $or: [
-      {
-        'user._id': id
-      },
-      {
-        'expert._id': id
+  if(req.user.roles.includes('expert') || req.user.roles.includes('user')) {
+    var id = req.user._id;
+    OfficeHour.find({
+      $or: [
+        {
+          'user._id': id
+        },
+        {
+          'expert._id': id
+        }
+      ]
+    }, null, {
+      sort: {
+        lastModified: -1
       }
-    ]
-  }, null, {
-    sort: {
-      lastModified: -1
-    }
-  }).select('user expert title status lastModified')
-    .then((officeHours) => {
-      res.send({officeHours});
-    })
-    .catch((err) => {
-      res.status(500).send({err});
-    });
+    }).select('user expert title status lastModified')
+      .then((officeHours) => {
+        res.send({officeHours});
+      })
+      .catch((err) => {
+        res.status(500).send({err});
+      });
+  }else{
+    res.status(401).send('You are not a user or an expert');
+  }
 };
 
 module.exports.getOfficeHour = async (req, res) => {   //USER OR EXPERT
+if(req.user.roles.includes('expert') || req.user.roles.includes('user')) {
   var id = req.params.id;
   OfficeHour.findOne({_id:id}).then((officeHour) => {
     if (officeHour.user._id.equals(req.user._id) || officeHour.expert._id.equals(req.user._id))
@@ -38,6 +43,9 @@ module.exports.getOfficeHour = async (req, res) => {   //USER OR EXPERT
   }).catch((err) => {
     res.status(500).send();
   })
+}else{
+  res.status(401).send('You are not a user or an expert');
+}
 };
 
 module.exports.getExperts = async (req, res) => {    //ALL
@@ -73,7 +81,8 @@ module.exports.getExperts = async (req, res) => {    //ALL
   })
 };
 
-module.exports.saveOfficeHour = async (req, res) => {   //user  .include user
+module.exports.saveOfficeHour = async (req, res) => {   //user
+  if(req.user.roles.includes('user')) {
   var experts = req.body.experts;
   if (experts.length > 3 || experts.length == 0) {
     res.status(400).send({err: 'You have to select between 1 and 3 experts'});
@@ -105,6 +114,9 @@ module.exports.saveOfficeHour = async (req, res) => {   //user  .include user
   }).catch((err) => {
     res.status(500).send({});
   })
+}else{
+  res.status(401).send('You are not a user');
+}
 
 };
 
