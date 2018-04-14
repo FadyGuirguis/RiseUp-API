@@ -8,7 +8,7 @@ module.exports.createUser = async (req, res)=>{
   var body = _.pick(req.body.user, ['email', 'password']);
   body.profile = {};
   body.profile.fullName = req.body.user.profile.fullName;
-console.log(body);
+  console.log(body);
   var user = new User(body);
 
   user.save().then(() => {
@@ -53,7 +53,7 @@ module.exports.editProfile = async (req, res) => {
     user.profile.expertIn = req.body.user.profile.expertIn;
   }
 
-}
+  }
   User.findByIdAndUpdate(id, {$set:  user }, {new: true}).then((updatedUser) => {
     if(!updatedUser) {
       return res.status(404).send();
