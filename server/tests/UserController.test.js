@@ -8,6 +8,9 @@ User = mongoose.model('User');
 process.env.NODE_ENV = 'test';
 base = process.env.PWD;
 
+var id = "";
+var token = "";
+
 describe('User Controller',()=>{
 
     describe('#createUser',()=>{
@@ -186,12 +189,14 @@ describe('User Controller',()=>{
                         "fullName" : "Nothing Something"
                     }
                 }
-    
+                // POST /register will make the user start with 1 token already because 
+                // he is already automatically logged in 
                 request(app)
                 .post("/register")
                 .send({user})
                 .expect(200)
                 .end((err,res)=>{
+                    id = res.body.user._id;
                     return done();
                 })
                 
@@ -205,13 +210,19 @@ describe('User Controller',()=>{
             .post("/login")
             .send({email,password})
             .expect(200)
+            .expect((res)=>{
+                expect(res.headers['x-auth']).toBeTruthy();
+            })
             .end((err,res)=>{
                 if(err){
                     return done(err);
                 }
-                if(res.headers['x-auth']){
-                    return done();
-                }
+                User.find({_id : res.body.user._id}).then((users)=>{
+                    if(users[0].tokens.length==2){ // Because when he registered he was automatically logged in
+                        return done();
+                    }
+                })
+
             })
         });
 
@@ -223,13 +234,18 @@ describe('User Controller',()=>{
             .send({email,password})
             .expect(404)
             .expect((res)=>{
-                expect(res.body.msg).toBe('email not found')
+                expect(res.body.msg).toBe('email not found');
+                expect(res.headers['x-auth']).toBeUndefined();
             })
             .end((err,res)=>{
                 if(err){
                     return done(err);
                 }
-                return done();
+                User.find({_id : id}).then((users)=>{
+                    if(users[0].tokens.length==1){ // Because when he registered he was automatically logged in
+                        return done();
+                    }
+                })
             })
         });
 
@@ -241,13 +257,18 @@ describe('User Controller',()=>{
             .send({email,password})
             .expect(404)
             .expect((res)=>{
-                expect(res.body.msg).toBe('password not correct')
+                expect(res.body.msg).toBe('password not correct');
+                expect(res.headers['x-auth']).toBeUndefined();
             })
             .end((err,res)=>{
                 if(err){
                     return done(err);
                 }
-                return done();
+                User.find({_id : id}).then((users)=>{
+                    if(users[0].tokens.length==1){ // Because when he registered he was automatically logged in
+                        return done();
+                    }
+                })
             })
         });
 
@@ -257,11 +278,18 @@ describe('User Controller',()=>{
             .post("/login")
             .send({email})
             .expect(400)
+            .expect((res)=>{
+                expect(res.headers['x-auth']).toBeUndefined();
+            })
             .end((err,res)=>{
                 if(err){
                     return done(err);
                 }
-                return done();
+                User.find({_id : id}).then((users)=>{
+                    if(users[0].tokens.length==1){ // Because when he registered he was automatically logged in
+                        return done();
+                    }
+                })
             })
         });
 
@@ -274,7 +302,44 @@ describe('User Controller',()=>{
     })
 
     describe('#logout',()=>{
-        it('should pass',(done)=>{
+
+        beforeEach((done)=>{
+            User.remove({}).then(()=>{
+                var user = {
+                    email : 'nothing@something.com',
+                    password : 'something',
+                    profile : {
+                        "fullName" : "Nothing Something"
+                    }
+                }
+    
+                request(app)
+                .post("/register")
+                .send({user})
+                .expect(200)
+                .end((err,res)=>{
+                    var email = "nothing@something.com";
+                    var password = "something";
+                    request(app)
+                    .post("/login")
+                    .send({email,password})
+                    .expect(200)
+                    .expect((res)=>{
+                        expect(res.headers['x-auth']).toBeTruthy();
+                    })
+                    .end((err,res)=>{
+                        if(err){
+                            return done(err);
+                        }
+                        token = res.headers['x-auth'];
+                        return done();
+        
+                    })
+                })  
+            })
+        });
+
+        it('user should logout with correct token',(done)=>{
             done();
         });
     })
