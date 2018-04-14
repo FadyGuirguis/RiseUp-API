@@ -91,8 +91,8 @@ UserSchema.methods.generateAuthToken = function () {
 UserSchema.statics.findByCredentials = function (email, password) {
   var User = this;
   return User.findOne({email}).then((user) => {
-    
-    
+
+
     return new Promise((resolve, reject) => {
       if (!user) {
         reject(new Error('email not found'));
