@@ -32,7 +32,7 @@ describe('User Controller',()=>{
             })
         });
 
-        it('should create user with valid data',(done)=>{
+        it('should create user with valid data and login automatically',(done)=>{
             var user = {
                 email : 'something@something.com',
                 password : 'something',
@@ -45,6 +45,9 @@ describe('User Controller',()=>{
             .post("/register")
             .send({user})
             .expect(200)
+            .expect((res)=>{
+                expect(res.headers['x-auth']).toBeTruthy();
+            })
             .end((err,res)=>{
                 if(err){
                     return done(err);
@@ -52,6 +55,7 @@ describe('User Controller',()=>{
 
                 User.find().then((users)=>{
                     expect(users.length).toBe(2);
+                    expect(users[1].tokens).toHaveLength(1);
                     return done();
                 }).catch((err)=>{
                     return done(err);
@@ -217,10 +221,9 @@ describe('User Controller',()=>{
                 if(err){
                     return done(err);
                 }
-                User.find({_id : res.body.user._id}).then((users)=>{
-                    if(users[0].tokens.length==2){ // Because when he registered he was automatically logged in
-                        return done();
-                    }
+                User.findOne({_id : res.body.user._id}).then((user)=>{
+                    expect(user.tokens).toHaveLength(2);
+                    return done();
                 })
 
             })
@@ -241,10 +244,9 @@ describe('User Controller',()=>{
                 if(err){
                     return done(err);
                 }
-                User.find({_id : id}).then((users)=>{
-                    if(users[0].tokens.length==1){ // Because when he registered he was automatically logged in
-                        return done();
-                    }
+                User.findOne({_id : id}).then((user)=>{
+                    expect(user.tokens).toHaveLength(1);
+                    return done();
                 })
             })
         });
@@ -264,10 +266,9 @@ describe('User Controller',()=>{
                 if(err){
                     return done(err);
                 }
-                User.find({_id : id}).then((users)=>{
-                    if(users[0].tokens.length==1){ // Because when he registered he was automatically logged in
-                        return done();
-                    }
+                User.findOne({_id : id}).then((user)=>{
+                    expect(user.tokens).toHaveLength(1);
+                    return done();
                 })
             })
         });
@@ -285,10 +286,9 @@ describe('User Controller',()=>{
                 if(err){
                     return done(err);
                 }
-                User.find({_id : id}).then((users)=>{
-                    if(users[0].tokens.length==1){ // Because when he registered he was automatically logged in
-                        return done();
-                    }
+                User.findOne({_id : id}).then((user)=>{
+                    expect(user.tokens).toHaveLength(1);
+                    return done();
                 })
             })
         });
@@ -318,29 +318,28 @@ describe('User Controller',()=>{
                 .send({user})
                 .expect(200)
                 .end((err,res)=>{
-                    var email = "nothing@something.com";
-                    var password = "something";
-                    request(app)
-                    .post("/login")
-                    .send({email,password})
-                    .expect(200)
-                    .expect((res)=>{
-                        expect(res.headers['x-auth']).toBeTruthy();
-                    })
-                    .end((err,res)=>{
-                        if(err){
-                            return done(err);
-                        }
-                        token = res.headers['x-auth'];
-                        return done();
-        
-                    })
+                    id = res.body.user._id;
+                    token = res.headers['x-auth'];
+                    return done();
                 })  
             })
         });
 
         it('user should logout with correct token',(done)=>{
-            done();
+            
+            request(app)
+            .post("/logout")
+            .set('x-auth',token)
+            .expect(200)
+            .end((err,res)=>{
+                if(err){
+                    return done();
+                }
+                User.findOne({_id: id}).then((user)=>{
+                    expect(user.tokens).toHaveLength(0);
+                    return done();
+                })
+            })  
         });
     })
 
