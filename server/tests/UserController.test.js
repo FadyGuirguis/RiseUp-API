@@ -68,7 +68,7 @@ describe('User Controller',()=>{
             request(app)
             .post("/register")
             .send({user})
-            .expect(500)
+            .expect(400)
             .end((err,res)=>{
                 if(err){
                     return done(err);
@@ -95,7 +95,7 @@ describe('User Controller',()=>{
             request(app)
             .post("/register")
             .send({user})
-            .expect(500)
+            .expect(400)
             .end((err,res)=>{
                 if(err){
                     return done(err);
@@ -122,7 +122,7 @@ describe('User Controller',()=>{
             request(app)
             .post("/register")
             .send({user})
-            .expect(500)
+            .expect(400)
             .end((err,res)=>{
                 if(err){
                     return done(err);
@@ -149,7 +149,7 @@ describe('User Controller',()=>{
             request(app)
             .post("/register")
             .send({user})
-            .expect(500)
+            .expect(400)
             .end((err,res)=>{
                 if(err){
                     return done(err);
