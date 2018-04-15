@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'test';
+base = process.env.PWD;
 const request = require('supertest');
 const expect = require('expect');
 var app = require("./../server").app;
@@ -5,8 +7,6 @@ var app = require("./../server").app;
 const mongoose = require('mongoose');
 User = mongoose.model('User');
 
-process.env.NODE_ENV = 'test';
-base = process.env.PWD;
 
 var id = "";
 var token = "";
