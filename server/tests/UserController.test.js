@@ -76,6 +76,9 @@ describe('User Controller',()=>{
             .post("/register")
             .send({user})
             .expect(400)
+            .expect((res)=>{
+                expect(res.res.text).toBe("Email is already taken")
+            })
             .end((err,res)=>{
                 if(err){
                     return done(err);
