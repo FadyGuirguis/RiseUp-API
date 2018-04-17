@@ -1,4 +1,5 @@
 //module imports
+var cors = require('cors');
 var express = require('express');
 var bodyParser = require('body-parser');
 var asyncMiddleware = require('express-async-handler');
@@ -25,6 +26,14 @@ var reviewsController = require('./controllers/ReviewController');
 var authModule = require('./middleware/authenticate');
 
 var app = express();
+
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE']
+  })
+);
 
 app.use(bodyParser.json());
 

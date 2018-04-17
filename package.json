@@ -14,6 +14,7 @@
     "bcrypt": "^1.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
     "express-async-handler": "^1.1.3",
     "jsonwebtoken": "^8.2.0",
@@ -25,7 +26,8 @@
     "mongoose-unique-validator": "^2.0.0",
     "mongoose-validator": "^2.0.2",
     "nodemailer": "^4.6.4",
-    "nodemon": "^1.17.3"
+    "nodemon": "^1.17.3",
+    "tap": "^11.1.4"
   },
   "devDependencies": {
     "expect": "^22.4.3",
