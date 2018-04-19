@@ -45,6 +45,7 @@ app.post('/changePassword',  authModule.authenticate, asyncMiddleware(userContro
 app.post('/logout', authModule.authenticate, asyncMiddleware(userController.logout));
 app.post('/searchByName',authModule.authenticate, asyncMiddleware(userController.searchByName));
 app.get('/user/:id',authModule.authenticate, asyncMiddleware(userController.getUserByID));
+app.get('/users/getByToken', authModule.authenticate, asyncMiddleware(userController.getUserByToken));
 
 // Tags
 app.post('/tag', authModule.authenticate, authModule.authAdmin,asyncMiddleware(tagController.addTag));
