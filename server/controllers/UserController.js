@@ -195,12 +195,9 @@ module.exports.logout = async (req, res) => {
   module.exports.getUserByToken = async (req,res)=>{
     var token = req.header('x-auth');
 
-    console.log('searching');
     var user = await User.findOne({
       'tokens.token': token
     });
-
-    console.log(user);
 
     if(User){
       res.status(200).send({user});
