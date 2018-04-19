@@ -23,7 +23,7 @@ module.exports.postReview = async (req, res) => {
 
     if(!req.body.review)
         return res.status(400).send({err: 'No review'});
-
+  
     if(!req.body.review.rating)
         return res.status(400).send({err: 'Rating not specified'});
 
@@ -44,6 +44,7 @@ module.exports.postReview = async (req, res) => {
 
       if (!officeHour)
         return Promise.reject("Office hour not found");
+      
 
       if (officeHour.user._id.equals(req.user._id)) {
         if (officeHour.isExpertReviewed == true)

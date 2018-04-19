@@ -62,4 +62,4 @@ const OfficeHourSchema = mongoose.Schema({
   lastModified: Date
 });
 
-mongoose.model('OfficeHour', OfficeHourSchema);
+module.exports.OfficeHours = mongoose.model('OfficeHour', OfficeHourSchema);
