@@ -371,4 +371,46 @@ describe('User Controller',()=>{
         });
     })
 
+    describe('#getUserByToken',()=>{
+        var tempUser ;
+        beforeEach((done)=>{
+            User.remove({}).then(()=>{
+                var user = {
+                    email : 'nothing@something.com',
+                    password : 'something',
+                    profile : {
+                        "fullName" : "Nothing Something"
+                    }
+                }
+                
+                user = new User(user);
+                request(app)
+                .post("/register")
+                .send({user})
+                .expect(200)
+                .end((err,res)=>{
+                    tempUser = res.body.user; 
+                    //console.log(tempUser);
+                    return done();
+                })  
+            })
+        });
+        it('should pass if token exists',(done)=>{
+            request(app)
+            .get('/users/getByToken')
+            .set({
+                'x-auth':tempUser.tokens[0].token
+            })
+            .expect(200)
+            .end((err,res)=>{
+                if(err){
+                    done(err);
+                }
+                else{
+                    done();
+                }
+            })
+        });
+    });
+
 });
