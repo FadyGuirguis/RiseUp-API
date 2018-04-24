@@ -37,7 +37,7 @@ const UserSchema = mongoose.Schema({
   profile: {
     fullName: {
       type: String,
-      minlength: 2
+      minlength: 6
     },
     description: {
       type: String,
