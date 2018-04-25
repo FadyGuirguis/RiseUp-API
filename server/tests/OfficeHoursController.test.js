@@ -66,11 +66,32 @@ describe('Office Hours Controller',()=>{
 
             // Remove all users from the DB
             User.remove({})
-            // TODO: Add 3 'expert' users
+            // Register the 3 'expert' users
             .then(() => {
+                request(app).post("/register").send({user: expert1}).expect(200, (err, res) => {
 
+                    if(!res || !res.body.user) return;
+
+                    expert1 = res.body.user;
+                });
             })
-            // TODO: Add 1 other user to submit requests
+            .then(() => {
+                request(app).post("/register").send({user: expert2}).expect(200, (err, res) => {
+
+                    if(!res || !res.body.user) return;
+
+                    expert2 = res.body.user;
+                });
+            })
+            .then(() => {
+                request(app).post("/register").send({user: expert3}).expect(200, (err, res) => {
+
+                    if(!res || !res.body.user) return;
+
+                    expert3 = res.body.user;
+                });
+            })
+            // TODO: Register the normal user to submit requests
             .then(() => {
                 done();
             })
@@ -102,20 +123,59 @@ describe('Office Hours Controller',()=>{
             .send(body)
             .expect(401, (err, res) => {
 
-                if(err)
+                if(err) {
+                    console.log(err);
                     done(err);
+                }
                 else
                     done();
 
-            }).catch((reason) => {
-                console.log(reason);
-                done(reason);
             });
+
+        });
+
+        it('should not allow requests targeting not with no experts field', (done) => {
             
+            var body = {
+                title: 'office hour request by an expert',
+                description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests'
+            };
+
+            request(app)
+            .post("/officeHour")
+            .send(body)
+            .expect(401, (err, res) => {
+
+                if(err) {
+                    console.log(err);
+                    done(err);
+                }
+                else
+                    done();
+
+            });
         });
 
         it('should not allow requests targeting 0 experts', (done) => {
-            done();
+
+            var body = {
+                title: 'office hour request by an expert',
+                description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests'
+            };
+
+            request(app)
+            .post("/officeHour")
+            .send(body)
+            .expect(401, (err, res) => {
+
+                if(err) {
+                    console.log(err);
+                    done(err);
+                }
+                else
+                    done();
+
+            })
         });
 
         it('should not allow requests targeting any number of experts > 3', (done) => {
