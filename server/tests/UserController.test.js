@@ -344,6 +344,12 @@ describe('User Controller',()=>{
                 })
             })  
         });
+
+        after((done)=>{
+            User.remove({}).then(()=>{
+                done()
+            })
+        });
     })
 
     describe('#changePassword',()=>{
@@ -409,6 +415,11 @@ describe('User Controller',()=>{
                 else{
                     done();
                 }
+            })
+        });
+        after((done)=>{
+            User.remove({}).then(()=>{
+                done()
             })
         });
     });
