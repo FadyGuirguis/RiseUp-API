@@ -54,7 +54,7 @@ describe('Office Hours Controller',()=>{
         };
 
         // Prepare 1 more user to use for sending most saveOfficeHour requests
-        var testUser = {
+        var normalUser = {
             email: 'shadolio@shadolioware.net',
             password: 'creativePass!!',
             profile: {
@@ -66,44 +66,55 @@ describe('Office Hours Controller',()=>{
 
             // Remove all users from the DB
             User.remove({})
-            // Register the 3 'expert' users
+            // Register expert1
             .then(() => {
-                request(app).post("/register").send({user: expert1}).expect(200, (err, res) => {
-
-                    if(!res || !res.body.user) return;
-
-                    expert1 = res.body.user;
-                });
+                return request(app).post("/register").send({user: expert1}).expect(200);
             })
-            .then(() => {
-                request(app).post("/register").send({user: expert2}).expect(200, (err, res) => {
-
-                    if(!res || !res.body.user) return;
-
-                    expert2 = res.body.user;
-                });
+            // Make him expert
+            .then((res) => {
+                expert1 = res.body.user;
+                return User.findByIdAndUpdate(expert1._id, { $push: { roles: 'expert' } }, { new: true });
             })
+            .then((newExpert) => {
+                expert1 = newExpert;
+            })
+            // Register expert2
             .then(() => {
-                request(app).post("/register").send({user: expert3}).expect(200, (err, res) => {
-
-                    if(!res || !res.body.user) return;
-
-                    expert3 = res.body.user;
-                });
+                return request(app).post("/register").send({user: expert2}).expect(200);
+            })
+            // Make him expert
+            .then((res) => {
+                expert2 = res.body.user;
+                return User.findByIdAndUpdate(expert2._id, { $push: { roles: 'expert' } }, { new: true });
+            })
+            .then((newExpert) => {
+                expert2 = newExpert;
+            })
+            // Register expert3
+            .then(() => {
+                return request(app).post("/register").send({user: expert3}).expect(200);
+            })
+            // Make him expert
+            .then((res) => {
+                expert3 = res.body.user;
+                return User.findByIdAndUpdate(expert3._id, { $push: { roles: 'expert' } }, { new: true });
+            })
+            .then((newExpert) => {
+                expert3 = newExpert;
             })
             // Register the normal user to submit requests
             .then(() => {
-                request(app).post("/register").send({user: testUser}).expect(200, (err, res) => {
-
-                    if(!res || !res.body.user) return;
-
-                    testUser = res.body.user;
-                });
+                return request(app).post("/register").send({user: normalUser}).expect(200);
             })
+            .then((res) => {
+                normalUser = res.body.user;
+            })
+            // end "before" block
             .then(() => {
                 done();
             })
             .catch((reason) => {
+                console.log(reason);
                 done(err);
             });
             
