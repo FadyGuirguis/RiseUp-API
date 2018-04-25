@@ -91,7 +91,15 @@ describe('Office Hours Controller',()=>{
                     expert3 = res.body.user;
                 });
             })
-            // TODO: Register the normal user to submit requests
+            // Register the normal user to submit requests
+            .then(() => {
+                request(app).post("/register").send({user: testUser}).expect(200, (err, res) => {
+
+                    if(!res || !res.body.user) return;
+
+                    testUser = res.body.user;
+                });
+            })
             .then(() => {
                 done();
             })
