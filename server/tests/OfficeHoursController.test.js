@@ -78,7 +78,7 @@ describe('Office Hours Controller',()=>{
             done();
         });
 
-        it('should pass',(done)=>{
+        it('should not allow an expert to submit a request with him/herself',(done)=>{
             done();
         });
 
