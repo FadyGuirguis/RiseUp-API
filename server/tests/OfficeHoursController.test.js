@@ -3,7 +3,7 @@ base = process.env.PWD;
 const request = require('supertest');
 const expect = require('expect');
 var app = require("./../server").app;
-const {OfficeHour} = require('../models/OfficeHour');
+const {OfficeHours} = require('../models/OfficeHour');
 const {User} = require('../models/user');
 
 describe('Office Hours Controller',()=>{
@@ -137,10 +137,16 @@ describe('Office Hours Controller',()=>{
         });
 
         after((done) => {
-            // Remove all users and office hours from the DB
+            // Remove all users and [TODO:] office hours from the DB
             User.remove({}).then(() => {
+
+                OfficeHours.remove({});
+                
+            })
+            .then(() => {
                 done();
-            }).catch((reason) => {
+            })
+            .catch((reason) => {
                 console.log(reason);
                 done(reason);
             })
