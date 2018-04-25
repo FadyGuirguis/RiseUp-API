@@ -81,8 +81,13 @@ describe('Office Hours Controller',()=>{
         });
 
         beforeEach((done) => {
-            // TODO: Remove all Office Hours from the DB
-            done();
+            // Remove all Office Hours from the DB before each test case
+            OfficeHours.remove({}).then(() => {
+                done();
+            }).catch((reason) => {
+                console.log(reason);
+                done(reason);
+            });
         });
 
         it('should not allow guests to submit officeHour requests', (done) => {
@@ -90,10 +95,23 @@ describe('Office Hours Controller',()=>{
             var body = {
                 title: 'office hour request by an expert',
                 description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests'
-                // TODO: experts:
             };
 
-            done();
+            request(app)
+            .post("/officeHour")
+            .send(body)
+            .expect(401, (err, res) => {
+
+                if(err)
+                    done(err);
+                else
+                    done();
+
+            }).catch((reason) => {
+                console.log(reason);
+                done(reason);
+            });
+            
         });
 
         it('should not allow requests targeting 0 experts', (done) => {
@@ -137,11 +155,9 @@ describe('Office Hours Controller',()=>{
         });
 
         after((done) => {
-            // Remove all users and [TODO:] office hours from the DB
+            // Remove all users and office hours from the DB
             User.remove({}).then(() => {
-
                 OfficeHours.remove({});
-                
             })
             .then(() => {
                 done();
