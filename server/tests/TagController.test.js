@@ -9,7 +9,9 @@ TESTS:
            #getAllTags
            #removeTag
 
-AUTHOR: Zeyad Zaky      START DATE: 15 April 2018.
+AUTHOR: Zeyad Zaky
+
+START DATE: 15 April 2018.
 
 H*/
 

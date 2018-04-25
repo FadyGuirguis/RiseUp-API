@@ -4,7 +4,9 @@ FILENAME: request.js
 
 DESCRIPTION: This is the javascript file for the expert request schema.
 
-AUTHOR: Zeyad Zaky       START DATE: 3 April 2018.
+AUTHOR: Zeyad Zaky
+
+START DATE: 3 April 2018.
 
 H*/
 

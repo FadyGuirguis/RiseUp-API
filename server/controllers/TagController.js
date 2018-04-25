@@ -9,7 +9,9 @@ FUNCTIONS:
            getAllTags()
            removeTag()
 
-AUTHOR: Zeyad Zaky      START DATE: 26 March 2018.
+AUTHOR: Zeyad Zaky
+
+START DATE: 26 March 2018.
 
 H*/
 

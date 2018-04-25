@@ -11,7 +11,9 @@ FUNCTIONS:
            acceptRequest()
            suspendExpert()
 
-AUTHOR: Zeyad Zaky       START DATE: 3 Apr 2018.
+AUTHOR: Zeyad Zaky
+
+START DATE: 3 Apr 2018.
 
 H*/
 

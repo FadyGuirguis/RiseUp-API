@@ -4,7 +4,9 @@ FILENAME: tag.js
 
 DESCRIPTION: This is the javascript file for the predefined tag schema.
 
-AUTHOR: Zeyad Zaky      START DATE: 26 March 2018.
+AUTHOR: Zeyad Zaky
+
+START DATE: 26 March 2018.
 
 H*/
 
