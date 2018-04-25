@@ -27,10 +27,14 @@ describe('Office Hours Controller',()=>{
     describe('#saveOfficeHour',() => {
 
         before((done) => {
+            // TODO: Remove all users from the DB
+            // TODO: Add 3 'expert' users
+            // TODO: Add 1 other user to submit requests
             done();
         });
 
         beforeEach((done) => {
+            // TODO: Remove all Office Hours from the DB
             done();
         });
 
@@ -79,6 +83,7 @@ describe('Office Hours Controller',()=>{
         });
 
         after((done) => {
+            // TODO: Remove all users and office hours from the DB
             done();
         });
     })
