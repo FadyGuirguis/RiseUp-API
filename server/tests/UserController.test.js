@@ -411,6 +411,11 @@ describe('User Controller',()=>{
                 }
             })
         });
+        after((done)=>{
+            User.remove({}).then(()=>{
+                done()
+            })
+        });
     });
 
 });
