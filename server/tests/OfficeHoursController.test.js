@@ -137,8 +137,13 @@ describe('Office Hours Controller',()=>{
         });
 
         after((done) => {
-            // TODO: Remove all users and office hours from the DB
-            done();
+            // Remove all users and office hours from the DB
+            User.remove({}).then(() => {
+                done();
+            }).catch((reason) => {
+                console.log(reason);
+                done(reason);
+            })
         });
     })
 
