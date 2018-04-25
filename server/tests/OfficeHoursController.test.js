@@ -141,19 +141,15 @@ describe('Office Hours Controller',()=>{
             .post("/officeHour")
             .send(body)
             .expect(401, (err, res) => {
-
                 if(err) {
                     console.log(err);
                     done(err);
                 }
-                else
-                    done();
-
+                else done();
             });
-
         });
 
-        it('should not allow requests targeting not with no experts field', (done) => {
+        it('should not allow requests targeting with no experts field', (done) => {
             
             var body = {
                 title: 'office hour request by an expert',
@@ -162,16 +158,16 @@ describe('Office Hours Controller',()=>{
 
             request(app)
             .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
             .send(body)
-            .expect(401, (err, res) => {
-
+            .expect(400, (err, res) => {
                 if(err) {
                     console.log(err);
                     done(err);
                 }
-                else
-                    done();
-
+                else done();
             });
         });
 
@@ -179,38 +175,107 @@ describe('Office Hours Controller',()=>{
 
             var body = {
                 title: 'office hour request by an expert',
-                description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests'
+                description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests',
+                experts: []
             };
 
             request(app)
             .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
             .send(body)
-            .expect(401, (err, res) => {
-
+            .expect(400, (err, res) => {
                 if(err) {
                     console.log(err);
                     done(err);
                 }
-                else
-                    done();
-
-            })
+                else done();
+            });
         });
 
         it('should not allow requests targeting any number of experts > 3', (done) => {
-            done();
+            var body = {
+                title: 'office hour request by an expert',
+                description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests',
+                experts: [ expert1, expert2, expert3, expert1, expert2, expert3 ]
+            };
+
+            request(app)
+            .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
+            .send(body)
+            .expect(400, (err, res) => {
+                if(err) {
+                    console.log(err);
+                    done(err);
+                }
+                else done();
+            });
         });
 
         it('should not allow requests with no title', (done) => {
-            done();
+            var body = {
+                description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests',
+                experts: [ expert1, expert3 ]
+            };
+
+            request(app)
+            .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
+            .send(body)
+            .expect(400, (err, res) => {
+                if(err) {
+                    console.log(err);
+                    done(err);
+                }
+                else done();
+            });
         });
 
         it('should not allow requests with no description', (done) => {
-            done();
+            var body = {
+                title: 'office hour request by an expert',
+                experts: [ expert1, expert3 ]
+            };
+
+            request(app)
+            .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
+            .send(body)
+            .expect(400, (err, res) => {
+                if(err) {
+                    console.log(err);
+                    done(err);
+                }
+                else done();
+            });
         });
 
         it('should not allow requests with no title and no description', (done) => {
-            done();
+            var body = {
+                experts: [ expert1, expert3 ]
+            };
+
+            request(app)
+            .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
+            .send(body)
+            .expect(400, (err, res) => {
+                if(err) {
+                    console.log(err);
+                    done(err);
+                }
+                else done();
+            });
         });
 
         it('should save in the DB one officeHour request for each targeted expert (3 experts)', (done) => {
