@@ -382,7 +382,6 @@ describe('User Controller',()=>{
                 }
                 return done();
             });
-            done();
         });
     });
 
