@@ -11,8 +11,6 @@ const {OfficeHours} = require("../models/OfficeHour");
 
 //const mongoose = require('mongoose');
 
-const {OfficeHours} = require('../models/OfficeHour');
-User = require('../models/user');
 const {ObjectID} = require('mongodb');
 
 var id = "";
