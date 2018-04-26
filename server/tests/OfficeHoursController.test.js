@@ -11,12 +11,6 @@ const {OfficeHours} = require("../models/OfficeHour");
 
 //const mongoose = require('mongoose');
 
-const {OfficeHours} = require('../models/OfficeHour');
-const {User} = require('../models/user');
-
-
-
-
 describe('Office Hours Controller',()=>{
 
     describe('#getOfficeHours',()=>{
@@ -388,7 +382,6 @@ describe('#confirmOfficeHour',()=>{
             if(err){
                 return done(err);
             }
-            console.info(res.status+" "+res.res.text);
             return done();
         });});
 
@@ -461,7 +454,6 @@ describe('#confirmOfficeHour',()=>{
             if(err){
                 return done(err);
             }
-            console.info(res.status+" "+res.res.text);
             return done();
         });});
 
@@ -524,8 +516,6 @@ describe('#confirmOfficeHour',()=>{
         } 
         body=new OfficeHours(body);
         officehour = new OfficeHours(officehour);
-        console.info('SS');
-        console.info(officehour._id);
         officehour.save()
         .then(()=>{body._id=officehour._id;
             request(app).post('/confirmOfficeHour/'+body._id+'')
@@ -536,7 +526,6 @@ describe('#confirmOfficeHour',()=>{
             if(err){
                 return done(err);
             }
-            console.info(res.status+" "+res.res.text);
             return done();
         });});
 
@@ -599,8 +588,6 @@ describe('#confirmOfficeHour',()=>{
         } 
         body=new OfficeHours(body);
         officehour = new OfficeHours(officehour);
-        console.info('SS');
-        console.info(officehour._id);
         officehour.save()
         .then(()=>{body._id=officehour._id;
             request(app).post('/confirmOfficeHour/'+body._id+'')
@@ -611,7 +598,6 @@ describe('#confirmOfficeHour',()=>{
             if(err){
                 return done(err);
             }
-            console.info(res.status+" "+res.res.text);
             return done();
         });});
 
@@ -674,8 +660,6 @@ describe('#confirmOfficeHour',()=>{
         } 
         body=new OfficeHours(body);
         officehour = new OfficeHours(officehour);
-        console.info('SS');
-        console.info(officehour._id);
         officehour.save()
         .then(()=>{body._id=officehour._id;
             request(app).post('/confirmOfficeHour/'+body._id+'')
@@ -685,9 +669,7 @@ describe('#confirmOfficeHour',()=>{
         .end((err,res)=>{
             if(err){
                 return done(err);
-            }
-            console.info(res.status+" "+res.res.text);
-            
+            }            
             return done();
         });});
 
@@ -735,7 +717,6 @@ describe('#confirmOfficeHour',()=>{
             if(err){
                 return done(err);
             }
-            console.info(res.status+" "+res.res.text);
             return done();
         }));
 
@@ -804,9 +785,7 @@ describe('#confirmOfficeHour',()=>{
         .end((err,res)=>{
             if(err){
                 return done(err);
-            }
-            console.info(res.status+" "+res.res.text);
-            
+            }            
             return done();
         });});
 
