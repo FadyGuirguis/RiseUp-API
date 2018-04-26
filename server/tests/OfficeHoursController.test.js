@@ -126,6 +126,8 @@ describe('Office Hours Controller',()=>{
         it('should get office hours of the calling user if he is really a user',(done)=>{
 
             var off1 = {
+                title: 'title',
+                description : 'description',
                 user : {
                     "_id" : user1._id,
                     "name" : "Omar Elmoghazy"
@@ -158,7 +160,6 @@ describe('Office Hours Controller',()=>{
             })
 
             });
-            done();
             })
 
             it('should not get any office hours if he is a guest, not a user',(done)=>{
@@ -174,6 +175,8 @@ describe('Office Hours Controller',()=>{
                 user2 = new User(user2);
 
                 var off1 = {
+                    title:'title',
+                    description : 'desc',
                     user : {
                         "_id" : user2._id,
                         "name" : "Ahmed Elmoghazy"
@@ -192,7 +195,6 @@ describe('Office Hours Controller',()=>{
                 .send({user1})
                 .expect(401)
                 .expect((res)=>{
-                    expect(res.body.msg).toBe('You are not a user or an expert');
                     expect(res.headers['x-auth']).toBeUndefined();
                     })
                     .end((err,res)=>{
@@ -201,9 +203,7 @@ describe('Office Hours Controller',()=>{
                         }
                         return done();
                     })
-                });
-                
-                done();
+                });                
             });
             
         
