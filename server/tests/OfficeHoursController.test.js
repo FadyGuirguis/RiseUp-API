@@ -60,23 +60,43 @@ describe('Office Hours Controller',()=>{
             }
         };
 
-        // Prepare as well an officeHour that will be used in each test as already existing in the DB
-        var officeHourWithExp1 = {
-            title: 'Embedded Systems',
-            description: 'I wish to work in IoT and Embedded Systems of cars and other vehicles',
-            status: 'pending',
-            createdOn: new Date(),
-            lastModified: new Date()
-        };
+        // Prepare a pending officeHour that the DB will start with to use for tests
+        var officeHourWithExp1 = null;
 
         before((done) => {
             // Remove all users from the DB
             User.remove({})
-            // TODO: Register expert 1
-            // TODO: Make him expert
-            // TODO: Register expert 2
-            // TODO: Make him expert
+            // Register expert 1
+            .then(() => {
+                return request(app).post("/register").send({user: expert1}).expect(200);
+            })
+            // Make him expert
+            .then((res) => {
+                expert1 = res.body.user;
+                return User.findByIdAndUpdate(expert1._id, { $push: { roles: 'expert' } }, { new: true });
+            })
+            .then((newExpert) => {
+                expert1 = newExpert;
+            })
+            // Register expert 2
+            .then(() => {
+                return request(app).post("/register").send({user: expert2}).expect(200);
+            })
+            // Make him expert
+            .then((res) => {
+                expert2 = res.body.user;
+                return User.findByIdAndUpdate(expert2._id, { $push: { roles: 'expert' } }, { new: true });
+            })
+            .then((newExpert) => {
+                expert2 = newExpert;
+            })
             // TODO: Register normalUser
+            .then(() => {
+                return request(app).post("/register").send({user: normalUser}).expect(200);
+            })
+            .then((res) => {
+                normalUser = res.body.user;
+            })
             .then(() => {
                 done();
             })
@@ -89,8 +109,29 @@ describe('Office Hours Controller',()=>{
         beforeEach((done) => {
             // Remove any OfficeHours from the DB
             OfficeHours.remove({})
-            // TODO: Add the ones used for testing (after assigning to them the expert and normalUser)
+            // Create a new officeHour and save to DB to use for testing
             .then(() => {
+
+                var newOfficeHour = {
+                    title: 'Embedded Systems',
+                    description: 'I wish to work in IoT and Embedded Systems of cars and other vehicles',
+                    status: 'pending',
+                    user: {
+                        _id: normalUser._id,
+                        name: normalUser.profile.fullName
+                    },
+                    expert: {
+                        _id: expert1._id,
+                        name: expert1.profile.fullName
+                    },
+                    createdOn: new Date(),
+                    lastModified: new Date()
+                };
+                
+                return new OfficeHours(newOfficeHour).save();
+            })
+            .then((newOfficeHour) => {
+                officeHourWithExp1 = newOfficeHour;
                 done();
             })
             .catch((reason) => {
