@@ -148,7 +148,6 @@ describe('Office Hours Controller',()=>{
             .expect(200)
             .expect((res)=>{
                 OfficeHours.count({}, function( err, count){
-                    console.log( "Number of users:", count );
                     expect(count).toBe(1);
                 })
             })
