@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const {ObjectId} = require('mongodb');
-OfficeHour = mongoose.model('OfficeHour');
-User = mongoose.model('User');
+const OfficeHour = mongoose.model('OfficeHour');
+const User = mongoose.model('User');
 
 module.exports.getOfficeHours = async (req, res) => {   //USER OR EXPERT
   if(req.user.roles.includes('expert') || req.user.roles.includes('user')) {
@@ -128,22 +128,29 @@ module.exports.acceptOfficeHour = async (req, res) => {  //EXPERT - DONE
       || req.body.officeHour.suggestedSlots.slots.length == 0)
     return res.status(400).send({err: "You need to select between 1 and 3 slots"});
 
+  // ID of officeHour to accept
   var id = req.params.id;
-
+  
   OfficeHour.find({
     _id: id,
-    'expert._id': req.user._id
+    'expert._id': req.user._id // The expert user accepting should be actually targeted in this officeHour.
   }).then((officeHours) => {
+
     if (officeHours.length == 0)
       return Promise.reject("This request has not been sent to you");
+      
     var officeHour = officeHours[0];
+    
     if (officeHour.status != 'pending')
       return Promise.reject("This office hour has already been replied to");
+    
     officeHour.suggestedSlots.slots =  req.body.officeHour.suggestedSlots.slots;
     officeHour.suggestedSlots.createdOn = new Date();
-    officeHour.lastModified = new Date();
     officeHour.status = 'accepted';
+    officeHour.lastModified = new Date();
+
     return officeHour.save();
+
   }).then((officeHour) => {
     res.send({officeHour});
   }).catch((err) => {
