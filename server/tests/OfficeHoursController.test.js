@@ -230,7 +230,7 @@ describe('Office Hours Controller',()=>{
             })
             .send(body)
             .expect(400)
-            // Make sure our officeHour doc is still the on in DB with status unchanged
+            // Make sure our officeHour doc is still the one in DB with status unchanged
             .then(() => {
                 return OfficeHours.find({});
             })
@@ -253,19 +253,143 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow accepts with no "officeHours" in the body', (done) => {
-            done();
+            var body = { };
+            
+            request(app)
+            .post("/acceptOfficeHour/" + officeHourWithExp1._id)
+            .set({
+                'x-auth': expert1.tokens[0].token
+            })
+            .send(body)
+            .expect(400)
+            // Make sure our officeHour doc is still the one in DB with status unchanged
+            .then(() => {
+                return OfficeHours.find({});
+            })
+            .then((results) => {
+                expect(results).toBeTruthy();
+                expect(results.length).toEqual(1);
+
+                var officeHour = results[0];
+
+                expect(officeHour._id).toEqual(officeHourWithExp1._id);
+                expect(officeHour.status).toEqual('pending');
+            })
+            .then(() => {
+                done();
+            })
+            .catch((reason) => {
+                console.log(reason);
+                done(reason);
+            });
         });
 
         it('should not allow accepts with no "suggestedSlots.slots" in body.officeHours', (done) => {
-            done();
+            var body = { officeHour: { } };
+            
+            request(app)
+            .post("/acceptOfficeHour/" + officeHourWithExp1._id)
+            .set({
+                'x-auth': expert1.tokens[0].token
+            })
+            .send(body)
+            .expect(400)
+            // Make sure our officeHour doc is still the one in DB with status unchanged
+            .then(() => {
+                return OfficeHours.find({});
+            })
+            .then((results) => {
+                expect(results).toBeTruthy();
+                expect(results.length).toEqual(1);
+
+                var officeHour = results[0];
+
+                expect(officeHour._id).toEqual(officeHourWithExp1._id);
+                expect(officeHour.status).toEqual('pending');
+            })
+            .then(() => {
+                done();
+            })
+            .catch((reason) => {
+                console.log(reason);
+                done(reason);
+            });
         });
 
         it('should not allow accepts with empty suggestedSlots.slots', (done) => {
-            done();
+            var body = {
+                officeHour: {
+                    suggestedSlots: {
+                        slots: [ ]
+                    }
+                }
+            };
+            
+            request(app)
+            .post("/acceptOfficeHour/" + officeHourWithExp1._id)
+            .set({
+                'x-auth': expert1.tokens[0].token
+            })
+            .send(body)
+            .expect(400)
+            // Make sure our officeHour doc is still the one in DB with status unchanged
+            .then(() => {
+                return OfficeHours.find({});
+            })
+            .then((results) => {
+                expect(results).toBeTruthy();
+                expect(results.length).toEqual(1);
+
+                var officeHour = results[0];
+
+                expect(officeHour._id).toEqual(officeHourWithExp1._id);
+                expect(officeHour.status).toEqual('pending');
+            })
+            .then(() => {
+                done();
+            })
+            .catch((reason) => {
+                console.log(reason);
+                done(reason);
+            });
         });
 
         it('should not allow accepts with more than 3 suggested slots', (done) => {
-            done();
+            var body = {
+                officeHour: {
+                    suggestedSlots: {
+                        slots: [ new Date(2018, 4, 28), new Date(2018, 5, 5), new Date(2018, 5, 17), new Date(2018, 6, 17) ]
+                    }
+                }
+            };
+            
+            request(app)
+            .post("/acceptOfficeHour/" + officeHourWithExp1._id)
+            .set({
+                'x-auth': expert1.tokens[0].token
+            })
+            .send(body)
+            .expect(400)
+            // Make sure our officeHour doc is still the one in DB with status unchanged
+            .then(() => {
+                return OfficeHours.find({});
+            })
+            .then((results) => {
+                expect(results).toBeTruthy();
+                expect(results.length).toEqual(1);
+
+                var officeHour = results[0];
+
+                expect(officeHour._id).toEqual(officeHourWithExp1._id);
+                expect(officeHour.status).toEqual('pending');
+            })
+            .then(() => {
+                done();
+            })
+            .catch((reason) => {
+                console.log(reason);
+                done(reason);
+            });
         });
 
         it('should not allow accepts for an officeHour that is not originally "pending"', (done) => {
