@@ -141,7 +141,38 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow a non-logged in user to accept officeHour request', (done) => {
-            done();
+
+            var body = {
+                officeHour: {
+                    suggestedSlots: {
+                        slots: [ new Date(2018, 4, 28), new Date(2018, 5, 5), new Date(2018, 6, 17) ]
+                    }
+                }
+            };
+            
+            request(app)
+            .post("/acceptOfficeHour/" + officeHourWithExp1._id)
+            .send(body)
+            .expect(401)
+            .then(() => {
+                return OfficeHours.find({});
+            })
+            .then((results) => {
+                expect(results).toBeTruthy();
+                expect(results.length).toEqual(1);
+
+                var officeHour = results[0];
+
+                expect(officeHour._id).toEqual(officeHourWithExp1._id);
+                expect(officeHour.status).toEqual('pending');
+            })
+            .then(() => {
+                done();
+            })
+            .catch((reason) => {
+                console.log(reason);
+                done(reason);
+            });
         });
 
         it('should not allow a non-expert user to accept officeHour request', (done) => {
