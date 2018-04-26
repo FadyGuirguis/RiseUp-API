@@ -351,12 +351,42 @@ describe('User Controller',()=>{
             })
         });
     })
-
-    describe('#changePassword',()=>{
-        it('should pass',(done)=>{
+    describe('#ChangePassword',()=>{beforeEach((done)=>{
+        User.remove({}).then(()=>{
+            var user = {
+                email : 'nothing@something.com',
+                password : 'something',
+                profile : {
+                    "fullName" : "Nothing Something"
+                }
+            } 
+            request(app)
+            .post("/register")
+            .send({user})
+            .expect(200)
+            .end((err,res)=>{
+                id = res.body.user._id;
+                return done();
+            })
+            
+        })
+    });
+        it('user can change his password',(done)=>{
+            request(app)
+            .post("/changePassword")
+            .set('x-auth',token)
+            .expect(200)
+            .end((err,res)=>{
+                if(err){
+                    return done();
+                }
+                return done();
+            });
             done();
         });
-    })
+    });
+
+
 
     describe('#editProfile',()=>{
         it('should pass',(done)=>{
