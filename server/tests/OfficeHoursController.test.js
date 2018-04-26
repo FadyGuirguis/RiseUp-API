@@ -131,12 +131,13 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow guests to submit officeHour requests', (done) => {
-
+            //not sending authentication headers, to avoind signing in using a specific user, expect error 401
             var body = {
                 title: 'office hour request by an expert',
-                description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests'
+                description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests',
+                experts: [expert1]
             };
-
+            
             request(app)
             .post("/officeHour")
             .send(body)
@@ -150,10 +151,11 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow requests targeting with no experts field', (done) => {
-            
+            //passing title and description only, no experts array, expect error 400
             var body = {
                 title: 'office hour request by an expert',
                 description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests'
+                
             };
 
             request(app)
@@ -172,7 +174,7 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow requests targeting 0 experts', (done) => {
-
+            //passing zero experts, expect error 400
             var body = {
                 title: 'office hour request by an expert',
                 description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests',
@@ -195,6 +197,7 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow requests targeting any number of experts > 3', (done) => {
+            //passing 6 experts, expect error 400
             var body = {
                 title: 'office hour request by an expert',
                 description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests',
@@ -217,6 +220,7 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow requests with no title', (done) => {
+            //passing no title, expect error 400
             var body = {
                 description: 'testing that guests (not logged-in users) should not be allowed to make officeHour requests',
                 experts: [ expert1, expert3 ]
@@ -238,6 +242,7 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow requests with no description', (done) => {
+            //passing no desscription, expect error 400
             var body = {
                 title: 'office hour request by an expert',
                 experts: [ expert1, expert3 ]
@@ -259,6 +264,7 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should not allow requests with no title and no description', (done) => {
+            //passing no desscription and no title, expect error 400
             var body = {
                 experts: [ expert1, expert3 ]
             };
@@ -279,7 +285,7 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should save in the DB one officeHour request for each targeted expert (3 experts)', (done) => {
-            
+            //passing 3 experts, and expecting 3 officehours corresponding to those experts
             var body = {
                 title: 'office hour request by an expert',
                 description: 'testing that number of officeHours corresponds to the number of experts',
@@ -308,6 +314,7 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should save in the DB one officeHour request for each targeted expert (2 experts)', (done) => {
+            //passing 2 experts, and expecting 3 officehours corresponding to those experts
             var body = {
                 title: 'office hour request by an expert',
                 description: 'testing that number of officeHours corresponds to the number of experts',
@@ -336,6 +343,7 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should save the request with status: pending, and correct expert and other fields', (done) => {
+            //checking whether the created request has the status pending or not, should succeed
             var body = {
                 title: 'office hour request by an expert',
                 description: 'testing that number of officeHours corresponds to the number of experts',
