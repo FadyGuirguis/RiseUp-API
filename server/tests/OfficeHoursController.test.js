@@ -245,7 +245,7 @@ describe('Office Hours Controller',()=>{
         email : 'user@something.com',
         password : 'user1234',
         profile : {
-            "fullName" : "User Awi"
+            "fullName" : "Amr Saadi"
         }
     };
 
@@ -253,7 +253,7 @@ describe('Office Hours Controller',()=>{
         email : 'expert@something.com',
         password : 'expert',
         profile : {
-            "fullName" : "Expert Awi"
+            "fullName" : "Mohamed Salah"
         }
     };
 
@@ -261,7 +261,7 @@ describe('Office Hours Controller',()=>{
         email : 'expert2@something.com',
         password : 'expert2',
         profile : {
-            "fullName" : "Expert Ghareeb"
+            "fullName" : "Ahmed Hassan"
         }
     };
 
@@ -269,7 +269,7 @@ describe('Office Hours Controller',()=>{
         email : 'user@something.com',
         password : 'user1234',
         profile : {
-            "fullName" : "User Awi"
+            "fullName" : "Amr Saadi"
         }
     };
 
@@ -277,7 +277,7 @@ describe('Office Hours Controller',()=>{
         email : 'expert@something.com',
         password : 'expert',
         profile : {
-            "fullName" : "Expert Awi"
+            "fullName" : "Mohamed Salah"
         }
     };
 
@@ -285,7 +285,7 @@ describe('Office Hours Controller',()=>{
         email : 'expert2@something.com',
         password : 'expert2',
         profile : {
-            "fullName" : "Expert Ghareeb"
+            "fullName" : "Ahmed Hassan"
         }
     };
 
@@ -332,11 +332,11 @@ describe('Office Hours Controller',()=>{
         var officehour ={
             user: {
                 _id:RUser._id,
-                name: 'User Awi'
+                name: 'Amr Saadi'
               },
               expert: {
                 _id: RExpert._id,
-                name: 'Expert Awi'
+                name: 'Mohamed Salah'
               },
               isUserReviewed: true,
               isExpertReviewed: true,
@@ -358,12 +358,12 @@ describe('Office Hours Controller',()=>{
         body={
             user: {
                 _id:RUser._id,
-                name: 'User Awi'
+                name: 'Amr Saadi'
               },
 
               expert: {
                 _id: RExpert._id,
-                name: 'Expert Awi'
+                name: 'Mohamed Salah'
               },
               isUserReviewed: true,
               isExpertReviewed: true,
@@ -379,7 +379,7 @@ describe('Office Hours Controller',()=>{
               title:  'Office hours 1',
               description: 'first office hours',
               status: 'pending',
-              lastModified: new Date("2015-03-25")
+              lastModified: new Date("2018-01-01")
 
         } 
         body=new OfficeHours(body);
@@ -403,11 +403,11 @@ describe('Office Hours Controller',()=>{
         var officehour ={
             user: {
                 _id:RUser._id,
-                name: 'User Awi'
+                name: 'Amr Saadi'
               },
               expert: {
                 _id: RExpert._id,
-                name: 'Expert Awi'
+                name: 'Mohamed Salah'
               },
               isUserReviewed: true,
               isExpertReviewed: true,
@@ -429,12 +429,12 @@ describe('Office Hours Controller',()=>{
         body={
             user: {
                 _id:RUser._id,
-                name: 'User Awi'
+                name: 'Amr Saadi'
               },
 
               expert: {
                 _id: RExpert._id,
-                name: 'Expert Awi'
+                name: 'Mohamed Salah'
               },
               isUserReviewed: true,
               isExpertReviewed: true,
@@ -450,7 +450,7 @@ describe('Office Hours Controller',()=>{
               title:  'Office hours 1',
               description: 'first office hours',
               status: 'rejected',
-              lastModified: new Date("2015-03-25")
+              lastModified: new Date("2018-01-01")
 
         } 
         body=new OfficeHours(body);
@@ -476,11 +476,11 @@ describe('Office Hours Controller',()=>{
         var officehour ={
             user: {
                 _id:RUser._id,
-                name: 'User Awi'
+                name: 'Amr Saadi'
               },
               expert: {
                 _id: RExpert._id,
-                name: 'Expert Awi'
+                name: 'Mohamed Salah'
               },
               isUserReviewed: true,
               isExpertReviewed: true,
@@ -502,12 +502,12 @@ describe('Office Hours Controller',()=>{
         body={
             user: {
                 _id:RUser._id,
-                name: 'User Awi'
+                name: 'Amr Saadi'
               },
 
               expert: {
                 _id: RExpert._id,
-                name: 'Expert Awi'
+                name: 'Mohamed Salah'
               },
               isUserReviewed: true,
               isExpertReviewed: true,
@@ -523,7 +523,7 @@ describe('Office Hours Controller',()=>{
               title:  'Office hours 1',
               description: 'first office hours',
               status: 'accepted',
-              lastModified: new Date("2015-03-25")
+              lastModified: new Date("2018-01-01")
 
         } 
         body=new OfficeHours(body);
@@ -549,15 +549,15 @@ describe('Office Hours Controller',()=>{
         var officehour ={
             user: {
                 _id:RUser._id,
-                name: 'User Awi'
+                name: 'Amr Saadi'
               },
               expert: {
                 _id: RExpert._id,
-                name: 'Expert Awi'
+                name: 'Mohamed Salah'
               },
               /*expert2: {
                 //  _id: RExpert2._id,
-                //  name: 'Expert Ghareeb'
+                //  name: 'Ahmed Hassan'
               },
               */
               isUserReviewed: true,
@@ -580,12 +580,12 @@ describe('Office Hours Controller',()=>{
         body={
             user: {
                 _id:RUser._id,
-                name: 'User Awi'
+                name: 'Amr Saadi'
               },
 
               expert: {
                 _id: RExpert._id,
-                name: 'Expert Awi'
+                name: 'Mohamed Salah'
               },
               isUserReviewed: true,
               isExpertReviewed: true,
@@ -601,7 +601,7 @@ describe('Office Hours Controller',()=>{
               title:  'Office hours 1',
               description: 'first office hours',
               status: 'pending',
-              lastModified: new Date("2015-03-25")
+              lastModified: new Date("2018-01-01")
 
         } 
         body=new OfficeHours(body);
