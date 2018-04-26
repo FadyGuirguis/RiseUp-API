@@ -1,3 +1,16 @@
+/*H
+
+FILENAME: OfficeHour.js
+
+DESCRIPTION: This is the javascript file that includes the database schema for
+             the documents that are saved in the Officehours collection in our
+             database.
+
+AUTHOR: Fady Sameh
+
+START DATE: 2 Apr 2018.
+
+H*/
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var {ObjectId} = require('mongodb');
