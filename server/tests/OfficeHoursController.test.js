@@ -8,9 +8,6 @@ const expect = require('expect');
 var app = require("./../server").app;
 const {OfficeHours} = require('../models/OfficeHour');
 const {User} = require('../models/user');
-
-const {User} = require("../models/user");
-const {OfficeHours} = require("../models/OfficeHour");
 const {ObjectID} = require('mongodb');
 
 var id = "";
@@ -835,7 +832,6 @@ const mongoose = require('mongoose');
                          }
                          else{
                             OfficeHours.count({}, function( err, count){
-                                console.log( "Number of Office Hours:", count );
                                 expect(count).toBe(3);
                             })
                             done();
@@ -864,7 +860,6 @@ const mongoose = require('mongoose');
                          }
                          else{
                             OfficeHours.count({}, function( err, count){
-                                console.log( "Number of Office Hours:", count );
                                 expect(count).toBe(2);
                             })
                             done();
@@ -923,7 +918,6 @@ const mongoose = require('mongoose');
                          }
                          else{
                             OfficeHours.count({}, function( err, count){
-                                console.log( "Number of Office Hours:", count );
                                 expect(count).toBe(1);
                             })
                             done();

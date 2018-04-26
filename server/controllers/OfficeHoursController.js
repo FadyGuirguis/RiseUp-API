@@ -107,10 +107,10 @@ expert*/
 module.exports.saveOfficeHour = async (req, res) => {
   var experts = req.body.experts;
   if (!experts || experts.length > 3 || experts.length == 0) {
-    res.status(400).send({err: 'You have to select between 1 and 3 experts'});
+    return res.status(400).send({err: 'You have to select between 1 and 3 experts'});
   }
   if (!req.body.title || !req.body.description) {
-    res.status(400).send({err: 'You have to supply a title and description'});
+    return res.status(400).send({err: 'You have to supply a title and description'});
   }
   body = {
     user: {
