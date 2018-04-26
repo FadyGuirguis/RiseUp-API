@@ -396,11 +396,11 @@ describe('Office Hours Controller',()=>{
             var body = {
                 officeHour: {
                     suggestedSlots: {
-                        slots: [ new Date(2018, 4, 28), new Date(2018, 5, 5), new Date(2018, 5, 17), new Date(2018, 6, 17) ]
+                        slots: [ new Date(2018, 4, 28), new Date(2018, 5, 5), new Date(2018, 6, 17) ]
                     }
                 }
             };
-            
+
             // First, update the status of the officeHour we saved to be 'accepted'
             OfficeHours.findByIdAndUpdate(officeHourWithExp1._id, 
                 { $set: { status: 'accepted'  } }, { new: true })
@@ -440,7 +440,49 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should update the officeHour in the DB correctly if the accept request is OK.', (done) => {
-            done();
+            var body = {
+                officeHour: {
+                    suggestedSlots: {
+                        slots: [ new Date(2018, 4, 28), new Date(2018, 5, 5), new Date(2018, 6, 17) ]
+                    }
+                }
+            };
+
+            request(app)
+            .post("/acceptOfficeHour/" + officeHourWithExp1._id)
+            .set({
+                'x-auth': expert1.tokens[0].token
+            })
+            .send(body)
+            .expect(200)
+            // Make sure our officeHour doc is still the one in DB but with status changed and fields updated
+            .then(() => {
+                return OfficeHours.find({});
+            })
+            .then((results) => {
+                expect(results).toBeTruthy();
+                expect(results.length).toEqual(1);
+
+                var officeHour = results[0];
+
+                expect(officeHour._id).toEqual(officeHourWithExp1._id);
+                expect(officeHour.status).toEqual('accepted');
+
+                expect(officeHour.suggestedSlots).toBeTruthy();
+                expect(officeHour.suggestedSlots.slots).toBeTruthy();
+                expect(officeHour.suggestedSlots.slots.length).toEqual(3);
+                
+                expect(officeHour.suggestedSlots.slots[0]).toEqual(body.officeHour.suggestedSlots.slots[0]);
+                expect(officeHour.suggestedSlots.slots[1]).toEqual(body.officeHour.suggestedSlots.slots[1]);
+                expect(officeHour.suggestedSlots.slots[2]).toEqual(body.officeHour.suggestedSlots.slots[2]);
+            })
+            .then(() => {
+                done();
+            })
+            .catch((reason) => {
+                console.log('error');
+                done(reason);
+            });
         });
 
         after((done) => {
