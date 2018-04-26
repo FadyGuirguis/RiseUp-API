@@ -24,7 +24,7 @@ describe('User Controller',()=>{
                         "fullName" : "Nothing Something"
                     }
                 }
-    
+
                 user = new User(user);
                 user.save().then(()=>{
                     done();
@@ -145,7 +145,7 @@ describe('User Controller',()=>{
                     return done(err);
                 });
             })
-        })        
+        })
 
         it('should not create a user with a full name of 1 Character',(done)=>{
             var user = {
@@ -196,8 +196,8 @@ describe('User Controller',()=>{
                         "fullName" : "Nothing Something"
                     }
                 }
-                // POST /register will make the user start with 1 token already because 
-                // he is already automatically logged in 
+                // POST /register will make the user start with 1 token already because
+                // he is already automatically logged in
                 request(app)
                 .post("/register")
                 .send({user})
@@ -206,7 +206,7 @@ describe('User Controller',()=>{
                     id = res.body.user._id;
                     return done();
                 })
-                
+
             })
         });
 
@@ -315,7 +315,7 @@ describe('User Controller',()=>{
                         "fullName" : "Nothing Something"
                     }
                 }
-    
+
                 request(app)
                 .post("/register")
                 .send({user})
@@ -324,12 +324,12 @@ describe('User Controller',()=>{
                     id = res.body.user._id;
                     token = res.headers['x-auth'];
                     return done();
-                })  
+                })
             })
         });
 
         it('user should logout with correct token',(done)=>{
-            
+
             request(app)
             .post("/logout")
             .set('x-auth',token)
@@ -342,7 +342,13 @@ describe('User Controller',()=>{
                     expect(user.tokens).toHaveLength(0);
                     return done();
                 })
-            })  
+            })
+        });
+
+        after((done)=>{
+            User.remove({}).then(()=>{
+                done()
+            })
         });
     })
 
@@ -366,51 +372,57 @@ describe('User Controller',()=>{
     })
 
     describe('#getUserByID',()=>{
-        it('should pass',(done)=>{
+        var id = "";
+        var token = "";
+        before((done) => {
+          User.remove().then(() => {
+            var user = {
+              email: 'sth@sth.com',
+              password: 'abc123',
+              fullName: 'nobody'
+            }
+            var email = 'sth@sth.com';
+            var password = 'abc123';
+            user = new User(user);
+            user.save().then((User) => {
+              id = User._id;
+
+              request(app)
+              .post('/login')
+              .send({email, password})
+              .end((err, res) => {
+                token = res.headers['x-auth'];
+                return done();
+              })
+            })
+          })
+        })
+
+        it('no user with such id',(done)=>{
+            request(app)
+            .get('/user/' + id + 'a')
+            .expect(404)
             done();
         });
-    })
 
-    describe('#getUserByToken',()=>{
-        var tempUser ;
-        beforeEach((done)=>{
-            User.remove({}).then(()=>{
-                var user = {
-                    email : 'nothing@something.com',
-                    password : 'something',
-                    profile : {
-                        "fullName" : "Nothing Something"
-                    }
-                }
-                
-                user = new User(user);
-                request(app)
-                .post("/register")
-                .send({user})
-                .expect(200)
-                .end((err,res)=>{
-                    tempUser = res.body.user; 
-                    //console.log(tempUser);
-                    return done();
-                })  
-            })
-        });
-        it('should pass if token exists',(done)=>{
-            request(app)
-            .get('/users/getByToken')
-            .set({
-                'x-auth':tempUser.tokens[0].token
-            })
-            .expect(200)
-            .end((err,res)=>{
-                if(err){
-                    done(err);
-                }
-                else{
-                    done();
-                }
-            })
-        });
-    });
+        it('should find the user', (done) => {
+          request(app)
+          .get('/user/' + id)
+          .set('x-auth', token)
+          .expect(200)
+          .end((err, res) => {
+            if(err) {
+              return done(err);
+            }
+
+            User.find({_id: id}).then((users)=>{
+                expect(users.length).toBe(1);
+                return done();
+            }).catch((err)=>{
+                return done(err);
+            });
+          })
+        })
+    })
 
 });

@@ -5,8 +5,7 @@ Review = mongoose.model('Review');
 OfficeHour = mongoose.model('OfficeHour');
 User = mongoose.model('User');
 
-module.exports.getReviewsOnUser = async (req, res) => {   //ADMIN
-  if(req.user.roles.includes('admin')) {
+module.exports.getReviewsOnUser = async (req, res) => {
     var userId = req.params.id;
 
     Review.find({ 'reviewed._id': userId }).then((reviews) => {
@@ -14,20 +13,18 @@ module.exports.getReviewsOnUser = async (req, res) => {   //ADMIN
     }).catch((err) => {
         res.status(500).send(err);
     });
-}else{
-  res.status(401).send('You are not an admin');
-}
+
 };
 
 module.exports.postReview = async (req, res) => {
 
     if(!req.body.review)
         return res.status(400).send({err: 'No review'});
-  
+
     if(!req.body.review.rating)
         return res.status(400).send({err: 'Rating not specified'});
 
-    if(!req.body.review.description)   //MMKEN TETMESSE7
+    if(!req.body.review.description)   
         return res.status(400).send({err: 'Description not specified'});
 
     if (!ObjectId.isValid(req.params.id))
@@ -44,7 +41,7 @@ module.exports.postReview = async (req, res) => {
 
       if (!officeHour)
         return Promise.reject("Office hour not found");
-      
+
 
       if (officeHour.user._id.equals(req.user._id)) {
         if (officeHour.isExpertReviewed == true)

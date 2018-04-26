@@ -1,11 +1,34 @@
+/*H
+
+FILENAME: OfficeHoursController.js
+
+DESCRIPTION: This is the javascript file that includes all the functions that
+             called when the server recieves any requests related to the office
+             hours feature.
+
+FUNCTIONS:
+           getOfficeHours()
+           getOfficeHour()
+           getExperts()
+           saveOfficeHour()
+           acceptOfficeHour()
+           rejectOfficeHour()
+           confirmOfficeHour()
+
+AUTHOR: Fady Sameh
+
+START DATE: 2 Apr 2018.
+
+H*/
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const {ObjectId} = require('mongodb');
 const OfficeHour = mongoose.model('OfficeHour');
 const User = mongoose.model('User');
 
-module.exports.getOfficeHours = async (req, res) => {   //USER OR EXPERT
-  if(req.user.roles.includes('expert') || req.user.roles.includes('user')) {
+/*getOfficeHours(): This function returns all the officehour documents related
+to the requesting user*/
+module.exports.getOfficeHours = async (req, res) => {
     var id = req.user._id;
     OfficeHour.find({
       $or: [
@@ -27,28 +50,26 @@ module.exports.getOfficeHours = async (req, res) => {   //USER OR EXPERT
       .catch((err) => {
         res.status(500).send({err});
       });
-  }else{
-    res.status(401).send('You are not a user or an expert');
-  }
 };
 
-module.exports.getOfficeHour = async (req, res) => {   //USER OR EXPERT
-if(req.user.roles.includes('expert') || req.user.roles.includes('user')) {
+/*getOfficeHours(): This function returns the officehour document requested by
+the user*/
+module.exports.getOfficeHour = async (req, res) => {
   var id = req.params.id;
   OfficeHour.findOne({_id:id}).then((officeHour) => {
-    if (officeHour.user._id.equals(req.user._id) || officeHour.expert._id.equals(req.user._id))
+    if (officeHour.user._id.equals(req.user._id) || officeHour.expert._id
+    .equals(req.user._id))
       return res.send({officeHour});
     res.status(401).send();
 
   }).catch((err) => {
     res.status(500).send();
   })
-}else{
-  res.status(401).send('You are not a user or an expert');
-}
 };
 
-module.exports.getExperts = async (req, res) => {    //ALL
+/*getExperts(): This function all experts the match the search query. If then
+query is empty the requesting user's interests are used*/
+module.exports.getExperts = async (req, res) => {
   if (!req.body.tags)
     return res.status(400).send({err: 'tags not recieved'});
   var tags = req.body.tags;
@@ -80,8 +101,10 @@ module.exports.getExperts = async (req, res) => {    //ALL
   })
 };
 
-module.exports.saveOfficeHour = async (req, res) => {   //user
-  if(req.user.roles.includes('user')) {
+/*saveOfficeHour(): This function saves officehour documents. The user can send
+up to three experts and the server will store an officehour document for each
+expert*/
+module.exports.saveOfficeHour = async (req, res) => {
   var experts = req.body.experts;
   if (experts.length > 3 || experts.length == 0) {
     res.status(400).send({err: 'You have to select between 1 and 3 experts'});
@@ -113,16 +136,16 @@ module.exports.saveOfficeHour = async (req, res) => {   //user
   }).catch((err) => {
     res.status(500).send({});
   })
-}else{
-  res.status(401).send('You are not a user');
-}
 
 };
 
-module.exports.acceptOfficeHour = async (req, res) => {  //EXPERT - DONE
+/*acceptOfficeHour(): This function changes the staus of an officehour document
+to accepted and saves the suggested slots when an expert accepts an officehour*/
+module.exports.acceptOfficeHour = async (req, res) => {
   if (!req.body.officeHour)
     return res.status(400).send({err: "Office Hour wasn't recieved"});
-  if (!req.body.officeHour.suggestedSlots || !req.body.officeHour.suggestedSlots.slots)
+  if (!req.body.officeHour.suggestedSlots
+    || !req.body.officeHour.suggestedSlots.slots)
     return res.status(400).send({err: "Suggested slots were not recieved"});
   if (req.body.officeHour.suggestedSlots.slots.length > 3
       || req.body.officeHour.suggestedSlots.slots.length == 0)
@@ -158,7 +181,9 @@ module.exports.acceptOfficeHour = async (req, res) => {  //EXPERT - DONE
   });
 };
 
-module.exports.rejectOfficeHour = async (req, res) => {   //DONE
+/*rejectOfficeHour(): This function changes the status of an office hour to
+'rejected' when an expert rejects it*/
+module.exports.rejectOfficeHour = async (req, res) => {
   var id = req.params.id;
   OfficeHour.find({
     _id: id,
@@ -180,7 +205,9 @@ module.exports.rejectOfficeHour = async (req, res) => {   //DONE
 
 };
 
-module.exports.confirmOfficeHour = async (req, res) => {   //DONE
+/*confirmOfficeHour(): This function changes the status of an officehour to
+'confirmed' when a user confirms it and it saves the slot chose by the user*/
+module.exports.confirmOfficeHour = async (req, res) => {
   if (!req.body.officeHour)
     return res.status(400).send({err: "Office Hour wasn't recieved"});
   if (!req.body.officeHour.chosenSlot || !req.body.officeHour.chosenSlot.slot)
@@ -202,7 +229,8 @@ module.exports.confirmOfficeHour = async (req, res) => {   //DONE
         return Promise.reject("This office has not been accepted");
 
       for (var slot of officeHour.suggestedSlots.slots)
-        if (slot.getTime() == new Date(req.body.officeHour.chosenSlot.slot).getTime()) {
+        if (slot.getTime() ==
+        new Date(req.body.officeHour.chosenSlot.slot).getTime()) {
           officeHour.chosenSlot.slot = req.body.officeHour.chosenSlot.slot;
           officeHour.chosenSlot.createdOn = new Date();
           officeHour.lastModified = new Date();
