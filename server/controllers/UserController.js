@@ -41,11 +41,11 @@ module.exports.loginUser = async (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
 
   if(!body.email){
-    return res.status(400).send(); 
+    return res.status(400).send();
   }
 
   if(!body.password){
-    return res.status(400).send(); 
+    return res.status(400).send();
   }
 
   User.findByCredentials(body.email, body.password).then((user) => {
