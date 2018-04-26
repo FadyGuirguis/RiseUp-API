@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 base = process.env.PWD;
 const request = require('supertest');
 const expect = require('expect');
-var app = require("./../server").app;
+const {app} = require("./../server");
 const {Review} = require('../models/Review');
 const {OfficeHours} = require('../models/OfficeHour');
 const {User} = require('../models/user');
@@ -11,10 +11,167 @@ const {ObjectID} = require('mongodb');
 describe('Review Controller',()=>{
 
     describe('#getReviewsOnUser',()=>{
-        it('should pass',(done)=>{
+
+      var reviewer = {};
+      var reviewed = {};
+      var admin = {};
+      var testOfficeHours = {};
+      var testReview = {};
+
+      beforeEach((done)=>{
+          User.remove({})
+        .then((res) => {
+            user = {
+                email : 'reviewer@something.com',
+                password : 'reviewer',
+                profile : {
+                    "fullName" : "reviewer"
+                }
+            };
+
+            return request(app)
+            .post("/register")
+            .send({user})
+            .expect(200)
+
+
+          }).then((res) => {
+            reviewer = res.body.user;
+            user = {
+                email : 'reviewed@something.com',
+                password : 'reviewed',
+                profile : {
+                    "fullName" : "reviewed"
+                }
+            };
+
+            return request(app)
+            .post("/register")
+            .send({user})
+            .expect(200)
+          }).then((res) => {
+            reviewed = res.body.user;
+            user = {
+                email : 'admin@admin.com',
+                password : 'adminadmin',
+                profile : {
+                    "fullName" : "admin admin"
+                }
+            };
+
+            return request(app)
+            .post("/register")
+            .send({user})
+            .expect(200)
+          }).then((res) => {
+            return User.findByIdAndUpdate(res.body.user._id,
+              {$set:  {roles: ['admin']} }, {new: true});
+          }).then((res) => {
+            admin = res;
+            testOfficeHours = new OfficeHours({
+               user : {
+                   _id : reviewer._id,
+                   name : reviewer.profile.fullName
+               } ,
+               expert : {
+                   _id : reviewed._id,
+                   name : reviewed.profile.fullName
+               },
+
+               title : "test title",
+
+               description : "test description",
+
+               isUserReviewed : false,
+
+               isExpertReviewed : false
+            });
+            return testOfficeHours.save()
+          }).then((res) => {
+            testOfficeHours = res;
+            testReview = new Review({
+                reviewer : {
+                    _id : reviewer._id,
+                    name : reviewer.name
+                },
+                reviewed : {
+                    _id : reviewed._id,
+                    name : reviewed.name
+                },
+
+                officeHours : testOfficeHours._id,
+                description : "test description",
+                rating : 4
+            });
+            return testReview.save()
+          }).then((res) => {
+            testReview = res;
             done();
+          }).catch((err) => {
+            console.log(err);
+          });
+      });
+
+        it('should return forbidden if I\'m not an admin',(done)=>{
+          request(app)
+          .get(`/reviews/${reviewed._id}`)
+          .send({})
+          .set({
+              'x-auth' : reviewer.tokens[0].token
+          })
+          .expect(403)
+          .end((err,res)=>{
+              if(err)
+                  done(err);
+              else{
+                  done();
+              }
+          });
         });
-    })
+
+        it('should not return reviews that user has posted', (done) => {
+          request(app)
+          .get(`/reviews/${reviewer._id}`)
+          .send({})
+          .set({
+              'x-auth' : admin.tokens[0].token
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.reviews.length).toBe(0);
+          })
+          .end((err,res)=>{
+              if(err)
+                  done(err);
+              else{
+                  done();
+              }
+          });
+
+        });
+
+        it('should return reviews on user', (done) => {
+          request(app)
+          .get(`/reviews/${reviewed._id}`)
+          .send({})
+          .set({
+              'x-auth' : admin.tokens[0].token
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.reviews.length).toBe(1);
+          })
+          .end((err,res)=>{
+              if(err)
+                  done(err);
+              else{
+                  done();
+              }
+          });
+
+        });
+
+    });
 
     describe('#postReview',()=>{
 
@@ -45,7 +202,7 @@ describe('Review Controller',()=>{
                             "fullName" : "Nothing Something"
                         }
                     };
-    
+
                     request(app)
                     .post("/register")
                     .send({user})
@@ -61,18 +218,18 @@ describe('Review Controller',()=>{
                                _id : reviewed._id,
                                name : reviewed.profile.fullName
                            },
-                           
+
                            title : "title bla ",
-    
+
                            description : "bla bla",
-                           
+
                            isUserReviewed : false,
-    
+
                            isExpertReviewed : false
                         });
-    
+
                         // console.log(testOfficeHours);
-    
+
                         testOfficeHours.save().then((doc)=>{
                             testOfficeHours = doc ;
                             testReview = new Review({
@@ -84,7 +241,7 @@ describe('Review Controller',()=>{
                                     _id : reviewed._id,
                                     name : reviewed.name
                                 },
-                                    
+
                                 officeHours : testOfficeHours._id,
                                 description : "bla bla",
                                 rating : 1
@@ -94,17 +251,17 @@ describe('Review Controller',()=>{
                         .catch((err)=>{
                             console.log(err);
                         });
-                    });   
+                    });
                 });
 
             });
-                
-            
-                
+
+
+
 
         });
-        
-        
+
+
         it('Review should not be posted if it is empty',(done)=>{
             request(app)
             .post("/review/"+testOfficeHours._id)
@@ -218,7 +375,7 @@ describe('Review Controller',()=>{
                     }
                 })
             })
-                
+
         });
 
         it('No Review can be submitted twice Reversed ',(done)=>{
@@ -242,7 +399,7 @@ describe('Review Controller',()=>{
                     }
                 })
             })
-                
+
         });
 
         it('Review should not be posted if office hours are not related to the user',(done)=>{
@@ -300,7 +457,7 @@ describe('Review Controller',()=>{
                 User.remove({}).then((res)=>{
                     done();
                 })
-            
+
         }).catch((err)=>{
             console.log(err);
             })
