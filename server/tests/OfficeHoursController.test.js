@@ -279,23 +279,124 @@ describe('Office Hours Controller',()=>{
         });
 
         it('should save in the DB one officeHour request for each targeted expert (3 experts)', (done) => {
-            done();
+            
+            var body = {
+                title: 'office hour request by an expert',
+                description: 'testing that number of officeHours corresponds to the number of experts',
+                experts: [expert1,expert2,expert3]
+            };
+            
+            request(app)
+            .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
+            .send(body)
+            .expect(200, (err,res)=>{
+                if(err) {
+                             console.log(err);
+                             done(err);
+                         }
+                         else{
+                            OfficeHours.count({}, function( err, count){
+                                console.log( "Number of Office Hours:", count );
+                                expect(count).toBe(3);
+                            })
+                            done();
+                         } 
+            })
         });
 
         it('should save in the DB one officeHour request for each targeted expert (2 experts)', (done) => {
-            done();
+            var body = {
+                title: 'office hour request by an expert',
+                description: 'testing that number of officeHours corresponds to the number of experts',
+                experts: [expert1,expert2]
+            };
+            
+            request(app)
+            .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
+            .send(body)
+            .expect(200, (err,res)=>{
+                if(err) {
+                             console.log(err);
+                             done(err);
+                         }
+                         else{
+                            OfficeHours.count({}, function( err, count){
+                                console.log( "Number of Office Hours:", count );
+                                expect(count).toBe(2);
+                            })
+                            done();
+                         } 
+            })
         });
 
         it('should save the request with status: pending, and correct expert and other fields', (done) => {
-            done();
+            var body = {
+                title: 'office hour request by an expert',
+                description: 'testing that number of officeHours corresponds to the number of experts',
+                experts: [expert1]
+            };
+            request(app)
+            .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
+            .send(body)
+            .expect(200)
+            .end((err,res)=>{
+                if(err){
+                    return done(err);
+                }
+
+                OfficeHours.find({"user._id":normalUser._id}).then((result)=>{
+                    
+                    expect(result[0].status).toBe('pending');
+                    return done();
+                }).catch((err)=>{
+                    return done(err);
+                });
+            });
         });
 
         it('should save only one request for each expert (no duplicates)', (done) => {
-            done();
+            //Only one officehour request is sonctructed per expert with no duplicates
+            //test with one expert and checn that count of officeHour requests is also 1
+            var body = {
+                title: 'office hour request by an expert',
+                description: 'testing that number of officeHours corresponds to the number of experts',
+                experts: [expert1]
+            };
+            
+            request(app)
+            .post("/officeHour")
+            .set({
+                'x-auth': normalUser.tokens[0].token
+            })
+            .send(body)
+            .expect(200, (err,res)=>{
+                if(err) {
+                             console.log(err);
+                             done(err);
+                         }
+                         else{
+                            OfficeHours.count({}, function( err, count){
+                                console.log( "Number of Office Hours:", count );
+                                expect(count).toBe(1);
+                            })
+                            done();
+                         } 
+            })
         });
 
         it('should not allow an expert to submit a request with him/herself',(done)=>{
             done();
+            //handeled in the front end.
+            //as an expert, if I am viewing my own profile then I can't request an office hour for myself
         });
 
         after((done) => {
