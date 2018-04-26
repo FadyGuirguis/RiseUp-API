@@ -106,7 +106,7 @@ up to three experts and the server will store an officehour document for each
 expert*/
 module.exports.saveOfficeHour = async (req, res) => {
   var experts = req.body.experts;
-  if (experts.length > 3 || experts.length == 0) {
+  if (!experts || experts.length > 3 || experts.length == 0) {
     res.status(400).send({err: 'You have to select between 1 and 3 experts'});
   }
   if (!req.body.title || !req.body.description) {
