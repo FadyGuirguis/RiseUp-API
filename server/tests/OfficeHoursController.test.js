@@ -174,9 +174,14 @@ describe('Office Hours Controller',()=>{
 
 
         after((done) => {
-                User.remove({}).then(() => {
-                    done()
+            OfficeHours.remove({}).then((res)=>{
+                User.remove({}).then((res)=>{
+                    done();
                 })
+
+            }).catch((err)=>{
+                console.log(err);
+            })
             });
 
 
