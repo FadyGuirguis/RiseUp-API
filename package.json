@@ -30,6 +30,7 @@
     "tap": "^11.1.4"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "expect": "^22.4.3",
     "mocha": "^5.1.1",
     "rewire": "^4.0.0",

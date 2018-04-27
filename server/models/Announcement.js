@@ -27,4 +27,4 @@ const AnnouncementSchema = mongoose.Schema({
 
 });
 
-mongoose.model('Announcement', AnnouncementSchema);
+module.exports.Announcement = mongoose.model('Announcement', AnnouncementSchema);
