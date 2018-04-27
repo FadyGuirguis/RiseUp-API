@@ -254,28 +254,28 @@ describe('Request Controller',()=>{
 
         it('should return 401 for a non admin user', async () => {
             let res = request(app)
-            .get("/suspendExpert/" + expert_user._id)
+            .post("/suspendExpert/" + expert_user._id)
             .set({'x-auth' : expert_user.tokens[0].token})
             .expect(401)
         })
 
         it('should return 200 for a valid request', async () => {
             let res = request(app)
-            .get("suspendExpert/" + expert_user._id)
+            .post("suspendExpert/" + expert_user._id)
             .set({'x-auth' : admin_user.tokens[0].token})
             .expect(200)
         })
 
         it('should return 404 for a non exisiting id', async () => {
             let res = request(app)
-            .get("suspendExpert/" + "22222222")
+            .post("suspendExpert/" + "22222222")
             .set({'x-auth' : admin_user.tokens[0].token})
             .expect(404)
         })
 
         it('should return 400 for a non expert user requested', async () => {
             let res = request(app)
-            .get("suspendExpert/" + normal_user._id)
+            .post("suspendExpert/" + normal_user._id)
             .set({'x-auth' : admin_user.tokens[0].token})
             .expect(400)
         })
