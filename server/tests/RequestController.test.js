@@ -282,7 +282,6 @@ describe('Request Controller',()=>{
     })
 
     describe('#acceptRequest',()=>{
-        describe('#acceptRequest', () => {
             //-------------------------Declaration----------------------------------
             var admin = {
                 email: 'admin@admin.com',
@@ -397,8 +396,6 @@ describe('Request Controller',()=>{
                     return done();
                 });
             });
-        })
-
     })
 
     describe('#suspendExpert',()=>{
