@@ -152,7 +152,7 @@ module.exports.acceptRequest = async (req, res) => {
   var id = req.params.id;
 
   //check the correctness of the provided request id
-  Request.find({_id: id}).then((oldRequest) => {
+  await Request.find({_id: id}).then((oldRequest) => {
     if(! oldRequest[0]) {
       return res.status(404).send('There is no request available with such id');
     }
@@ -179,9 +179,6 @@ module.exports.acceptRequest = async (req, res) => {
     transporter.sendMail(acceptOptions(getUser.email), (err, info) => {
       if(err) {
         console.log(err);
-      }
-      else {
-        console.log('Email sent:' + info.response);
       }
     })
 

@@ -125,8 +125,7 @@ describe('Request Controller',()=>{
                 done();
             })
             .catch((reason) => {
-                console.log(reason);
-                done(err);
+                done(reason);
             });
         });
         beforeEach((done)=>{
@@ -231,7 +230,6 @@ describe('Request Controller',()=>{
             beforeEach((done) => {
                 User.remove({}).then(() => {
                     request(app).post('/register').send({ user: user }).expect(200).end((err, res) => {
-                        //console.info(res.status + ' ' + res.res.text);
                         if (err) {
                             return done(err);
                         }
@@ -283,7 +281,6 @@ describe('Request Controller',()=>{
                             Request.find({}).then((res) => {
                                 //----------------------------------------------------
                                 request(app).post('/acceptRequest/' + res[0]._id + '').set({ 'x-auth': ResAdmin.tokens[0].token }).send(res[0]).expect(400).end((err, res) => {
-                                    console.info(res.status + ' ' + res.res.text);
                                     if (err) {
                                         return done(err);
                                     }
@@ -303,7 +300,6 @@ describe('Request Controller',()=>{
             it('Remove Request without User', (done) => {
                 var dummyRequestId = ResUser._id;
                 request(app).post('/acceptRequest/' + dummyRequestId + '').set({ 'x-auth': ResAdmin.tokens[0].token }).send(req).expect(404).end((err, res) => {
-                    console.info(res.status + ' ' + res.res.text);
                     if (err) {
                         return done(err);
                     }
