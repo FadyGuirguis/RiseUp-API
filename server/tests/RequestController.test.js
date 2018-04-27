@@ -64,9 +64,99 @@ describe('Request Controller',()=>{
     })
 
     describe('#addRequest',()=>{
-        it('should pass',(done)=>{
-            done();
-        });
+        var user = {
+            email : 'doaa@gmail.com',
+            password : 'doaaaaa',
+            profile : {
+                "fullName" : "Doaa Samer"
+            }
+        }
+
+        var requ = {
+            description:"Testing Descp"
+        }
+        var requu = {
+            description:""
+        }
+        var ResUser ={
+            email : ' ',
+            password : ' ',
+            profile : {
+                "fullName" : " "
+            }
+        };
+
+        var ResUser
+        beforeEach((done)=>{
+            User.remove({}).then(()=>{
+                request(app).post('/register').send({user:user}).expect(200).end((err,res)=>{
+                    //console.info(res.status + ' '+res.res.text);
+                    if(err){
+                        return done(err);
+                    }
+                    ResUser = res.body.user;
+                    return done();
+                })
+            })
+        })
+
+        it('Succeed',(done)=>{
+            request(app).post('/request').set({'x-auth':ResUser.tokens[0].token}).send({request:requ}).expect(200).end((err,res)=>{
+                //console.info(res.status + ' '+res.res.text);
+                if(err){
+                    return done(err);
+                }
+                return done();
+            });
+        })
+
+        it('You are already an expert',(done)=>{
+            User.find({}).then((users)=>{
+                User.findByIdAndUpdate(users[0]._id,{roles:['expert']},{ new:true }).then(()=>{
+                    User.find({}).then((use)=>{
+                        request(app).post('/request').set({'x-auth':use[0].tokens[0].token}).send({request:requ}).expect(400).end((err,res)=>{
+                            //console.info(res.status + ' '+res.res.text);
+                            if(err){
+                                return done(err);
+                            }
+                            expect(res.res.text).toBe('You are already an expert');
+                            return done();
+                        });
+                    })
+                });
+            })
+        })
+        it('Pending Request',(done)=>{
+            request(app).post('/request').set({'x-auth':ResUser.tokens[0].token}).send({request:requ}).expect(200).end((err,res)=>{
+                //console.info(res.status + ' '+res.res.text);
+                if(err){
+                    return done(err);
+                }
+                request(app).post('/request').set({'x-auth':ResUser.tokens[0].token}).send({request:requ}).expect(400).end((err,res)=>{
+                    // console.info(res.status + ' '+res.res.text);
+                    if(err){
+                        return done(err);
+                    }
+                    expect(res.res.text).toBe('You already have a pending request');
+                    return done();
+                });
+            });
+        })
+        
+        it('Succeed',(done)=>{
+            request(app).post('/request').set({'x-auth':ResUser.tokens[0].token}).send({request:requu}).expect(400).end((err,res)=>{
+                //console.info(res.status + ' '+res.res.text);
+                if(err){
+                    return done(err);
+                }
+                expect(res.res.text).toBe('You must add description');
+                return done();
+            });
+        })
+
+
+
+
     })
 
     describe('#rejectRequest',()=>{
