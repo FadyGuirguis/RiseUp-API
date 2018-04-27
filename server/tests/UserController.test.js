@@ -238,7 +238,7 @@ describe('User Controller',()=>{
             request(app)
             .post("/login")
             .send({email,password})
-            .expect(404)
+            .expect(400)
             .expect((res)=>{
                 expect(res.body.msg).toBe('email not found');
                 expect(res.headers['x-auth']).toBeUndefined();
@@ -260,7 +260,7 @@ describe('User Controller',()=>{
             request(app)
             .post("/login")
             .send({email,password})
-            .expect(404)
+            .expect(400)
             .expect((res)=>{
                 expect(res.body.msg).toBe('password not correct');
                 expect(res.headers['x-auth']).toBeUndefined();

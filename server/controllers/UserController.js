@@ -75,17 +75,17 @@ module.exports.loginUser = async (req, res) => {
 
   User.findByCredentials(body.email, body.password).then((user) => {
     if (!user) {
-      return res.status(404).send();
+      return res.status(400).send();
     }
     return user.generateAuthToken().then((token) => {
       res.header('x-auth', token).send({ user });
     });
   }).catch((e) => {
     if (e.message === 'email not found') {
-      res.status(404).send({ msg: e.message });
+      res.status(400).send({ msg: e.message });
     }
     if (e.message === 'password not correct') {
-      res.status(404).send({ msg: e.message });
+      res.status(400).send({ msg: e.message });
     } else {
       res.status(500).send();
     }
