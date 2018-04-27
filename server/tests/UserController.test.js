@@ -359,7 +359,7 @@ describe('User Controller',()=>{
                 profile : {
                     "fullName" : "Nothing Something"
                 }
-            } 
+            }
             request(app)
             .post("/register")
             .send({user})
@@ -368,7 +368,7 @@ describe('User Controller',()=>{
                 id = res.body.user._id;
                 return done();
             })
-            
+
         })
     });
         it('user can change his password',(done)=>{
@@ -388,9 +388,230 @@ describe('User Controller',()=>{
 
 
     describe('#editProfile',()=>{
-        it('should pass',(done)=>{
-            done();
-        });
+
+      beforeEach( (done) => {
+          User.remove({}).then( () => {
+
+              var user = {
+                  email : 'something@something.com',
+                  password : 'something',
+                  profile : {
+                      "fullName" : "Something Something",
+                      "description" : "Some Description",
+                      "achievements" : "Some Achievements",
+                       interests : ['interest1', 'interest2', 'interest3'],
+                       expertIn : ['field1', 'field2', 'field3']
+                  }
+              }
+
+              user = new User(user);
+
+              request(app)
+              .post("/register")
+              .send({user})
+              .expect(200)
+              .end((err,res)=>{
+                  id = res.body.user._id;
+                  token = res.headers['x-auth'];
+                  return done();
+              })
+
+          })
+      });
+
+      it('should update the full name in the database', (done) => {
+
+        var user = {
+            email : 'something@something.com',
+            password : 'something',
+            profile : {
+                "fullName" : "SomethingElse SomethingElse",
+            }
+        }
+
+        request(app)
+          .post("/editProfile")
+          .set('x-auth',token)
+          .send({user})
+          .expect(200)
+          .end( (err, res) => {
+            if(err) {
+                  return done(err);
+              }
+              User.find().then( (users) => {
+                  expect(users.length).toBe(1);
+                  expect(users[0].profile.fullName).toBe('SomethingElse SomethingElse');
+                  return done();
+              }).catch( (err) => {
+                  return done(err);
+              });
+          });
+
+      });
+
+
+      it('should update the description in the database', (done) => {
+
+        var user = {
+            email : 'something@something.com',
+            password : 'something',
+            profile : {
+                "description" : "Updated Description"
+            }
+        }
+
+        request(app)
+          .post("/editProfile")
+          .set('x-auth',token)
+          .send({user})
+          .expect(200)
+          .end( (err, res) => {
+            if(err) {
+                  return done(err);
+              }
+              User.find().then( (users) => {
+                  expect(users.length).toBe(1);
+                  expect(users[0].profile.description).toBe('Updated Description');
+                  return done();
+              }).catch( (err) => {
+                  return done(err);
+              });
+          });
+
+      });
+
+      it('should update the achievements in the database', (done) => {
+
+        var user = {
+            email : 'something@something.com',
+            password : 'something',
+            profile : {
+                "achievements" : "Updated Achievements"
+            }
+        }
+
+        request(app)
+          .post("/editProfile")
+          .set('x-auth',token)
+          .send({user})
+          .expect(200)
+          .end( (err, res) => {
+            if(err) {
+                  return done(err);
+              }
+              User.find().then( (users) => {
+                  expect(users.length).toBe(1);
+                  expect(users[0].profile.achievements).toBe('Updated Achievements');
+                  return done();
+              }).catch( (err) => {
+                  return done(err);
+              });
+          });
+
+      });
+
+      it('should update the interests in the database', (done) => {
+
+        var user = {
+            email : 'something@something.com',
+            password : 'something',
+            profile : {
+                 interests : ['UpdatedInterest1', 'UpdatedInterest2', 'UpdatedInterest3', 'UpdatedInterest4']
+            }
+        }
+
+        request(app)
+          .post("/editProfile")
+          .set('x-auth',token)
+          .send({user})
+          .expect(200)
+          .end( (err, res) => {
+            if(err) {
+                  return done(err);
+              }
+              User.find().then( (users) => {
+                  expect(users.length).toBe(1);
+                  expect(users[0].profile.interests[0]).toBe('UpdatedInterest1');
+                  expect(users[0].profile.interests[1]).toBe('UpdatedInterest2');
+                  expect(users[0].profile.interests[2]).toBe('UpdatedInterest3');
+                  expect(users[0].profile.interests[3]).toBe('UpdatedInterest4');
+                  return done();
+              }).catch( (err) => {
+                  return done(err);
+              });
+          });
+
+      });
+
+      it('should update the expert tags in the database', (done) => {
+
+        var user = {
+            email : 'something@something.com',
+            password : 'something',
+            profile : {
+                 expertIn : ['UpdatedField1', 'UpdatedField2', 'UpdatedField3']
+            }
+        }
+
+        request(app)
+          .post("/editProfile")
+          .set('x-auth',token)
+          .send({user})
+          .expect(200)
+          .end( (err, res) => {
+            if(err) {
+                  return done(err);
+              }
+              User.find().then( (users) => {
+                  expect(users.length).toBe(1);
+                  expect(users[0].profile.expertIn[0]).toBe('UpdatedField1');
+                  expect(users[0].profile.expertIn[1]).toBe('UpdatedField2');
+                  expect(users[0].profile.expertIn[2]).toBe('UpdatedField3');
+                  return done();
+              }).catch( (err) => {
+                  return done(err);
+              });
+          });
+
+      });
+
+      it('should not update the full name with length less than 6', (done) => {
+
+        var user = {
+            email : 'something@something.com',
+            password : 'something',
+            profile : {
+                 "fullName" : "Hi"
+            }
+        }
+
+        request(app)
+          .post("/editProfile")
+          .set('x-auth',token)
+          .send({user})
+          .expect(400)
+          .end( (err, res) => {
+            if(err) {
+                  return done(err);
+              }
+              User.find().then( (users) => {
+                  expect(users.length).toBe(1);
+                  expect(users[0].profile.fullName).toBe('Something Something');
+                  return done();
+              }).catch( (err) => {
+                  return done(err);
+              });
+          });
+
+      });
+
+
+      after( (done) => {
+        User.remove({}).then( () => {
+               done()
+           })
+      });
+
     })
 
 
