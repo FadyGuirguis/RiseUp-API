@@ -20,7 +20,11 @@ base = process.env.PWD;
 const request = require('supertest');
 const expect = require('expect');
 var app = require("./../server").app;
+const {Tags}= require('../models/tag');
 
+var tagg = "";
+var uerr = "";
+var uer2 = "";
 const mongoose = require('mongoose');
 Tag = mongoose.model('Tag');
 User = mongoose.model('User');
@@ -28,14 +32,173 @@ User = mongoose.model('User');
 describe('Tag Controller',()=>{
 
     describe('#addTag',()=>{
-        it('should pass',(done)=>{
-            done();
+        beforeEach((done) => {
+            User.remove({}).then((err, res) => {
+                var user = {
+                    email: 'admin@something.com',
+                    password: 'something',
+                    profile: {
+                        "fullName": "admin Something"
+                    },
+                    role:"admin"
+                };
+
+                request(app)
+                    .post("/register")
+                    .send({user})
+                    .expect(200)
+                    .then((res)=> {
+                        userr = res.body.user;
+                        user = {
+                            email: 'user@something.com',
+                            password: 'something',
+                            profile: {
+                                "fullName": "user Something"
+                            }
+                        };
+
+                        request(app)
+                            .post("/register")
+                            .send({user})
+                            .expect(200)
+                            .then((res) => {
+                                user2 = res.body.user;
+                                done();
+                            });
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                    });
+
+
+
+            });
+        });
+
+        it('should not work because no tag was given ', (done) => {
+            request(app)
+                .post('/tag')
+                .send()
+                .expect(400)
+                .set({
+                    'x-auth' : userr.tokens[0].token
+                })
+                .end((err,res)=>{
+                    if(err)
+                        done(err);
+                    else{
+                        done();
+                    }
+                });
+        });
+        it('should dont pass as not authorized',(done)=>{
+            request(app)
+                .get('/tag')
+                .expect(401)
+
+                .end((err,res)=>{
+                    if(err)
+                        done(err);
+                    else{
+                        done();
+                    }
+                });
+        });
+
+        after((done) => {
+
+            User.remove({}).then((res)=>{
+                done();
+            })
+
+                .catch((err)=>{
+                    console.log(err);
+                })
         });
     })
 
-    describe('#getAllTags',()=>{
-        it('should pass',(done)=>{
-            done();
+      describe('#getAllTags',()=>{
+        beforeEach((done) => {
+            User.remove({}).then((err, res) => {
+                var user = {
+                    email: 'admin@something.com',
+                    password: 'something',
+                    profile: {
+                        "fullName": "admin Something"
+                    },
+                    role:"admin"
+                };
+
+                request(app)
+                    .post("/register")
+                    .send({user})
+                    .expect(200)
+                    .then((res)=> {
+                        userr = res.body.user;
+                        user = {
+                            email: 'user@something.com',
+                            password: 'something',
+                            profile: {
+                                "fullName": "user Something"
+                            }
+                        };
+
+                        request(app)
+                            .post("/register")
+                            .send({user})
+                            .expect(200)
+                            .then((res) => {
+                                user2 = res.body.user;
+                                done();
+                            });
+                    })
+                                .catch((err)=>{
+                                    console.log(err);
+                                });
+
+
+
+            });
+        });
+
+        it('should get tags as token of admin is given ', (done) => {
+            request(app)
+                .get('/tags')
+                .expect(200)
+                .set({
+                    'x-auth' : userr.tokens[0].token
+                })
+                .end((err,res)=>{
+                    if(err)
+                        done(err);
+                    else{
+                        done();
+                    }
+                });
+        });
+        it('should dont pass as not authorized',(done)=>{
+            request(app)
+                .get('/tags')
+                .expect(401)
+
+                .end((err,res)=>{
+                    if(err)
+                        done(err);
+                    else{
+                        done();
+                    }
+                });
+        });
+
+        after((done) => {
+
+                User.remove({}).then((res)=>{
+                    done();
+                })
+
+            .catch((err)=>{
+                console.log(err);
+            })
         });
     })
 
