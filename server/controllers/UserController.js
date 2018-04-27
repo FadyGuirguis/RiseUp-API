@@ -131,6 +131,11 @@ module.exports.editProfile = async (req, res) => {
 //He has to provide the CORRECT old password and his new password which has to be min of 6 letters
 module.exports.changePassword = async (req, res) => {
   if (req.body.user && req.body.user.oldPassword && req.body.user.newPassword) {
+    if(req.body.user.newPassword.length<6){
+      res.status(400).send({
+        errMsg: "Password must have min length of 6"
+      });
+    }
     User.findByCredentials(req.user.email, req.body.user.oldPassword).then((user) => {
       user.password = req.body.user.newPassword;
       user.save().then((updatedUser) => {
