@@ -93,6 +93,7 @@ describe('Announcement Controller', () => {
                     return done();
                 })
         })
+    });
 
         describe('#deleteAnnouncement', () => {
             var admin = {
@@ -167,5 +168,4 @@ describe('Announcement Controller', () => {
                 })
             });
         })
-    });
 })
