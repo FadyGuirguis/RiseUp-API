@@ -20,25 +20,25 @@ module.exports.postAnnouncement = async (req, res) => {   //ADMIN
   if(req.user.roles.includes('admin')) {
     try{
       if(typeof req.body.announcement.title == 'undefined' || typeof req.body.announcement == 'undefined' || typeof req.body == 'undefined' )
-          res.status(400).send('Announcement title is required');
+          return res.status(400).send('Announcement title is required');
       if(typeof req.body.announcement.description == 'undefined' || !req.body.announcement.description)
-          res.status(400).send('Announcement description is required');
+          return res.status(400).send('Announcement description is required');
     }catch(error){
-      res.status(400).send("JSON body format is not correct!");
+      return res.status(400).send("JSON body format is not correct!");
     }
 
 
     var announcement = new Announcement(_.pick(req.body.announcement, ['title', 'description']));
 
     announcement.save().then((announcement) => {
-        res.send({
+        return res.send({
             announcement
         });
     }).catch((err) => {
-        res.status(500).send({ error: err });
+        return res.status(500).send({ error: err });
     });
   }else{
-    res.status(401).send('You are not an admin');
+    return res.status(401).send('You are not an admin');
   }
 };
 
