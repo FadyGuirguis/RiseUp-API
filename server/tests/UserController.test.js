@@ -626,7 +626,7 @@ describe('User Controller',()=>{
             } 
             var user1 = {
                 email: 'mariz@gmail.com',
-                password: 'pizza',
+                password: 'pizzaaaa',
                 profile: {
                     "fullName": "Mariz Samir",
                     }
