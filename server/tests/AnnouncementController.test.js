@@ -8,10 +8,155 @@ const { User } = require('../models/user');
 const { Announcement } = require('../models/Announcement');
 describe('Announcement Controller', () => {
 
-    describe('#getAllAnnouncements', () => {
-        it('should pass', (done) => {
-            done();
+    describe('#getAllAnnouncements',()=>{
+        beforeEach((done) => {
+            
+            User.remove({}).then((err, res) => {
+                var user = {
+                    email: 'nothing@something.com',
+                    password: 'something',
+                    profile: {
+                        "fullName": "Nothing Something"
+                    }
+                };
+                 
+                request(app)
+                    .post("/register")
+                    .send({user})
+                    .expect(200)
+                    .then((res)=>{
+                        userr = res.body.user;
+                        user = {
+                            email : 'expert@something.com',
+                            password : 'something',
+                            profile : {
+                                "fullName" : "expert Something"
+                            }
+                        };
+
+                        request(app)
+                            .post("/register")
+                            .send({user})
+                            .expect(200)
+                            .then((res)=>{
+                                expertt = res.body.user;
+                                Announcement = new Announcement({
+                                    user : {
+                                        _id : userr._id,
+                                        name : userr.profile.fullName
+                                    } ,
+                                    expert : {
+                                        _id : expertt._id,
+                                        name : expertt.profile.fullName
+                                    },
+
+                                    title : "ask expert ",
+
+                                    description : "about nothing",
+
+                                });
+
+                        Announcement.save().then((doc)=>{
+                            Announcement = doc ;
+                            done();
+                        })
+                            .catch((err)=>{
+                                console.log(err);
+                            });
+                    });
+
+            });
+        
+
+
+            it('should announcement be found using user token ', (done) => {
+                request(app)
+                    .get('/announcement/'+Announcement._id)
+                    .expect(200)
+                    .set({
+                        'x-auth' : userr.tokens[0].token
+                    })
+                    .end((err,res)=>{
+                        if(err)
+                            done(err);
+                        else{
+                            done();
+                        }
+                    });
+            });
+        it('should announcement be found using expert token ', (done) => {
+            request(app)
+                .get('/announcement/'+Announcement._id)
+                .expect(200)
+                .set({
+                    'x-auth' : expertt.tokens[0].token
+                })
+                .end((err,res)=>{
+                    if(err)
+                        done(err);
+                    else{
+                        done();
+                    }
+                });
         });
+
+
+        it(' Should be not found ', (done) => {
+            request(app)
+                .get('/announcement/')
+                .expect(404)
+                .end((err,res)=>{
+                    if(err)
+                        done(err);
+                    else{
+                        done();
+                    }
+                });
+        });
+        it(' Should be unauthorized', (done) => {
+            request(app)
+                .get('/announcement/'+Announcement._id)
+                .expect(401)
+                .end((err,res)=>{
+                    if(err)
+                        done(err);
+                    else{
+                        done();
+                    }
+                });
+        });
+        it(' Should be incorrect as no announcement hour with that id', (done) => {
+            request(app)
+                .get('/announcement/'+35131)
+                .set({
+                    'x-auth' : userr.tokens[0].token
+                })
+                .expect(500)
+                .end((err,res)=>{
+                    if(err)
+                        done(err);
+                    else{
+                        done();
+                    }
+                });
+        });
+       
+    });
+});
+
+
+        after((done) => {
+            Announcement.remove({}).then((res)=>{
+                User.remove({}).then((res)=>{
+                    done();
+                })
+
+            }).catch((err)=>{
+                console.log(err);
+            })
+            });
+
+
     })
 
     describe('#postAnnouncement', () => {
