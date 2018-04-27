@@ -81,7 +81,7 @@ describe('Tag Controller',()=>{
             });
         });
 
-        it('should get tags ass token of admin is given ', (done) => {
+        it('should get tags as token of admin is given ', (done) => {
             request(app)
                 .get('/tags')
                 .expect(200)
