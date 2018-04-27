@@ -4,8 +4,8 @@ FILENAME: UserControleer.js
 
 DESCRIPTION: This is the javascript file for the UserController,
              its main functionality is defining all method concerning the user (user - expert - admin)
-             
-FUNCTIONS:  
+
+FUNCTIONS:
            createUser
            loginUser
            editProfile
@@ -93,30 +93,38 @@ module.exports.loginUser = async (req, res) => {
 };
 
 //editPassword: This method is responsible for editing any information about a user except password.
-//He has to provide the field he wants to edit with the new value 
+//He has to provide the field he wants to edit with the new value
 module.exports.editProfile = async (req, res) => {
   var id = req.user._id;
   var user = {};
   user.profile = req.user.profile
   if (req.body.user && req.body.user.profile) {
-    if (req.body.user.profile.fullName || req.body.user.profile.description || req.body.user.profile.achievements) {
-      user.profile = _.merge(req.user.profile, req.body.user.profile);
-    } else if (req.body.user.profile.interests && _.isArray(req.body.user.profile.interests)) {
-      user.profile.interests = req.body.user.profile.interests;
-    }
-    else if (req.body.user.profile.expertIn && _.isArray(req.body.user.profile.expertIn)) {
-      user.profile.expertIn = req.body.user.profile.expertIn;
-    }
+      if ( (req.body.user.profile.fullName && req.body.user.profile.fullName.length >=6) || req.body.user.profile.description || req.body.user.profile.achievements) {
+        user.profile = _.merge(req.user.profile, req.body.user.profile);
+      }
+      else if ( (req.body.user.profile.fullName && req.body.user.profile.fullName.length <6) || req.body.user.profile.description || req.body.user.profile.achievements) {
+        return res.status(400).send({
+          errMsg: "Name can not be less than 6 characters"
+        });
+      }
+      else if (req.body.user.profile.interests && _.isArray(req.body.user.profile.interests)) {
+        user.profile.interests = req.body.user.profile.interests;
+      }
+      else if (req.body.user.profile.expertIn && _.isArray(req.body.user.profile.expertIn)) {
+        user.profile.expertIn = req.body.user.profile.expertIn;
+      }
+
+      User.findByIdAndUpdate(id, { $set: user }, { new: true }).then((updatedUser) => {
+        if (!updatedUser) {
+          return res.status(404).send();
+        }
+        res.send({ updatedUser });
+      }).catch((e) => {
+        res.status(500).send();
+      })
 
   }
-  User.findByIdAndUpdate(id, { $set: user }, { new: true }).then((updatedUser) => {
-    if (!updatedUser) {
-      return res.status(404).send();
-    }
-    res.send({ updatedUser });
-  }).catch((e) => {
-    res.status(500).send();
-  })
+
 }
 
 //changePassword: This method is responsible for changing the password of the user
@@ -159,7 +167,7 @@ module.exports.logout = async (req, res) => {
 }
 
 //searchByName: This method is responsible for searching for a user by his name
-//He has to provide a string and the users who have a full Name which CONTAINS this string will be returned 
+//He has to provide a string and the users who have a full Name which CONTAINS this string will be returned
 module.exports.searchByName = async (req, res) => {
 
   var query = mongoose.model('User').find({

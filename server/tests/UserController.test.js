@@ -596,7 +596,7 @@ describe('User Controller',()=>{
               }
               User.find().then( (users) => {
                   expect(users.length).toBe(1);
-                    expect(users[0].profile.fullName).toBe('Something Something');
+                  expect(users[0].profile.fullName).toBe('Something Something');
                   return done();
               }).catch( (err) => {
                   return done(err);
