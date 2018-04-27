@@ -28,12 +28,11 @@ module.exports.addTag = async(req, res) => {
     var tag = new Tag ({
       tag: req.body.tag.tag
     })
-
     //add the tag to the database
     tag.save().then((tag) => {
-      res.status(200).send({tag});
+      return res.status(200).send({tag});
     }, (e) => {
-      res.status(500).send(e);
+      return res.status(500).send(e);
     })
 }
 
