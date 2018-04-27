@@ -112,9 +112,9 @@ module.exports.rejectRequest = async (req, res) => {
     var id = req.params.id;
 
     //check the correctness of the provided request id
-    Request.find({_id: id}).then((oldRequest) => {
+    await Request.find({_id: id}).then((oldRequest) => {
       if(! oldRequest[0]) {
-        res.status(404).send('There is no request available with such id');
+        return res.status(404).send('There is no request available with such id');
       }
 
       //check if the request is already evaluated
@@ -131,9 +131,6 @@ module.exports.rejectRequest = async (req, res) => {
       transporter.sendMail(rejectOptions(user[0].email), (err, info) => {
         if(err) {
           console.log(err);
-        }
-        else {
-          console.log('Email sent:' + info.response);
         }
       })
 

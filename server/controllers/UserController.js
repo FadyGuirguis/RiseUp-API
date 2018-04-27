@@ -92,7 +92,7 @@ module.exports.loginUser = async (req, res) => {
   });
 };
 
-//editPassword: This method is responsible for editing any information about a user except password.
+//editProfile: This method is responsible for editing any information about a user except password.
 //He has to provide the field he wants to edit with the new value
 module.exports.editProfile = async (req, res) => {
   var id = req.user._id;
