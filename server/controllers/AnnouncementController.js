@@ -33,18 +33,17 @@ module.exports.getAllAnnouncements = async (req, res) => {
 
 };
 
-// POST /announcements
+// POST /announcement
 module.exports.postAnnouncement = async (req, res) => {   //ADMIN
-  if(req.user.roles.includes('admin')) {
+
     try{
-      if(typeof req.body.announcement.title == 'undefined' || typeof req.body.announcement == 'undefined' || typeof req.body == 'undefined' )
+      if(!req.body || !req.body.announcement.title || !req.body.announcement )
           res.status(400).send('Announcement title is required');
-      if(typeof req.body.announcement.description == 'undefined' || !req.body.announcement.description)
+      if(!req.body.announcement.description)
           res.status(400).send('Announcement description is required');
     }catch(error){
       res.status(400).send("JSON body format is not correct!");
     }
-
 
     var announcement = new Announcement(_.pick(req.body.announcement, ['title', 'description']));
 
@@ -55,20 +54,14 @@ module.exports.postAnnouncement = async (req, res) => {   //ADMIN
     }).catch((err) => {
         res.status(500).send({ error: err });
     });
-  }else{
-    res.status(401).send('You are not an admin');
-  }
 };
 
-// DELETE /announcements/:id
+// DELETE /announcement/:id
 module.exports.deleteAnnouncement = async (req, res) => {  //ADMIN
-  if(req.user.roles.includes('admin')) {
+  
     Announcement.findByIdAndRemove(req.params.id).then((announcement) => {
         res.send({announcement});
     }).catch((err) => {
         res.status(500).send({ error: err });
     });
-  }else{
-    res.status(401).send('You are not an admin');
-  }
 };

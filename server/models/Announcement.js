@@ -2,7 +2,7 @@
 
 FILENAME: Announcement.js
 
-DESCRIPTION:    This file specifies the Mongo Database Schema for an "Announcement" document,
+DESCRIPTION:    This file specifies the Mongo Database Schema for the "Announcement",
                 and exports its Model for use in other javascript files.
 
 AUTHOR: Shadi Barghash

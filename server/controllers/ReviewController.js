@@ -1,3 +1,21 @@
+/*
+
+FILENAME: ReviewController.js
+
+DESCRIPTION:    This is Controller javascript file for Review.
+                It contains the logic for retreiving and submitting reviews on the expert and the user
+                by the other, upon an OfficeHour.
+                They are called when a corresponding endpoint receives an HTTP request (GET, POST).
+
+FUNCTIONS:
+           getReviewsOnUser
+           postReview
+
+AUTHOR:     Shadi Barghash
+START DATE: 18-April-2018
+
+*/
+
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const {ObjectId} = require('mongodb');
