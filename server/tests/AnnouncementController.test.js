@@ -28,6 +28,15 @@ describe('Announcement Controller',()=>{
                 "fullName" : "Admin Admin"
             }
         };
+
+        var user = {
+            email : 'user@user.com',
+            password : 'something',
+            profile : {
+                "fullName" : "User User"
+            } 
+        }
+
         var an = {
             title : 'title',
             description : 'description'
@@ -43,7 +52,16 @@ describe('Announcement Controller',()=>{
                         Announcement.remove({}).then(()=>{
                             an = new Announcement(an);
                             an.save().then(()=>{
-                                return done();
+
+                                request(app).post('/register').send({user:user}).expect(200).end((err,res)=>{
+                                    if(err){
+                                        return done(err);
+                                    }
+                                    user = res.body.user;
+                                    User.findByIdAndUpdate(res.body.user._id,{roles:['user']},{ new:true }).then(()=>{
+                                        return done();
+                                    })
+                                })
                             })
                         })
                     })
@@ -51,9 +69,21 @@ describe('Announcement Controller',()=>{
             })
         });
 
-        it('Allow only admins to delete',(done)=>{
+        it('An Admin can delete an announcement',(done)=>{
             Announcement.find({}).then((ans)=>{
                request(app).delete('/announcement/'+ans[0]._id+'').set({'x-auth':admin.tokens[0].token}).expect(200).end((err,res)=>{
+                //console.info(res.status+' '+res.res.text);   
+                if(err){
+                       return done(err);
+                   }
+                   return done();
+               })
+            })
+        });
+
+        it('A non-admin cant delete an anouncement',(done)=>{
+            Announcement.find({}).then((ans)=>{
+               request(app).delete('/announcement/'+'sdklnas7y').set({'x-auth':user.tokens[0].token}).expect(403).end((err,res)=>{
                 //console.info(res.status+' '+res.res.text);   
                 if(err){
                        return done(err);
