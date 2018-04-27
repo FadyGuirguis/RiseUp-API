@@ -1,6 +1,6 @@
 /*H
 
-FILENAME: UserControleer.js
+FILENAME: UserController.js
 
 DESCRIPTION: This is the javascript file for the UserController,
              its main functionality is defining all method concerning the user (user - expert - admin)

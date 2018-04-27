@@ -1,3 +1,21 @@
+/*
+
+FILENAME: AnnouncementController.js
+
+DESCRIPTION:    This is Controller javascript file for Announcements.
+                It contains the logic for retreiving, adding and deleting announcements.
+                They are called when a corresponding endpoint receives an HTTP request (GET, POST, DELETE).
+
+FUNCTIONS:
+           getAllAnnouncements
+           postAnnouncement
+           deleteAnnouncement
+
+AUTHOR:     Shadi Barghash
+START DATE: 27-March-2018
+
+*/
+
 const _ = require('lodash');
 const mongoose = require('mongoose');
 Announcement = mongoose.model('Announcement');
