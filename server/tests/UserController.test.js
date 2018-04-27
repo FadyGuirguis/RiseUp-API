@@ -376,7 +376,6 @@ describe('User Controller',()=>{
                 }
                 return done();
             });
-            done();
         });
     });
 
@@ -389,11 +388,103 @@ describe('User Controller',()=>{
     })
 
 
-    describe('#searchByName',()=>{
-        it('should pass',(done)=>{
-            done();
-        });
+    describe('#searchByName',()=>{beforeEach((done)=>{
+        User.remove({}).then(()=>{
+            var user = {
+                email : 'nothing@something.com',
+                password : 'something',
+                profile : {
+                    "fullName" : "Nothing Something"
+                }
+            } 
+            var user1 = {
+                email: 'mariz@gmail.com',
+                password: 'pizza',
+                profile: {
+                    "fullName": "Mariz Samir",
+                    }
+             }
+
+             var user2 = {
+                email: 'mariz2@gmail.com',
+                password: 'jelly cola',
+                profile: {
+                    "fullName": "Maz Sam",
+                    }
+             }
+
+             var user3 = {
+                email: 'mariz3@gmail.com',
+                password: 'sandra bullock',
+                profile: {
+                    "fullName": "Mazmaz SamSam",
+                    }
+             }
+            user1 = new User(user1);
+            user2 = new User(user2);
+            user3 = new User(user3);
+            user1.save().then(() => {
+                user2.save().then(() => {
+                    user3.save().then(() => {
+                        request(app)
+                            .post("/register")
+                            .send({ user })
+                            .expect(200)
+                            .end((err, res) => {
+                                id = res.body.user._id;
+                                token = res.headers['x-auth'];
+                                request(app)
+                                .post("/editProfile")
+                                .set('x-auth', token)
+                                .send({ user })
+                                .expect(200)
+                                .end((err, res) => {
+                                    if (err) {
+                                        return done(err);
+                                    }
+                                    return done();
+                                })
+                        })
+                })
+            })
+        })
+
     })
+});
+        it('Should return Internal error if no name is entered to be searched on',(done)=>{
+            
+           request(app)
+           .post("/searchByName")
+           .set('x-auth',token)
+           .expect(500)
+           .end((err,res)=>{
+            if(err){
+                return done(err);
+            }
+            else{
+                return done();
+            }
+        });
+    });
+    it('Should accept if there is a user with same name ',(done)=>{
+       var name =["Mariz Samir"];
+      request(app)
+      .post("/searchByName")
+      .send({name}) 
+      .set('x-auth',token)
+      .expect(200)
+      .end((err,res)=>{
+       if(err){
+           return done(err);
+       }
+       else{
+        return done();
+
+       }
+   });
+});
+    
+})
 
     describe('#getUserByID',()=>{
         it('should pass',(done)=>{
