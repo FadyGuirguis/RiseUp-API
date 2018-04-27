@@ -36,43 +36,45 @@ describe('Tag Controller', () => {
         var user1;
         var adminToken
         before((done) => {
-            User.remove({}).then((err, res) => {
-                var user = {
-                    email: 'admin@something.com',
-                    password: 'something',
-                    profile: {
-                        "fullName": "admin Something"
-                    },
-                    roles: ["admin"]
-                };
-
-                user = User(user);
-
-                user.save().then((res) => {
-                    res.generateAuthToken().then((token) => {
-                        adminToken = token;
-                        user = {
-                            email: 'user@something.com',
-                            password: 'something',
-                            profile: {
-                                "fullName": "user Something"
-                            }
-                        };
-
-                        request(app)
-                            .post("/register")
-                            .send({ user })
-                            .expect(200)
-                            .then((res) => {
-                                user2 = res.body.user;
-                                done();
-                            });
+            Tag.remove({}).then(()=>{
+                User.remove({}).then((err, res) => {
+                    var user = {
+                        email: 'admin@something.com',
+                        password: 'something',
+                        profile: {
+                            "fullName": "admin Something"
+                        },
+                        roles: ["admin"]
+                    };
+    
+                    user = User(user);
+    
+                    user.save().then((res) => {
+                        res.generateAuthToken().then((token) => {
+                            adminToken = token;
+                            user = {
+                                email: 'user@something.com',
+                                password: 'something',
+                                profile: {
+                                    "fullName": "user Something"
+                                }
+                            };
+    
+                            request(app)
+                                .post("/register")
+                                .send({ user })
+                                .expect(200)
+                                .then((res) => {
+                                    user2 = res.body.user;
+                                    done();
+                                });
+                        })
                     })
-                })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            });
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                });
+            })
         });
 
         it('An admin should add a tag', ((done) => {
