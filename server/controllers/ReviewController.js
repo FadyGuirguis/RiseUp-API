@@ -1,3 +1,21 @@
+/*
+
+FILENAME: ReviewController.js
+
+DESCRIPTION:    This is Controller javascript file for Review.
+                It contains the logic for retreiving and submitting reviews on the expert and the user
+                by the other, upon an OfficeHour.
+                They are called when a corresponding endpoint receives an HTTP request (GET, POST).
+
+FUNCTIONS:
+          getReviewsOnUser
+          postReview
+
+AUTHOR:     Shadi Barghash
+START DATE: 18-April-2018
+
+*/
+
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const {ObjectId} = require('mongodb');
@@ -6,6 +24,7 @@ OfficeHour = mongoose.model('OfficeHour');
 User = mongoose.model('User');
 
 module.exports.getReviewsOnUser = async (req, res) => {
+
     var userId = req.params.id;
 
     Review.find({ 'reviewed._id': userId }).then((reviews) => {
@@ -31,7 +50,8 @@ module.exports.postReview = async (req, res) => {
       return res.status(400).send({err: 'Invalid Office Hour id'});
 
     var officeHourId = req.params.id;
-    var body  = {
+
+    var body  = { // body of the new Review doc that will be saved to DB
       officeHours: req.params.id,
       description: req.body.review.description,
       rating: req.body.review.rating
@@ -42,24 +62,31 @@ module.exports.postReview = async (req, res) => {
       if (!officeHour)
         return Promise.reject("Office hour not found");
 
-
+      // User reviewing
       if (officeHour.user._id.equals(req.user._id)) {
+
         if (officeHour.isExpertReviewed == true)
           return Promise.reject("You've already submitted a review");
+
         officeHour.isExpertReviewed = true;
         body.reviewer = officeHour.user;
         body.reviewed = officeHour.expert;
       }
+      // Expert reviewing
       else if (officeHour.expert._id.equals(req.user._id)) {
+
         if (officeHour.isUserReviewed == true)
           return Promise.reject("You've already submitted a review");
+
         officeHour.isUserReviewed = true;
         body.reviewer = officeHour.expert;
         body.reviewed = officeHour.user;
       }
+      // Do not allow user/expert to review on this officeHour except the ones associated with it.
       else
         return Promise.reject("This office hour is not related to you");
 
+      // Update the DB as 'isUserReviewed' or 'isExpertReviewed' was updated.
       return officeHour.save();
 
     }).then((officeHour) => {
@@ -69,18 +96,33 @@ module.exports.postReview = async (req, res) => {
       else
         return User.findOne({_id: officeHour.user._id});
 
-    }).then((user) => {
-      var newRating = (user.profile.rating.rating * user.profile.rating.count + req.body.review.rating) / (user.profile.rating.count + 1);
+    })
+    // Update the average rating of the user/expert being reviewed
+    .then((user) => {
+
+      // Calculate
+      var newRating =
+        (user.profile.rating.rating * user.profile.rating.count + req.body.review.rating) 
+        / (user.profile.rating.count + 1);
+
+      // Update
       user.profile.rating.rating = newRating;
       user.profile.rating.count = user.profile.rating.count + 1;
+
+      // Save that update in the DB
       return user.save();
-    }).then((user) => {
+
+    })
+    // Create a new Review doc and save it to DB (finally)
+    .then((user) => {
       var review = new Review(body);
       return review.save();
-    }).then((review) => {
+    })
+    // Send the review to the sender in response
+    .then((review) => {
       res.send({review});
     }).catch((err) => {
       res.status(400).send({err});
-    })
+    });
 
 };
