@@ -28,9 +28,21 @@ describe('Announcement Controller',()=>{
                 "fullName" : "Admin Admin"
             }
         };
+        var user = {
+            email : 'user@user.com',
+            password : 'useruser',
+            profile : {
+                "fullName" : "User User"
+            },
+            role: ['user']
+        }
         var an = {
             title : 'title',
             description : 'description'
+        }
+        var an2 = {
+            title : 'title2',
+            description : 'description2'
         }
         before((done)=>{
             User.remove({}).then(()=>{
@@ -39,13 +51,27 @@ describe('Announcement Controller',()=>{
                         return done(err);
                     }
                     admin = res.body.user;
+
                     User.findByIdAndUpdate(res.body.user._id,{roles:['admin']},{ new:true }).then(()=>{
-                        Announcement.remove({}).then(()=>{
-                            an = new Announcement(an);
-                            an.save().then(()=>{
-                                return done();
+
+                        request(app).post('/register').send({ user: user }).expect(200).end((err, res) => {
+                            if (err) {
+                                return done(err);
+                            }
+                            user = res.body.user;
+                            Announcement.remove({}).then(() => {
+                                an = new Announcement(an);
+                                an.save().then(() => {
+                                    an2 = new Announcement(an2);
+                                    an2.save().then(() => {
+                                        return done();
+                                    })
+                                })
+
+
                             })
                         })
+
                     })
                 })
             })
@@ -60,7 +86,7 @@ describe('Announcement Controller',()=>{
                     }
                     else{
                         Announcement.find({}).then((ans) => {
-                            expect(ans.length).toBe(0);
+                            expect(ans.length).toBe(1);
                             return done();
                         })                                             
                     }
@@ -70,7 +96,7 @@ describe('Announcement Controller',()=>{
 
         it('A non-admin cant delete an anouncement', (done) => {
             Announcement.find({}).then((ans) => {
-                request(app).delete('/announcement/' + 'sdklnas7y').set({ 'x-auth': user.tokens[0].token }).expect(403).end((err, res) => {
+                request(app).delete('/announcement/' + ans[0]._id + '').set({ 'x-auth': user.tokens[0].token }).expect(403).end((err, res) => {
                     //console.info(res.status+' '+res.res.text);   
                     if (err) {
                         return done(err);
