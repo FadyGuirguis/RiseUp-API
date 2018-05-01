@@ -51,15 +51,37 @@ describe('Announcement Controller',()=>{
             })
         });
 
-        it('Allow only admins to delete',(done)=>{
-            Announcement.find({}).then((ans)=>{
-               request(app).delete('/announcement/'+ans[0]._id+'').set({'x-auth':admin.tokens[0].token}).expect(200).end((err,res)=>{
-                //console.info(res.status+' '+res.res.text);   
-                if(err){
-                       return done(err);
-                   }
-                   return done();
-               })
+        it('An Admin can delete an announcement', (done) => {
+            Announcement.find({}).then((ans) => {
+                request(app).delete('/announcement/' + ans[0]._id + '').set({ 'x-auth': admin.tokens[0].token }).expect(200).end((err, res) => {
+                    //console.info(res.status+' '+res.res.text);   
+                    if (err) {
+                        return done(err);
+                    }
+                    else{
+                        Announcement.find({}).then((ans) => {
+                            expect(ans.length).toBe(0);
+                            return done();
+                        })                                             
+                    }
+                })
+            })
+        });
+
+        it('A non-admin cant delete an anouncement', (done) => {
+            Announcement.find({}).then((ans) => {
+                request(app).delete('/announcement/' + 'sdklnas7y').set({ 'x-auth': user.tokens[0].token }).expect(403).end((err, res) => {
+                    //console.info(res.status+' '+res.res.text);   
+                    if (err) {
+                        return done(err);
+                    }
+                    else{
+                        Announcement.find({}).then((oba) => {
+                            expect(oba.length).toBe(1);
+                            done();
+                        })
+                    } 
+                })
             })
         });
     })
