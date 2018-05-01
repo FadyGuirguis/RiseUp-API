@@ -71,7 +71,10 @@ describe('Announcement Controller', () => {
           if (err) {
             return done(err);
           }
-          return done();
+          Announcement.find({}).then((announcements)=>{
+              expect(announcements.length).toBe(0);
+              return done();
+          })
         })
     })
     it('An admin can post an announcement', (done) => {
@@ -85,10 +88,15 @@ describe('Announcement Controller', () => {
         .expect(200)
         .send({ announcement })
         .end((err, res) => {
-          if (err) {
-            return done(err);
-          }
-          return done();
+            if (err) {
+                return done(err);
+            }
+            Announcement.find({}).then((announcements) => {
+                expect(announcements.length).toBe(1);
+                expect(announcements[0].title).toBe("ANNOUNCEMENT");
+                expect(announcements[0].description).toBe("DESC");
+                return done();
+            })
         })
     })
 
