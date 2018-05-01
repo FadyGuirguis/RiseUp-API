@@ -56,7 +56,13 @@ describe('User Controller',()=>{
                 User.find().then((users)=>{
                     expect(users.length).toBe(2);
                     expect(users[1].tokens).toHaveLength(1);
-                    return done();
+                    expect(users[1].email).toBe("something@something.com");
+                    expect(users[1].profile.fullName).toBe("Something Something");
+                    User.findByCredentials("something@something.com","something").then((user)=>{
+                        return done();
+                    }).catch((err)=>{
+                        return done(err);
+                    })
                 }).catch((err)=>{
                     return done(err);
                 });
