@@ -69,8 +69,7 @@ asyncMiddleware(userController.logout));
 app.post('/searchByName',authModule.authenticate,
 asyncMiddleware(userController.searchByName));
 
-app.get('/user/:id',authModule.authenticate,
-asyncMiddleware(userController.getUserByID));
+app.get('/user/:id',asyncMiddleware(userController.getUserByID));
 
 app.get('/users/getByToken', authModule.authenticate,
 asyncMiddleware(userController.getUserByToken));
