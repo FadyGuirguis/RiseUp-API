@@ -398,7 +398,6 @@ describe('User Controller',()=>{
                     return done();
                 }
                 User.findByCredentials(ResUser.email,"marizmariz").then((userss)=>{
-                    console.log(userss);
                     return done();
                 })
             })
@@ -706,7 +705,6 @@ describe('User Controller',()=>{
            .set({ 'x-auth': ResUser.tokens[0].token })
            .expect(500)
            .end((err,res)=>{
-               console.log(res.res.text);
             if(err){
                 return done(err);
             }
@@ -727,7 +725,6 @@ describe('User Controller',()=>{
            return done(err);
        }
        else{
-        console.log(res.res.text);
         expect(res.body.result.length).toBe(3);
         return done();
 
