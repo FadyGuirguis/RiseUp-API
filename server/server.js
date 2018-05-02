@@ -79,8 +79,7 @@ asyncMiddleware(userController.getUserByToken));
 app.post('/tag', authModule.authenticate, authModule.authAdmin,
 asyncMiddleware(tagController.addTag));
 
-app.get('/tags', authModule.authenticate,
-asyncMiddleware(tagController.getAllTags));
+app.get('/tags', asyncMiddleware(tagController.getAllTags));
 
 app.delete('/tag/:id', authModule.authenticate, authModule.authAdmin,
 asyncMiddleware(tagController.removeTag));

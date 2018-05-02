@@ -185,26 +185,10 @@ describe('Tag Controller', () => {
             });
         });
 
-        it('should get tags as token of admin is given ', (done) => {
+        it('should get all tags with no token given', (done) => {
             request(app)
                 .get('/tags')
                 .expect(200)
-                .set({
-                    'x-auth': userr.tokens[0].token
-                })
-                .end((err, res) => {
-                    if (err)
-                        done(err);
-                    else {
-                        done();
-                    }
-                });
-        });
-        it('should dont pass as not authorized', (done) => {
-            request(app)
-                .get('/tags')
-                .expect(401)
-
                 .end((err, res) => {
                     if (err)
                         done(err);
