@@ -79,7 +79,7 @@ describe('Tag Controller', () => {
 
         it('An admin should add a tag', ((done) => {
             var tag = {
-                tag: 'TAAAAAG'
+                tag: 'web'
             }
             request(app)
                 .post('/tag')
@@ -92,7 +92,11 @@ describe('Tag Controller', () => {
                     if (err)
                         done(err);
                     else {
-                        done();
+                        Tag.find({}).then((tags)=>{
+                            expect(tags.length).toBe(1);
+                            expect(tags[0].tag).toBe("web");
+                            done();
+                        })
                     }
                 });
         }))
@@ -109,7 +113,10 @@ describe('Tag Controller', () => {
                     if (err)
                         done(err);
                     else {
-                        done();
+                        Tag.find({}).then((tags)=>{
+                            expect(tags.length).toBe(1);
+                            done();
+                        })
                     }
                 });
         });
@@ -124,7 +131,10 @@ describe('Tag Controller', () => {
                     if (err)
                         done(err);
                     else {
-                        done();
+                        Tag.find({}).then((tags)=>{
+                            expect(tags.length).toBe(1);
+                            done();
+                        })
                     }
                 });
         });
