@@ -11,20 +11,20 @@ describe('Announcement Controller', () => {
     describe('#getAllAnnouncements', () => {
         var ann;
         beforeEach((done) => {
-            Announcement.remove().then(()=>{
+            Announcement.remove().then(() => {
                 ann = new Announcement({
                     title: "ask expert ",
                     description: "about nothing"
                 });
-    
+
                 ann.save().then((doc) => {
                     ann = doc;
                     done();
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
-            }).catch((err)=>{
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }).catch((err) => {
                 done(err);
             })
         });
@@ -119,7 +119,10 @@ describe('Announcement Controller', () => {
                     if (err) {
                         return done(err);
                     }
-                    return done();
+                    Announcement.find({}).then((announcements) => {
+                        expect(announcements.length).toBe(0);
+                        return done();
+                    })
                 })
         })
         it('An admin can post an announcement', (done) => {
@@ -136,9 +139,14 @@ describe('Announcement Controller', () => {
                     if (err) {
                         return done(err);
                     }
-                    return done();
+                    Announcement.find({}).then((announcements) => {
+                        expect(announcements.length).toBe(1);
+                        expect(announcements[0].title).toBe("ANNOUNCEMENT");
+                        expect(announcements[0].description).toBe("DESC");
+                        return done();
+                    })
                 })
-        })
+        });
     });
 
     describe('#deleteAnnouncement', () => {
