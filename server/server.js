@@ -105,6 +105,8 @@ asyncMiddleware(OfficeHoursController.getOfficeHour));
 app.post('/searchExperts', authModule.authenticate,
 asyncMiddleware(OfficeHoursController.getExperts));
 
+app.get('/allExperts',asyncMiddleware(OfficeHoursController.getAllExperts));
+
 app.post('/officeHour', authModule.authenticate,
 asyncMiddleware(OfficeHoursController.saveOfficeHour));
 

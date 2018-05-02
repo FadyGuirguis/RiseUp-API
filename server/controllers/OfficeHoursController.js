@@ -101,6 +101,17 @@ module.exports.getExperts = async (req, res) => {
   })
 };
 
+module.exports.getAllExperts = async (req, res) => {
+  User.find({
+    roles: {
+      $in: ['expert']
+    }
+  }).then((experts)=>{
+    res.send({experts});
+  });
+}
+
+
 /*saveOfficeHour(): This function saves officehour documents. The user can send
 up to three experts and the server will store an officehour document for each
 expert*/
