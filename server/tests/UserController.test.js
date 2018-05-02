@@ -357,37 +357,51 @@ describe('User Controller',()=>{
             })
         });
     })
-    describe('#ChangePassword',()=>{beforeEach((done)=>{
-        User.remove({}).then(()=>{
-            var user = {
-                email : 'nothing@something.com',
-                password : 'something',
-                profile : {
-                    "fullName" : "Nothing Something"
-                }
+    describe('#ChangePassword',()=>{
+        var ResUser = {
+            email: '',
+            password: '',
+            profile: {
+                "fullName": ""
             }
-            request(app)
-            .post("/register")
-            .send({user})
-            .expect(200)
-            .end((err,res)=>{
-                id = res.body.user._id;
-                return done();
-            })
+        }
+        var user = {
+            email: 'nothing@something.com',
+            password: 'something',
+            profile: {
+                "fullName": "Nothing Something"
+            }
+        }
+        var changePass = {
+            oldPassword: 'something',
+            newPassword: 'mariz'
+        }
+        beforeEach((done)=>{
+            User.remove({}).then(()=>{
+                request(app)
+                .post("/register")
+                .send({user})
+                .expect(200)
+                .end((err,res)=>{
+                    ResUser = res.body.user;
+                    return done();
+                })
 
         })
     });
         it('user can change his password',(done)=>{
-            request(app)
-            .post("/changePassword")
-            .set('x-auth',token)
+            request(app).post('/changePassword').set({ 'x-auth': ResUser.tokens[0].token })
+            .send({ user: { oldPassword:'something',newPassword:'marizmariz'}})
             .expect(200)
             .end((err,res)=>{
                 if(err){
                     return done();
                 }
-                return done();
-            });
+                User.findByCredentials(ResUser.email,"marizmariz").then((userss)=>{
+                    console.log(userss);
+                    return done();
+                })
+            })
         });
     });
 
@@ -621,7 +635,15 @@ describe('User Controller',()=>{
     })
 
 
-    describe('#searchByName',()=>{beforeEach((done)=>{
+    describe('#searchByName',()=>{
+        var ResUser = {
+            email: '',
+            password: '',
+            profile: {
+                "fullName": ""
+            }
+        }
+        beforeEach((done)=>{
         User.remove({}).then(()=>{
             var user = {
                 email : 'nothing@something.com',
@@ -634,7 +656,7 @@ describe('User Controller',()=>{
                 email: 'mariz@gmail.com',
                 password: 'pizzaaaa',
                 profile: {
-                    "fullName": "Mariz Samir",
+                    "fullName": "Maz Samir",
                     }
              }
 
@@ -650,7 +672,7 @@ describe('User Controller',()=>{
                 email: 'mariz3@gmail.com',
                 password: 'sandra bullock',
                 profile: {
-                    "fullName": "Mazmaz SamSam",
+                    "fullName": "Maz SamSam",
                     }
              }
             user1 = new User(user1);
@@ -664,19 +686,12 @@ describe('User Controller',()=>{
                             .send({ user })
                             .expect(200)
                             .end((err, res) => {
-                                id = res.body.user._id;
-                                token = res.headers['x-auth'];
-                                request(app)
-                                .post("/editProfile")
-                                .set('x-auth', token)
-                                .send({ user })
-                                .expect(200)
-                                .end((err, res) => {
-                                    if (err) {
-                                        return done(err);
-                                    }
-                                    return done();
-                                })
+                                //console.log(res.res.text);
+                                if(err){
+                                    return done(err);
+                                }
+                                ResUser = res.body.user;
+                                return done();
                         })
                 })
             })
@@ -688,9 +703,10 @@ describe('User Controller',()=>{
             
            request(app)
            .post("/searchByName")
-           .set('x-auth',token)
+           .set({ 'x-auth': ResUser.tokens[0].token })
            .expect(500)
            .end((err,res)=>{
+               console.log(res.res.text);
             if(err){
                 return done(err);
             }
@@ -700,17 +716,19 @@ describe('User Controller',()=>{
         });
     });
     it('Should accept if there is a user with same name ',(done)=>{
-       var name =["Mariz Samir"];
+       var name ="Maz";
       request(app)
       .post("/searchByName")
       .send({name}) 
-      .set('x-auth',token)
+      .set({'x-auth':ResUser.tokens[0].token})
       .expect(200)
       .end((err,res)=>{
        if(err){
            return done(err);
        }
        else{
+        console.log(res.res.text);
+        expect(res.body.result.length).toBe(3);
         return done();
 
        }
