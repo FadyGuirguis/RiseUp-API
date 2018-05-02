@@ -357,37 +357,51 @@ describe('User Controller',()=>{
             })
         });
     })
-    describe('#ChangePassword',()=>{beforeEach((done)=>{
-        User.remove({}).then(()=>{
-            var user = {
-                email : 'nothing@something.com',
-                password : 'something',
-                profile : {
-                    "fullName" : "Nothing Something"
-                }
+    describe('#ChangePassword',()=>{
+        var ResUser = {
+            email: '',
+            password: '',
+            profile: {
+                "fullName": ""
             }
-            request(app)
-            .post("/register")
-            .send({user})
-            .expect(200)
-            .end((err,res)=>{
-                id = res.body.user._id;
-                return done();
-            })
+        }
+        var user = {
+            email: 'nothing@something.com',
+            password: 'something',
+            profile: {
+                "fullName": "Nothing Something"
+            }
+        }
+        var changePass = {
+            oldPassword: 'something',
+            newPassword: 'mariz'
+        }
+        beforeEach((done)=>{
+            User.remove({}).then(()=>{
+                request(app)
+                .post("/register")
+                .send({user})
+                .expect(200)
+                .end((err,res)=>{
+                    ResUser = res.body.user;
+                    return done();
+                })
 
         })
     });
         it('user can change his password',(done)=>{
-            request(app)
-            .post("/changePassword")
-            .set('x-auth',token)
+            request(app).post('/changePassword').set({ 'x-auth': ResUser.tokens[0].token })
+            .send({ user: { oldPassword:'something',newPassword:'marizmariz'}})
             .expect(200)
             .end((err,res)=>{
                 if(err){
                     return done();
                 }
-                return done();
-            });
+                User.findByCredentials(ResUser.email,"marizmariz").then((userss)=>{
+                    console.log(userss);
+                    return done();
+                })
+            })
         });
     });
 
