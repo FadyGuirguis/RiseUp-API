@@ -1962,8 +1962,13 @@ describe('Officehours Controller', () => {
                             if (err) {
                                 return done(err);
                             }
+                            OfficeHours.findOne({_id:officehour._id}).then((o)=>{
+                expect((o.chosenSlot.slot).toString()).toBe(new Date("2015-03-25").toString());
                             return done();
-                        });
+                        }).catch((err)=>{
+                            return done(err);
+                        })
+                    });
                 });
 
         });
@@ -2036,12 +2041,16 @@ describe('Officehours Controller', () => {
                             if (err) {
                                 return done(err);
                             }
-                            return done();
+                            OfficeHours.findOne({_id:officehour._id}).then((o)=>{
+                                expect(o.chosenSlot.slot).toBe(null);
+                                            return done();
+                                        }).catch((err)=>{
+                                            return done(err);
+                                        })
+                                    });
+                                });
+                
                         });
-                });
-
-        });
-
         //user should not confirm an office hour which has a status already confirmed
 
         it('shouldnot confirm an already confirmed officehour', (done) => {
@@ -2110,11 +2119,16 @@ describe('Officehours Controller', () => {
                             if (err) {
                                 return done(err);
                             }
-                            return done();
+                            OfficeHours.findOne({_id:officehour._id}).then((o)=>{
+                                expect(o.chosenSlot.slot).toBe(null);
+                                            return done();
+                                        }).catch((err)=>{
+                                            return done(err);
+                                        })
+                                    });
+                                });
+                
                         });
-                });
-
-        });
 
         //user should not confirm an office hour which has a status not accepted
 
@@ -2184,11 +2198,16 @@ describe('Officehours Controller', () => {
                             if (err) {
                                 return done(err);
                             }
-                            return done();
+                            OfficeHours.findOne({_id:officehour._id}).then((o)=>{
+                                expect(o.chosenSlot.slot).toBe(null);
+                                            return done();
+                                        }).catch((err)=>{
+                                            return done(err);
+                                        })
+                                    });
+                                });
+                
                         });
-                });
-
-        });
 
         //user should not confirm an office hour with out chosing the time slot
 
@@ -2258,12 +2277,16 @@ describe('Officehours Controller', () => {
                             if (err) {
                                 return done(err);
                             }
-                            return done();
+                            OfficeHours.findOne({_id:officehour._id}).then((o)=>{
+                                expect(o.chosenSlot.slot).toBe(null);
+                                            return done();
+                                        }).catch((err)=>{
+                                            return done(err);
+                                        })
+                                    });
+                                });
+                
                         });
-                });
-
-        });
-
         //user should not confirm an office hour with a body that is not of type office hour
 
         it('should not confirm officehour with body not officehour', (done) => {
@@ -2306,8 +2329,14 @@ describe('Officehours Controller', () => {
                         if (err) {
                             return done(err);
                         }
-                        return done();
-                    }));
+                        OfficeHours.findOne({_id:officehour._id}).then((o)=>{
+                            expect(o.chosenSlot.slot).toBe(null);
+                            return done();
+                        }).catch((err)=>{
+                            return done(err);
+                        })
+                    })
+        );
 
         });
         //user should not confirm an office hour that doesnot belong to him
@@ -2376,10 +2405,15 @@ describe('Officehours Controller', () => {
                         if (err) {
                             return done(err);
                         }
-                        return done();
+                        OfficeHours.findOne({_id:officehour._id}).then((o)=>{
+                            expect(o.chosenSlot.slot).toBe(null);
+                                        return done();
+                                    }).catch((err)=>{
+                                        return done(err);
+                                    })
+                                });
+                            });
+            
                     });
-                });
-
-        });
     })
 });
