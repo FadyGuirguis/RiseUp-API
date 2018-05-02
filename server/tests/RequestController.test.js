@@ -160,6 +160,7 @@ describe('Request Controller',()=>{
     })
 
     describe('#rejectRequest',()=>{
+        //-------------------------Declarations---------------------------------------
         var admin = {
             email : 'admin@admin.com',
             password : 'something',
@@ -176,63 +177,77 @@ describe('Request Controller',()=>{
         };
 
         var ResUser ={
-            email : 'mostafa@something.com',
-            password : 'something',
+            email : ' ',
+            password : ' ',
             profile : {
-                "fullName" : "Mostafa Amer"
+                "fullName" : " "
             }
         };
         var ResAdmin ={
-            email : 'Joe@something.com',
-            password : 'something',
+            email : ' ',
+            password : ' ',
             profile : {
-                "fullName" : "Joe salah"
+                "fullName" : " "
             }
         };
         var req = {
             description:"Testing Descp"
         };
 
+        //------------------------------Before------------------------------------
         before((done)=>{
-            User.remove({})
-
-            .then(()=>{
-                return request(app).post("/register").send({user:admin}).expect(200);
-            })
-
-            .then((res)=>{
-                ResAdmin = res.body.user;
-                return User.findByIdAndUpdate(ResAdmin._id,{roles:['admin']},{ new:true });
-            })
-            .then(()=>{
-                return request(app).post("/register").send({user}).expect(200);
-            })
-
-            .then((res)=>{
-                ResUser = res.body.user;
-            })
-            .then(() => {
-                done();
-            })
-            .catch((reason) => {
-                done(reason);
+            //---------------Remove All Users------------------------------------
+            User.remove({}).then(()=>{
+                //---------------Register Admin-----------------
+                request(app).post("/register").send({ user: admin }).expect(200).end((err,res)=>{
+                    if(err){
+                        return done(err);
+                    }
+                    ResAdmin = res.body.user;
+                    //------------------Update Admins Roles--------------------------
+                    User.findByIdAndUpdate(ResAdmin._id, { roles: ['admin'] }, { new: true }).then(()=>{
+                        //---------------------Register User-----------------------
+                        request(app).post("/register").send({ user }).expect(200).end((err,res)=>{
+                            if(err){
+                                return done(err);
+                            }
+                            ResUser = res.body.user;
+                            return done();
+                        })
+                        //---------------------------------------------------------
+                    })
+                    //------------------------------------------------
+                })
+                //------------------------------------
+            }).catch((reason) => {
+                console.log(reason);
+                done(err);
             });
         });
+
+        //---------------------------Before Each-----------------------------------
         beforeEach((done)=>{
+            //--------------------Remove All Requests-------------
             Request.remove({}).then(()=>{
               done();  
             });
+            //-----------------------------------------------------
         });
-        it('Remove Request without User',(done)=>{
+        //--------------------Test Case 1---------------------------------
+        it('There is no request available with such id',(done)=>{
             var dummyRequestId = ResUser._id; 
             request(app).post('/rejectRequest/'+dummyRequestId+'').set({'x-auth':ResAdmin.tokens[0].token}).send(req).expect(404).end((err,res)=>{
                 if(err){
                     return done(err);
                 }
-                expect(res.res.text).toBe('There is no request available with such id');
-                return done();
+                Request.count({},(err, count) => {
+                    expect(count).toBe(0);
+                    expect(res.res.text).toBe('There is no request available with such id');
+                    return done();
+                })
             });
         });
+        //--------------------Test Case 2--------------------------------
         it('Suceed',(done)=>{
             request(app).post('/request').set({'x-auth':ResUser.tokens[0].token}).send({request:req}).expect(200).end((err,res)=>{
                 if(err){
@@ -244,13 +259,18 @@ describe('Request Controller',()=>{
                         if(err){
                             return done(err);
                         }
-                        return done();
+                        Request.find({}).then((Reqs)=>{
+                            expect(Reqs.length).toBe(1);
+                            expect(Reqs[0].status).toBe('Rejected');
+                            return done();
+                        })
                     });
                     //------------------------------------------------------------
                     
                 });
             });
         });
+        //-------------------------Test Case 3-------------------------------
         it('shouldnot be able to reject a not pending Request ',(done)=>{
             request(app).post('/request').set({'x-auth':ResUser.tokens[0].token}).send({request:req}).expect(200).end((err,res)=>{
                 if(err){
@@ -267,8 +287,11 @@ describe('Request Controller',()=>{
                                 if(err){
                                     return done(err);
                                 }
-                                expect(res.res.text).toBe('This request is already evaluated');
-                                return done();
+                                Request.find({}).then((Reqs) => {
+                                    expect(Reqs.length).toBe(1);
+                                    expect(res.res.text).toBe('This request is already evaluated');
+                                    return done();
+                                })
                             });
             
                             //----------------------------------------------------
