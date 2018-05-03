@@ -372,7 +372,15 @@ describe('Request Controller',()=>{
                             if (err) {
                                 return done(err);
                             }
-                            return done();
+                            Request.find({}).then((reqs)=>{
+                                    expect(reqs[0].status).toBe('Accepted');
+                                    User.find({_id:ResUser._id}).then((users)=>{
+                                        expect(users[0].roles.includes('expert')+'').toBe('true');
+                                        return done();
+                                    })
+                            })
+                            
+                            
                         });
                         //------------------------------------------------------------
 
@@ -380,7 +388,7 @@ describe('Request Controller',()=>{
                 });
             });
             //-------------------------Pending Test---------------------------------
-            it('shouldnot be able to reject a not pending Request ', (done) => {
+            it('shouldnot be able to accept a not pending Request ', (done) => {
                 request(app).post('/request').set({ 'x-auth': ResUser.tokens[0].token }).send({ request: req }).expect(200).end((err, res) => {
                     if (err) {
                         return done(err);
@@ -397,7 +405,13 @@ describe('Request Controller',()=>{
                                         return done(err);
                                     }
                                     //expect(res.res.text).toBe('This request is already evaluated');
-                                    return done();
+                                    Request.find({}).then((reqs)=>{
+                                        expect(reqs[0].status).toBe('accepted');
+                                        User.find({_id:ResUser._id}).then((users)=>{
+                                            expect(users[0].roles.includes('expert')+'').toBe('false');
+                                            return done();
+                                        })
+                                })
                                 });
 
                                 //----------------------------------------------------
