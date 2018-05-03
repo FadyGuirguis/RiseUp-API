@@ -88,14 +88,16 @@ describe('Request Controller',()=>{
 
         var ResUser
         beforeEach((done)=>{
-            User.remove({}).then(()=>{
-                request(app).post('/register').send({user:user}).expect(200).end((err,res)=>{
-                    //console.info(res.status + ' '+res.res.text);
-                    if(err){
-                        return done(err);
-                    }
-                    ResUser = res.body.user;
-                    return done();
+            Request.remove({}).then(()=>{
+                User.remove({}).then(()=>{
+                    request(app).post('/register').send({user:user}).expect(200).end((err,res)=>{
+                        //console.info(res.status + ' '+res.res.text);
+                        if(err){
+                            return done(err);
+                        }
+                        ResUser = res.body.user;
+                        return done();
+                    })
                 })
             })
         })
@@ -106,7 +108,10 @@ describe('Request Controller',()=>{
                 if(err){
                     return done(err);
                 }
-                return done();
+                Request.find({}).then((reqs)=>{
+                    expect(reqs[0].description).toBe('Testing Descp');
+                    return done();
+                })
             });
         })
 
@@ -120,7 +125,10 @@ describe('Request Controller',()=>{
                                 return done(err);
                             }
                             expect(res.res.text).toBe('You are already an expert');
-                            return done();
+                            Request.find({}).then((reqs)=>{
+                                expect(reqs.length).toBe(0);
+                                return done();
+                            })
                         });
                     })
                 });
@@ -138,19 +146,25 @@ describe('Request Controller',()=>{
                         return done(err);
                     }
                     expect(res.res.text).toBe('You already have a pending request');
-                    return done();
+                    Request.find({}).then((reqs)=>{
+                        expect(reqs.length).toBe(1);
+                        return done();
+                    })
                 });
             });
         })
         
-        it('Succeed',(done)=>{
+        it('You Must add Description',(done)=>{
             request(app).post('/request').set({'x-auth':ResUser.tokens[0].token}).send({request:requu}).expect(400).end((err,res)=>{
                 //console.info(res.status + ' '+res.res.text);
                 if(err){
                     return done(err);
                 }
                 expect(res.res.text).toBe('You must add description');
-                return done();
+                Request.find({}).then((reqs)=>{
+                    expect(reqs.length).toBe(0);
+                    return done();
+                })
             });
         })
 
