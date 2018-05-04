@@ -447,6 +447,12 @@ describe('Review Controller',()=>{
                 if(err)
                     done(err);
                 else{
+                    Review.find({}).then((reviews)=>{
+                        expect(reviews[0].description).toBe("bla bla");
+                        expect(reviews[0].rating).toBe(1);
+                        expect(reviews[0].reviewed.name).toBe("Nothing Something");
+                        expect(reviews[0].reviewer.name).toBe("Nothing Something");
+                    })
                     done();
                 }
             });

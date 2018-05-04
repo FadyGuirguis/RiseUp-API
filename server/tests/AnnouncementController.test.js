@@ -226,13 +226,12 @@ describe('Announcement Controller', () => {
         it('A non-admin cant delete an anouncement', (done) => {
             Announcement.find({}).then((ans) => {
                 request(app).delete('/announcement/' + ans[0]._id + '').set({ 'x-auth': user.tokens[0].token }).expect(403).end((err, res) => {
-                    //console.info(res.status+' '+res.res.text);   
                     if (err) {
                         return done(err);
                     }
                     else{
-                        Announcement.find({}).then((oba) => {
-                            expect(oba.length).toBe(1);
+                        Announcement.find({}).then((announcements) => {
+                            expect(announcements.length).toBe(1);
                             done();
                         })
                     } 

@@ -341,7 +341,10 @@ describe('Tag Controller', () => {
                     User.find().then((users) => {
                         expect(users[0].profile.interests).toHaveLength(0);
                         expect(users[1].profile.expertIn).toHaveLength(0);
-                        return done();
+                        Tag.find({}).then((tags)=>{
+                            expect(tags.length).toBe(0);
+                            return done();
+                        })
                     }).catch((err) => {
                         return done(err);
                     });

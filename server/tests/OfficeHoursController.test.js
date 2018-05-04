@@ -39,25 +39,6 @@ describe('Officehours Controller', () => {
             }
         };
 
-        /*var exp2 = {
-            email : 'youssefsalah@someCompany.com',
-            password : 'youssefsalah',
-            profile : {
-                fullName : "Youssef Salah"
-            },
-            roles: ['user'/*,'expert'*///]
-        //};
-
-        /*var exp3 = {
-            email : 'mohamedhussein@someCompany.com',
-            password : 'mohamedhussein',
-            profile : {
-                fullName : "Mohamed Hussein"
-            },
-            roles: ['user'/*,'expert'*///]
-        //};
-
-
         before((done) => {
 
             // Remove all users from the DB
@@ -74,30 +55,6 @@ describe('Officehours Controller', () => {
                 .then((newExpert) => {
                     exp1 = newExpert;
                 })
-                // Register expert2
-                /*.then(() => {
-                    return request(app).post("/register").send({user: exp2}).expect(200);
-                })
-                // Make him expert
-                .then((res) => {
-                    exp2 = res.body.user;
-                    return User.findByIdAndUpdate(exp2._id, { $push: { roles: 'expert' } }, { new: true });
-                })
-                .then((newExpert) => {
-                    exp2 = newExpert;
-                })
-                // Register expert3
-                .then(() => {
-                    return request(app).post("/register").send({user: exp3}).expect(200);
-                })
-                // Make him expert
-                .then((res) => {
-                    exp3 = res.body.user;
-                    return User.findByIdAndUpdate(exp3._id, { $push: { roles: 'expert' } }, { new: true });
-                })
-                /*.then((newExpert) => {
-                    exp3 = newExpert;
-                })*/
                 // Register the normal user to submit requests
                 .then(() => {
                     return request(app).post("/register").send({ user: user1 }).expect(200);
@@ -260,7 +217,7 @@ describe('Officehours Controller', () => {
                                         name: expertt.profile.fullName
                                     },
 
-                                    title: "ask expert ",
+                                    title: "ask expert",
 
                                     description: "about nothing",
 
@@ -291,6 +248,7 @@ describe('Officehours Controller', () => {
                     if (err)
                         done(err);
                     else {
+                        expect(res.body.officeHour.title).toBe("ask expert");
                         done();
                     }
                 });
@@ -306,6 +264,7 @@ describe('Officehours Controller', () => {
                     if (err)
                         done(err);
                     else {
+                        expect(res.body.officeHour.title).toBe("ask expert");
                         done();
                     }
                 });
@@ -655,7 +614,6 @@ describe('Officehours Controller', () => {
             OfficeHours.remove({}).then(() => {
                 done();
             }).catch((reason) => {
-                console.log(reason);
                 done(reason);
             });
         });
@@ -696,7 +654,6 @@ describe('Officehours Controller', () => {
                 .send(body)
                 .expect(400, (err, res) => {
                     if (err) {
-                        console.log(err);
                         done(err);
                     }
                     else done();
@@ -719,7 +676,6 @@ describe('Officehours Controller', () => {
                 .send(body)
                 .expect(400, (err, res) => {
                     if (err) {
-                        console.log(err);
                         done(err);
                     }
                     else done();
@@ -742,7 +698,6 @@ describe('Officehours Controller', () => {
                 .send(body)
                 .expect(400, (err, res) => {
                     if (err) {
-                        console.log(err);
                         done(err);
                     }
                     else done();
@@ -764,7 +719,6 @@ describe('Officehours Controller', () => {
                 .send(body)
                 .expect(400, (err, res) => {
                     if (err) {
-                        console.log(err);
                         done(err);
                     }
                     else done();
@@ -786,7 +740,6 @@ describe('Officehours Controller', () => {
                 .send(body)
                 .expect(400, (err, res) => {
                     if (err) {
-                        console.log(err);
                         done(err);
                     }
                     else done();
@@ -807,7 +760,6 @@ describe('Officehours Controller', () => {
                 .send(body)
                 .expect(400, (err, res) => {
                     if (err) {
-                        console.log(err);
                         done(err);
                     }
                     else done();
@@ -834,10 +786,33 @@ describe('Officehours Controller', () => {
                         done(err);
                     }
                     else {
-                        OfficeHours.count({}, function (err, count) {
-                            expect(count).toBe(3);
-                        })
-                        done();
+                        OfficeHours.find({}).then((officeHours)=>{
+                            expect(officeHours.length).toBe(3);
+                            expect(officeHours[0].user.name).toBe('Shadi Barghash');
+                            expect(officeHours[0].expert.name).toBe('Expert One');
+                            expect(officeHours[0].title).toBe("office hour request by an expert");
+                            expect(officeHours[0].description).toBe("testing that number of officeHours corresponds to the number of experts");
+                            expect(officeHours[0].status).toBe("pending");
+                            expect(officeHours[0].isUserReviewed).toBe(false);
+                            expect(officeHours[0].isExpertReviewed).toBe(false);
+
+                            expect(officeHours[1].user.name).toBe('Shadi Barghash');
+                            expect(officeHours[1].expert.name).toBe('Expert Two');
+                            expect(officeHours[1].title).toBe("office hour request by an expert");
+                            expect(officeHours[1].description).toBe("testing that number of officeHours corresponds to the number of experts");
+                            expect(officeHours[1].status).toBe("pending");
+                            expect(officeHours[1].isUserReviewed).toBe(false);
+                            expect(officeHours[1].isExpertReviewed).toBe(false);
+
+                            expect(officeHours[2].user.name).toBe('Shadi Barghash');
+                            expect(officeHours[2].expert.name).toBe('Expert Three');
+                            expect(officeHours[2].title).toBe("office hour request by an expert");
+                            expect(officeHours[2].description).toBe("testing that number of officeHours corresponds to the number of experts");
+                            expect(officeHours[2].status).toBe("pending");
+                            expect(officeHours[2].isUserReviewed).toBe(false);
+                            expect(officeHours[2].isExpertReviewed).toBe(false);
+                            done();
+                        });
                     }
                 })
         });
@@ -862,41 +837,28 @@ describe('Officehours Controller', () => {
                         done(err);
                     }
                     else {
-                        OfficeHours.count({}, function (err, count) {
-                            expect(count).toBe(2);
-                        })
-                        done();
+                        OfficeHours.find({}).then((officeHours)=>{
+
+                            expect(officeHours.length).toBe(2);
+                            expect(officeHours[0].user.name).toBe('Shadi Barghash');
+                            expect(officeHours[0].expert.name).toBe('Expert One');
+                            expect(officeHours[0].title).toBe("office hour request by an expert");
+                            expect(officeHours[0].description).toBe("testing that number of officeHours corresponds to the number of experts");
+                            expect(officeHours[0].status).toBe("pending");
+                            expect(officeHours[0].isUserReviewed).toBe(false);
+                            expect(officeHours[0].isExpertReviewed).toBe(false);
+
+                            expect(officeHours[1].user.name).toBe('Shadi Barghash');
+                            expect(officeHours[1].expert.name).toBe('Expert Two');
+                            expect(officeHours[1].title).toBe("office hour request by an expert");
+                            expect(officeHours[1].description).toBe("testing that number of officeHours corresponds to the number of experts");
+                            expect(officeHours[1].status).toBe("pending");
+                            expect(officeHours[1].isUserReviewed).toBe(false);
+                            expect(officeHours[1].isExpertReviewed).toBe(false);
+                            done();
+                        });
                     }
                 })
-        });
-
-        it('should save the request with status: pending, and correct expert and other fields', (done) => {
-            //checking whether the created request has the status pending or not, should succeed
-            var body = {
-                title: 'office hour request by an expert',
-                description: 'testing that number of officeHours corresponds to the number of experts',
-                experts: [expert1]
-            };
-            request(app)
-                .post("/officeHour")
-                .set({
-                    'x-auth': normalUser.tokens[0].token
-                })
-                .send(body)
-                .expect(200)
-                .end((err, res) => {
-                    if (err) {
-                        return done(err);
-                    }
-
-                    OfficeHours.find({ "user._id": normalUser._id }).then((result) => {
-
-                        expect(result[0].status).toBe('pending');
-                        return done();
-                    }).catch((err) => {
-                        return done(err);
-                    });
-                });
         });
 
         it('should save only one request for each expert (no duplicates)', (done) => {
@@ -920,18 +882,20 @@ describe('Officehours Controller', () => {
                         done(err);
                     }
                     else {
-                        OfficeHours.count({}, function (err, count) {
-                            expect(count).toBe(1);
-                        })
-                        done();
+                        OfficeHours.find({}).then((officeHours)=>{
+
+                            expect(officeHours.length).toBe(1);
+                            expect(officeHours[0].user.name).toBe('Shadi Barghash');
+                            expect(officeHours[0].expert.name).toBe('Expert One');
+                            expect(officeHours[0].title).toBe("office hour request by an expert");
+                            expect(officeHours[0].description).toBe("testing that number of officeHours corresponds to the number of experts");
+                            expect(officeHours[0].status).toBe("pending");
+                            expect(officeHours[0].isUserReviewed).toBe(false);
+                            expect(officeHours[0].isExpertReviewed).toBe(false);
+                            done();
+                        });
                     }
                 })
-        });
-
-        it('should not allow an expert to submit a request with him/herself', (done) => {
-            done();
-            //handeled in the front end.
-            //as an expert, if I am viewing my own profile then I can't request an office hour for myself
         });
 
         after((done) => {
@@ -1573,7 +1537,10 @@ describe('Officehours Controller', () => {
                         if (err) {
                             return done(err);
                         }
-                        return done();
+                        OfficeHours.find({}).then((officeHours)=>{
+                            expect(officeHours[0].status).toBe("rejected");
+                            done();
+                        });
                     });
             });
 
@@ -1648,7 +1615,10 @@ describe('Officehours Controller', () => {
                         if (err) {
                             return done(err);
                         }
-                        return done();
+                        OfficeHours.find({}).then((officeHours)=>{
+                            expect(officeHours[0].status).toBe("rejected");
+                            done();
+                        });                    
                     });
             });
 
@@ -1723,7 +1693,10 @@ describe('Officehours Controller', () => {
                         if (err) {
                             return done(err);
                         }
-                        return done();
+                        OfficeHours.find({}).then((officeHours)=>{
+                            expect(officeHours[0].status).toBe("accepted");
+                            done();
+                        });                    
                     });
             });
 
@@ -1803,7 +1776,10 @@ describe('Officehours Controller', () => {
                         if (err) {
                             return done(err);
                         }
-                        return done();
+                        OfficeHours.find({}).then((officeHours)=>{
+                            expect(officeHours[0].status).toBe("pending");
+                            done();
+                        }); 
                     });
             });
         });
@@ -1963,8 +1939,8 @@ describe('Officehours Controller', () => {
                                 return done(err);
                             }
                             OfficeHours.findOne({_id:officehour._id}).then((o)=>{
-                expect((o.chosenSlot.slot).toString()).toBe(new Date("2015-03-25").toString());
-                            return done();
+                                expect((o.chosenSlot.slot).toString()).toBe(new Date("2015-03-25").toString());
+                                return done();
                         }).catch((err)=>{
                             return done(err);
                         })

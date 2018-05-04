@@ -357,6 +357,7 @@ describe('User Controller',()=>{
             })
         });
     })
+
     describe('#ChangePassword',()=>{
         var ResUser = {
             email: '',
@@ -387,8 +388,8 @@ describe('User Controller',()=>{
                     return done();
                 })
 
-        })
-    });
+            })
+        });
         it('user can change his password',(done)=>{
             request(app).post('/changePassword').set({ 'x-auth': ResUser.tokens[0].token })
             .send({ user: { oldPassword:'something',newPassword:'marizmariz'}})
@@ -403,8 +404,6 @@ describe('User Controller',()=>{
             })
         });
     });
-
-
 
     describe('#editProfile',()=>{
 
@@ -643,61 +642,61 @@ describe('User Controller',()=>{
             }
         }
         beforeEach((done)=>{
-        User.remove({}).then(()=>{
-            var user = {
-                email : 'nothing@something.com',
-                password : 'something',
-                profile : {
-                    "fullName" : "Nothing Something"
+            User.remove({}).then(()=>{
+                var user = {
+                    email : 'nothing@something.com',
+                    password : 'something',
+                    profile : {
+                        "fullName" : "Nothing Something"
+                    }
+                } 
+                var user1 = {
+                    email: 'mariz@gmail.com',
+                    password: 'pizzaaaa',
+                    profile: {
+                        "fullName": "Maz Samir",
+                        }
                 }
-            } 
-            var user1 = {
-                email: 'mariz@gmail.com',
-                password: 'pizzaaaa',
-                profile: {
-                    "fullName": "Maz Samir",
-                    }
-             }
 
-             var user2 = {
-                email: 'mariz2@gmail.com',
-                password: 'jelly cola',
-                profile: {
-                    "fullName": "Maz Sam",
-                    }
-             }
+                var user2 = {
+                    email: 'mariz2@gmail.com',
+                    password: 'jelly cola',
+                    profile: {
+                        "fullName": "Maz Sam",
+                        }
+                }
 
-             var user3 = {
-                email: 'mariz3@gmail.com',
-                password: 'sandra bullock',
-                profile: {
-                    "fullName": "Maz SamSam",
-                    }
-             }
-            user1 = new User(user1);
-            user2 = new User(user2);
-            user3 = new User(user3);
-            user1.save().then(() => {
-                user2.save().then(() => {
-                    user3.save().then(() => {
-                        request(app)
-                            .post("/register")
-                            .send({ user })
-                            .expect(200)
-                            .end((err, res) => {
-                                //console.log(res.res.text);
-                                if(err){
-                                    return done(err);
-                                }
-                                ResUser = res.body.user;
-                                return done();
+                var user3 = {
+                    email: 'mariz3@gmail.com',
+                    password: 'sandra bullock',
+                    profile: {
+                        "fullName": "Maz SamSam",
+                        }
+                }
+                user1 = new User(user1);
+                user2 = new User(user2);
+                user3 = new User(user3);
+                user1.save().then(() => {
+                    user2.save().then(() => {
+                        user3.save().then(() => {
+                            request(app)
+                                .post("/register")
+                                .send({ user })
+                                .expect(200)
+                                .end((err, res) => {
+                                    //console.log(res.res.text);
+                                    if(err){
+                                        return done(err);
+                                    }
+                                    ResUser = res.body.user;
+                                    return done();
+                            })
                         })
+                    })
                 })
-            })
-        })
 
-    })
-});
+            })
+        });
         it('Should return Internal error if no name is entered to be searched on',(done)=>{
             
            request(app)
@@ -705,32 +704,32 @@ describe('User Controller',()=>{
            .set({ 'x-auth': ResUser.tokens[0].token })
            .expect(500)
            .end((err,res)=>{
-            if(err){
-                return done(err);
-            }
-            else{
-                return done();
-            }
+                if(err){
+                    return done(err);
+                }
+                else{
+                    return done();
+                }
+            });
         });
-    });
-    it('Should accept if there is a user with same name ',(done)=>{
-       var name ="Maz";
-      request(app)
-      .post("/searchByName")
-      .send({name}) 
-      .set({'x-auth':ResUser.tokens[0].token})
-      .expect(200)
-      .end((err,res)=>{
-       if(err){
-           return done(err);
-       }
-       else{
-        expect(res.body.result.length).toBe(3);
-        return done();
+        it('Should accept if there is a user with same name ',(done)=>{
+        var name ="Maz";
+        request(app)
+        .post("/searchByName")
+        .send({name}) 
+        .set({'x-auth':ResUser.tokens[0].token})
+        .expect(200)
+        .end((err,res)=>{
+                if(err){
+                    return done(err);
+                }
+                else{
+                    expect(res.body.result.length).toBe(3);
+                    return done();
 
-       }
-   });
-});
+                }
+            });
+        });
     
 })
 
